@@ -2,10 +2,14 @@ package com.abroad.serviceimpl;
 
 import com.abroad.dto.AddressDTO;
 import com.abroad.dto.EnquiryDTO;
+import com.abroad.dto.EnquiryFilterDTO;
 import com.abroad.entity.Address;
 import com.abroad.entity.Enquiry;
 import com.abroad.repository.EnquiryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -97,9 +101,29 @@ public class EnquiryServiceImpl implements com.abroad.service.EnquiryService {
         return dto;
     }
     @Override
-    public List<EnquiryDTO> getAllEnquiries() {
-        List<Enquiry> enquiries = enquiryRepository.findAll();
-        return enquiries.stream().map(this::toDTO).toList();
+    public Page<EnquiryDTO> getAllEnquiries(EnquiryFilterDTO filterDTO, Pageable pageable) {
+        Specification<Enquiry> spec = Specification.where(null);
+
+        if (filterDTO != null) {
+            if (filterDTO.getName() != null && !filterDTO.getName().isBlank()) {
+                spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + filterDTO.getName().toLowerCase() + "%"));
+            }
+            if (filterDTO.getStatus() != null && !filterDTO.getStatus().isBlank()) {
+                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("status")), filterDTO.getStatus().toLowerCase()));
+            }
+            if (filterDTO.getBatch() != null && !filterDTO.getBatch().isBlank()) {
+                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("batch")), filterDTO.getBatch().toLowerCase()));
+            }
+            if (filterDTO.getEmail() != null && !filterDTO.getEmail().isBlank()) {
+                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("email")), filterDTO.getEmail().toLowerCase()));
+            }
+            if (filterDTO.getGender() != null && !filterDTO.getGender().isBlank()) {
+                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("gender")), filterDTO.getGender().toLowerCase()));
+            }
+        }
+
+        Page<Enquiry> enquiryPage = enquiryRepository.findAll(spec, pageable);
+        return enquiryPage.map(this::toDTO);
     }
 
 }
