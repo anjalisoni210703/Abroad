@@ -14,21 +14,21 @@ public class CollegeController {
     @Autowired
     private CollegeService collegeService;
 
-    @PostMapping
+    @PostMapping("/createCollege")
     public College createCollege(@RequestBody College college) {
         return collegeService.saveCollege(college);
     }
 
-    @GetMapping
+    @GetMapping("/getAllColleges")
     public List<College> getAllColleges() {
         return collegeService.getAllColleges();
     }
 
-    @GetMapping("/university/{universityId}")
+    @GetMapping("/getCollegesByUniversity/{universityId}")
     public List<College> getCollegesByUniversity(@PathVariable Long universityId) {
         return collegeService.getCollegesByUniversityId(universityId);
     }
-    @PutMapping("/{id}")
+    @PutMapping("/updateCollege/{id}")
     public ResponseEntity<College> updateCollege(@PathVariable Long id, @RequestBody College college) {
         College updated = collegeService.updateCollege(id, college);
         if (updated == null) {
