@@ -38,4 +38,8 @@ public class CourseController {
         courseService.deleteCourse(id);
         return ResponseEntity.ok("Course deleted successfully.");
     }
+    @GetMapping("/college/{collegeId}")
+    public List<Course> getCoursesByCollege(@PathVariable Long collegeId) {
+        return courseService.getCoursesByCollegeId(collegeId);
+    }
 }

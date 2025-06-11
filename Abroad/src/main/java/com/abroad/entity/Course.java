@@ -25,4 +25,7 @@ public class Course {
     private String validity;
     private String categoryName;
     private String thumbnail;
+    @ManyToOne
+    @JoinColumn(name = "college_id")
+    private College college;
 }
