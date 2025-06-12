@@ -1,10 +1,9 @@
 package com.abroad.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,4 +16,6 @@ public class University {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String universityName;
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<College> colleges;
 }

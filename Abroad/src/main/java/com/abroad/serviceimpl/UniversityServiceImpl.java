@@ -15,6 +15,9 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public University saveUniversity(University university) {
+        if (university.getColleges() != null) {
+            university.getColleges().forEach(college -> college.setUniversity(university));
+        }
         return universityRepository.save(university);
     }
 
@@ -34,6 +37,12 @@ public class UniversityServiceImpl implements UniversityService {
 
         if (updatedUniversity.getUniversityName() != null) {
             existing.setUniversityName(updatedUniversity.getUniversityName());
+        }
+
+        if (updatedUniversity.getColleges() != null) {
+            // Link each college to the existing university
+            updatedUniversity.getColleges().forEach(college -> college.setUniversity(existing));
+            existing.setColleges(updatedUniversity.getColleges());
         }
 
         return universityRepository.save(existing);
