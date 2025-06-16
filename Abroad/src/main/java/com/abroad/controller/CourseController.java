@@ -1,6 +1,7 @@
 package com.abroad.controller;
 
 import com.abroad.entity.Course;
+import com.abroad.repository.CourseRepository;
 import com.abroad.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 public class CourseController {
     @Autowired
     private CourseService courseService;
+    private CourseRepository courseRepository;
 
     @PostMapping("/createCourse")
     public ResponseEntity<Course> createCourse(@RequestBody Course course) {
@@ -42,4 +44,13 @@ public class CourseController {
     public List<Course> getCoursesByCollege(@PathVariable Long collegeId) {
         return courseService.getCoursesByCollegeId(collegeId);
     }
+    @GetMapping("/by-university/{universityId}/stream/{streamId}")
+    public ResponseEntity<List<Course>> getCoursesByUniversityAndStream(
+            @PathVariable Long universityId,
+            @PathVariable Long streamId) {
+
+        List<Course> courses = courseRepository.findCoursesByUniversityAndStream(universityId, streamId);
+        return ResponseEntity.ok(courses);
+    }
+
 }

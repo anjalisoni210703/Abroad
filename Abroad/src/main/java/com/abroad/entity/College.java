@@ -23,4 +23,8 @@ public class College {
 
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Course> courses;
+    @ManyToOne
+    @JoinColumn(name = "stream_id")
+    private Stream stream;
+
 }
