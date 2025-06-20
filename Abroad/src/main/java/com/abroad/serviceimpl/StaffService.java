@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,17 +15,19 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-public class BranchService {
+@Service
+public class StaffService
+{
     private final WebClient webClient;
 
     @Autowired
-    public BranchService(WebClient webClient) {
+    public StaffService(WebClient webClient) {
         this.webClient = webClient;
     }
 
-    public Mono<LoginResponse> loginBranch(LoginRequest request) {
+    public Mono<LoginResponse> loginStaff(LoginRequest request) {
         return webClient.post()
-                .uri("/branchlogin")
+                .uri("/stafflogin")
                 .bodyValue(request)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
@@ -34,7 +37,27 @@ public class BranchService {
                 .bodyToMono(LoginResponse.class);
     }
 
+
     public Map<String, Boolean> getPermissionsByEmail(String email) {
+
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/permissionForStaff")
+                        .queryParam("staffEmail", email)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, token)  // pass it as-is
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Boolean>>() {})
+                .block();
+    }
+
+    public Map<String, Object> getCrudPermissionForBranchtByEmail(String email) {
+
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -43,24 +66,29 @@ public class BranchService {
                         .path("/permissionForBranch")
                         .queryParam("branchEmail", email)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)  // Pass token directly
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Boolean>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
+
     }
 
-    public Map<String, Object> getCrudPermissionForDepartmentByEmail(String email) {
+    public Map<String, Object> getCrudPermissionForAdmintByEmail(String email) {
+
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/permissionForDepartmentOfBranch")
+                        .path("/superAdmin/permissionForAdmin")
                         .queryParam("email", email)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)  // Pass token directly
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
+
     }
+
+
 }

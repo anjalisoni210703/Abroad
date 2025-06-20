@@ -1,23 +1,30 @@
 package com.abroad.serviceimpl;
 
+import com.abroad.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Map;
+
 @Service
-public class PermissionServiceImpl {
+public class PermissionServiceImpl implements PermissionService {
     private final WebClient webClient;
+
+    @Autowired
+    private StaffService staffService;
 
     @Autowired
     public PermissionServiceImpl(WebClient webClient) {
         this.webClient = webClient;
     }
 
+    @Override
     public boolean hasPermission(String role, String email, String action) {
         if ("BRANCH".equalsIgnoreCase(role)) {
             Boolean exists = webClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/existBranchbyemail")
+                            .path("/superAdmin/existByEmail")
                             .queryParam("email", email)
                             .build())
                     .retrieve()
@@ -25,18 +32,47 @@ public class PermissionServiceImpl {
                     .block();
             return Boolean.TRUE.equals(exists);
         }
-        // Default permission denied if role is not "BRANCH"
-        return false;
+        return switch (role.toUpperCase()) {
+            case "STAFF" -> {
+                Map<String, Boolean> perms = staffService.getPermissionsByEmail(email);
+                yield switch (action.toUpperCase()) {
+                    case "GET" -> Boolean.TRUE.equals(perms.get("cansGet"));
+                    case "POST" -> Boolean.TRUE.equals(perms.get("cansPost"));
+                    case "PUT" -> Boolean.TRUE.equals(perms.get("cansPut"));
+                    case "DELETE" -> Boolean.TRUE.equals(perms.get("cansDelete"));
+                    default -> false;
+                };
+            }
+            case "BRANCH" -> {
+                Map<String, Object> perms = staffService.getCrudPermissionForBranchtByEmail(email);
+                yield switch (action.toUpperCase()) {
+                    case "GET" -> Boolean.TRUE.equals(perms.get("candGet"));
+                    case "POST" -> Boolean.TRUE.equals(perms.get("candPost"));
+                    case "PUT" -> Boolean.TRUE.equals(perms.get("candPut"));
+                    case "DELETE" -> Boolean.TRUE.equals(perms.get("candDelete"));
+                    default -> false;
+                };
+            }
+            case "ADMIN" -> {
+                Map<String, Object> perms = staffService.getCrudPermissionForAdmintByEmail(email);
+                yield switch (action.toUpperCase()) {
+                    case "GET" -> Boolean.TRUE.equals(perms.get("cansGet"));
+                    case "POST" -> Boolean.TRUE.equals(perms.get("candPost"));
+                    case "PUT" -> Boolean.TRUE.equals(perms.get("candPut"));
+                    case "DELETE" -> Boolean.TRUE.equals(perms.get("candDelete"));
+                    default -> false;
+                };
+            }
+            default -> false;
+        };
     }
 
     public String fetchBranchCode(String role, String email) {
         String endpoint = switch (role.toLowerCase()) {
             case "branch" -> "/branch/getbranchcode";
-            case "department" -> "/department/getbranchcode";
             case "staff" -> "/staff/getbranchcode";
             default -> throw new IllegalArgumentException("Invalid role: " + role);
         };
-
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(endpoint)
@@ -46,4 +82,5 @@ public class PermissionServiceImpl {
                 .bodyToMono(String.class)
                 .block();
     }
-    }
+
+}

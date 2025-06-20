@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Entity
@@ -20,4 +21,9 @@ public class AboutUs {
     private String aboutUsTitle;
     private String aboutUsDescription;
     private String aboutUsImage;
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
 }
