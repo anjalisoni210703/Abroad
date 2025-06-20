@@ -53,16 +53,7 @@ public class PermissionServiceImpl implements PermissionService {
                     default -> false;
                 };
             }
-            case "ADMIN" -> {
-                Map<String, Object> perms = staffService.getCrudPermissionForAdmintByEmail(email);
-                yield switch (action.toUpperCase()) {
-                    case "GET" -> Boolean.TRUE.equals(perms.get("cansGet"));
-                    case "POST" -> Boolean.TRUE.equals(perms.get("candPost"));
-                    case "PUT" -> Boolean.TRUE.equals(perms.get("candPut"));
-                    case "DELETE" -> Boolean.TRUE.equals(perms.get("candDelete"));
-                    default -> false;
-                };
-            }
+
             default -> false;
         };
     }
@@ -73,6 +64,11 @@ public class PermissionServiceImpl implements PermissionService {
             case "staff" -> "/staff/getbranchcode";
             default -> throw new IllegalArgumentException("Invalid role: " + role);
         };
+
+        if (endpoint == null) {
+            return null;
+        }
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(endpoint)
@@ -82,5 +78,6 @@ public class PermissionServiceImpl implements PermissionService {
                 .bodyToMono(String.class)
                 .block();
     }
+
 
 }

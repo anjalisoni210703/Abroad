@@ -43,11 +43,4 @@ public class StaffController
         return ResponseEntity.ok(permissions);
     }
 
-    @GetMapping("/permissionForAdmin")
-    public ResponseEntity<Map<String, Object>> getAdminPermissions(@RequestParam("adminEmail") String AdminEmail) {
-
-        Map<String, Object> permissions = staffLoginService.getCrudPermissionForAdmintByEmail(AdminEmail);
-        return ResponseEntity.ok(permissions);
-    }
-
 }
