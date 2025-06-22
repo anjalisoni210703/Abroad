@@ -1,103 +1,87 @@
 package com.abroad.serviceimpl;
 
 import com.abroad.entity.Consultation_Booking;
-import com.abroad.entity.Continent;
-import com.abroad.entity.Course;
 import com.abroad.repository.ConsultationBookingRepository;
-import com.abroad.repository.ContinentRepository;
-import com.abroad.repository.CourseRepository;
 import com.abroad.service.ConsultationBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.abroad.service.PermissionService;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 public class ConsultationBookingServiceImpl  implements ConsultationBookingService {
     @Autowired
-    private ConsultationBookingRepository bookingRepository;
+    private ConsultationBookingRepository repository;
 
     @Autowired
-    private CourseRepository courseRepository;
-
-    @Autowired
-    private ContinentRepository continentRepository;
+    private PermissionService permissionService;
 
     @Override
-    public void bookConsultation(Consultation_Booking booking) {
-        Long courseId = booking.getCourse() != null ? booking.getCourse().getId() : null;
-        Long continentId = booking.getContinent() != null ? booking.getContinent().getId() : null;
-
-        if (courseId == null || continentId == null) {
-            throw new RuntimeException("Course or Continent is missing");
+    public Consultation_Booking createBooking(Consultation_Booking booking, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "POST")) {
+            throw new AccessDeniedException("No permission to create booking");
         }
 
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+        String branchCode = permissionService.fetchBranchCode(role, email);
+        booking.setCreatedByEmail(email);
+        booking.setRole(role);
+        booking.setBranchCode(branchCode);
 
-        Continent continent = continentRepository.findById(continentId)
-                .orElseThrow(() -> new RuntimeException("Continent not found"));
-
-        booking.setCourse(course);
-        booking.setContinent(continent);
-
-        bookingRepository.save(booking);
-    }
-    @Override
-    public List<Consultation_Booking> getAllBookings() {
-        return bookingRepository.findAll();
+        return repository.save(booking);
     }
 
     @Override
-    public Consultation_Booking getBookingById(Long id) {
-        return bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found with id " + id));
-    }
-
-    @Override
-    public Consultation_Booking updateBooking(Long id, Consultation_Booking booking) {
-        Consultation_Booking existingBooking = getBookingById(id);
-
-        existingBooking.setFullname(booking.getFullname());
-        existingBooking.setEmail(booking.getEmail());
-        existingBooking.setPhoneno(booking.getPhoneno());
-        existingBooking.setPincode(booking.getPincode());
-
-        existingBooking.setCourse(null);
-        existingBooking.setContinent(null);
-        if (booking.getCourse() != null) existingBooking.setCourse(null);
-        if (booking.getContinent() != null) existingBooking.setContinent(null);
-
-        validateAndSetRelations(booking);
-        existingBooking.setCourse(booking.getCourse());
-        existingBooking.setContinent(booking.getContinent());
-
-        return bookingRepository.save(existingBooking);
-    }
-
-
-    @Override
-    public void deleteBooking(Long id) {
-        Consultation_Booking booking = getBookingById(id);
-        bookingRepository.delete(booking);
-    }
-
-    private void validateAndSetRelations(Consultation_Booking booking) {
-        Long courseId = booking.getCourse() != null ? booking.getCourse().getId() : null;
-        Long continentId = booking.getContinent() != null ? booking.getContinent().getId() : null;
-
-        if (courseId == null || continentId == null) {
-            throw new RuntimeException("Course or Continent is missing");
+    public List<Consultation_Booking> getAllBookings(String role, String email) {
+        if (!permissionService.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view bookings");
         }
 
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
-
-        Continent continent = continentRepository.findById(continentId)
-                .orElseThrow(() -> new RuntimeException("Continent not found"));
-
-        booking.setCourse(course);
-        booking.setContinent(continent);
+        String branchCode = permissionService.fetchBranchCode(role, email);
+        return repository.findAllByBranchCode(branchCode);
     }
 
+    @Override
+    public Consultation_Booking getBookingById(Long id, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view booking");
+        }
+
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+    }
+
+    @Override
+    public Consultation_Booking updateBooking(Long id, Consultation_Booking booking, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("No permission to update booking");
+        }
+
+        Consultation_Booking existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        existing.setFullname(booking.getFullname() != null ? booking.getFullname() : existing.getFullname());
+        existing.setEmail(booking.getEmail() != null ? booking.getEmail() : existing.getEmail());
+        existing.setPhoneno(booking.getPhoneno() != null ? booking.getPhoneno() : existing.getPhoneno());
+        existing.setPincode(booking.getPincode() != null ? booking.getPincode() : existing.getPincode());
+        existing.setContinent(booking.getContinent() != null ? booking.getContinent() : existing.getContinent());
+        existing.setCourse(booking.getCourse() != null ? booking.getCourse() : existing.getCourse());
+
+        return repository.save(existing);
+    }
+
+    @Override
+    public void deleteBooking(Long id, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("No permission to delete booking");
+        }
+
+        repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        repository.deleteById(id);
+    }
 }

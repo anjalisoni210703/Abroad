@@ -1,6 +1,7 @@
 package com.abroad.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class Consultation_Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String fullname;
     private String email;
     private String phoneno;
@@ -24,7 +26,12 @@ public class Consultation_Booking {
     private Continent continent;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")  // FK to Course
+    @JoinColumn(name = "course_id")
     private Course course;
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
 
 }

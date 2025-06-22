@@ -1,12 +1,11 @@
 package com.abroad.controller;
 
-import com.abroad.entity.Stream;
-import com.abroad.service.StreamService;
+import com.abroad.entity.Branch;
+import com.abroad.service.BranchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,52 +15,51 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "https://pjsofttech.in")
-public class StreamController {
+public class BranchController {
     @Autowired
-    private StreamService service;
+    private BranchService service;
 
-    @PostMapping("/createStream")
-    public ResponseEntity<Stream> createStream(@RequestPart("stream") String streamJson,
+    @PostMapping("/createBranch")
+    public ResponseEntity<Branch> createBranch(@RequestPart("branch") String branchJson,
                                                @RequestParam(value = "image", required = false) MultipartFile image,
                                                @RequestParam String role,
                                                @RequestParam String email) throws JsonProcessingException {
-
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        Stream stream = mapper.readValue(streamJson, Stream.class);
-        return ResponseEntity.ok(service.createStream(stream, image, role, email));
+        Branch branch = mapper.readValue(branchJson, Branch.class);
+        return ResponseEntity.ok(service.createBranch(branch, image, role, email));
     }
 
-    @PutMapping("/updateStream/{id}")
-    public ResponseEntity<Stream> updateStream(@PathVariable Long id,
-                                               @RequestPart("stream") String streamJson,
+    @PutMapping("/updateBranch/{id}")
+    public ResponseEntity<Branch> updateBranch(@PathVariable Long id,
+                                               @RequestPart("branch") String branchJson,
                                                @RequestParam(value = "image", required = false) MultipartFile image,
                                                @RequestParam String role,
                                                @RequestParam String email) throws JsonProcessingException {
-        Stream stream = new ObjectMapper().readValue(streamJson, Stream.class);
-        return ResponseEntity.ok(service.updateStream(id, stream, image, role, email));
+        Branch branch = new ObjectMapper().readValue(branchJson, Branch.class);
+        return ResponseEntity.ok(service.updateBranch(id, branch, image, role, email));
     }
 
-    @GetMapping("/getAllStreams")
-    public ResponseEntity<List<Stream>> getAllStreams(@RequestParam String role,
-                                                      @RequestParam String email) {
-        return ResponseEntity.ok(service.getAllStreams(role, email));
+    @GetMapping("/getAllBranches")
+    public ResponseEntity<List<Branch>> getAllBranches(@RequestParam String role,
+                                                       @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllBranches(role, email));
     }
 
-    @GetMapping("/getStreamById/{id}")
-    public ResponseEntity<Stream> getStreamById(@PathVariable Long id,
+    @GetMapping("/getBranchById/{id}")
+    public ResponseEntity<Branch> getBranchById(@PathVariable Long id,
                                                 @RequestParam String role,
                                                 @RequestParam String email) {
-        return ResponseEntity.ok(service.getStreamById(id, role, email));
+        return ResponseEntity.ok(service.getBranchById(id, role, email));
     }
 
-    @DeleteMapping("/deleteStream/{id}")
-    public ResponseEntity<String> deleteStream(@PathVariable Long id,
+    @DeleteMapping("/deleteBranch/{id}")
+    public ResponseEntity<String> deleteBranch(@PathVariable Long id,
                                                @RequestParam String role,
                                                @RequestParam String email) {
-        service.deleteStream(id, role, email);
-        return ResponseEntity.ok("Stream deleted successfully");
+        service.deleteBranch(id, role, email);
+        return ResponseEntity.ok("Branch deleted successfully");
     }
 }

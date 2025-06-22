@@ -6,124 +6,105 @@ import com.abroad.dto.EnquiryFilterDTO;
 import com.abroad.entity.Address;
 import com.abroad.entity.Enquiry;
 import com.abroad.repository.EnquiryRepository;
+import com.abroad.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 public class EnquiryServiceImpl implements com.abroad.service.EnquiryService {
     @Autowired
-    private EnquiryRepository enquiryRepository;
+    private EnquiryRepository repository;
+
+    @Autowired
+    private PermissionService permissionService;
 
     @Override
-    public EnquiryDTO saveEnquiry(EnquiryDTO enquiryDTO) {
-        // Convert DTO to Entity
-        Enquiry enquiry = toEntity(enquiryDTO);
-
-        // Save Enquiry (with Address due to CascadeType.ALL)
-        Enquiry savedEnquiry = enquiryRepository.save(enquiry);
-
-        // Convert back to DTO if needed
-        return toDTO(savedEnquiry);
-    }
-
-    // Mapping: DTO -> Entity
-    private Enquiry toEntity(EnquiryDTO dto) {
-        Enquiry enquiry = new Enquiry();
-        enquiry.setName(dto.getName());
-        enquiry.setPhone_no(dto.getPhoneNo()); // updated
-        enquiry.setEmail(dto.getEmail());
-        enquiry.setBatch(dto.getBatch());
-        enquiry.setSourceby(dto.getSourceBy()); // updated
-        enquiry.setConducts(dto.getConducts());
-        enquiry.setStatus(dto.getStatus());
-        enquiry.setEnquiry_date(dto.getEnquiryDate()); // updated
-        enquiry.setRemark(dto.getRemark());
-        enquiry.setDob(dto.getDob());
-        enquiry.setGender(dto.getGender());
-        enquiry.setMothertounge(dto.getMotherTounge()); // updated
-        enquiry.setFatherprofession(dto.getFatherProfession()); // updated
-        enquiry.setEducationqualification(dto.getEducationQualification()); // updated
-        enquiry.setAnnualincome(dto.getAnnualIncome()); // updated
-        enquiry.setPhotoUrl(dto.getPhotoUrl());
-
-        if (dto.getAddress() != null) {
-            AddressDTO addrDTO = dto.getAddress();
-            Address address = new Address();
-            address.setAddress(addrDTO.getAddress());
-            address.setLandmark(addrDTO.getLandmark());
-            address.setState(addrDTO.getState());
-            address.setDistrict(addrDTO.getDistrict());
-            enquiry.setAddress(address);
-        } else {
-            enquiry.setAddress(null);
+    public Enquiry createEnquiry(Enquiry enquiry, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "POST")) {
+            throw new AccessDeniedException("No permission to create Enquiry");
         }
 
-        return enquiry;
-    }
-
-    // Entity to DTO
-    private EnquiryDTO toDTO(Enquiry enquiry) {
-        EnquiryDTO dto = new EnquiryDTO();
-        dto.setName(enquiry.getName());
-        dto.setPhoneNo(enquiry.getPhone_no()); // updated
-        dto.setEmail(enquiry.getEmail());
-        dto.setBatch(enquiry.getBatch());
-        dto.setSourceBy(enquiry.getSourceby()); // updated
-        dto.setConducts(enquiry.getConducts());
-        dto.setStatus(enquiry.getStatus());
-        dto.setEnquiryDate(enquiry.getEnquiry_date()); // updated
-        dto.setRemark(enquiry.getRemark());
-        dto.setDob(enquiry.getDob());
-        dto.setGender(enquiry.getGender());
-        dto.setMotherTounge(enquiry.getMothertounge()); // updated
-        dto.setFatherProfession(enquiry.getFatherprofession()); // updated
-        dto.setEducationQualification(enquiry.getEducationqualification()); // updated
-        dto.setAnnualIncome(enquiry.getAnnualincome()); // updated
-        dto.setPhotoUrl(enquiry.getPhotoUrl());
-
-        if (enquiry.getAddress() != null) {
-            Address address = enquiry.getAddress();
-            AddressDTO addressDTO = new AddressDTO();
-            addressDTO.setAddress(address.getAddress());
-            addressDTO.setLandmark(address.getLandmark());
-            addressDTO.setState(address.getState());
-            addressDTO.setDistrict(address.getDistrict());
-            dto.setAddress(addressDTO);
-        } else {
-            dto.setAddress(null);
+        String branchCode = permissionService.fetchBranchCode(role, email);
+        if (image != null && !image.isEmpty()) {
+            enquiry.setPhotoUrl(image.getOriginalFilename());
         }
 
-        return dto;
+        enquiry.setCreatedByEmail(email);
+        enquiry.setRole(role);
+        enquiry.setBranchCode(branchCode);
+
+        return repository.save(enquiry);
     }
+
     @Override
-    public Page<EnquiryDTO> getAllEnquiries(EnquiryFilterDTO filterDTO, Pageable pageable) {
-        Specification<Enquiry> spec = Specification.where(null);
-
-        if (filterDTO != null) {
-            if (filterDTO.getName() != null && !filterDTO.getName().isBlank()) {
-                spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + filterDTO.getName().toLowerCase() + "%"));
-            }
-            if (filterDTO.getStatus() != null && !filterDTO.getStatus().isBlank()) {
-                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("status")), filterDTO.getStatus().toLowerCase()));
-            }
-            if (filterDTO.getBatch() != null && !filterDTO.getBatch().isBlank()) {
-                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("batch")), filterDTO.getBatch().toLowerCase()));
-            }
-            if (filterDTO.getEmail() != null && !filterDTO.getEmail().isBlank()) {
-                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("email")), filterDTO.getEmail().toLowerCase()));
-            }
-            if (filterDTO.getGender() != null && !filterDTO.getGender().isBlank()) {
-                spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("gender")), filterDTO.getGender().toLowerCase()));
-            }
+    public List<Enquiry> getAllEnquiries(String role, String email) {
+        if (!permissionService.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view Enquiries");
         }
 
-        Page<Enquiry> enquiryPage = enquiryRepository.findAll(spec, pageable);
-        return enquiryPage.map(this::toDTO);
+        String branchCode = permissionService.fetchBranchCode(role, email);
+        return repository.findAllByBranchCode(branchCode);
     }
 
+    @Override
+    public Enquiry getEnquiryById(Long id, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view Enquiry");
+        }
+
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enquiry not found"));
+    }
+
+    @Override
+    public Enquiry updateEnquiry(Long id, Enquiry enquiry, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("No permission to update Enquiry");
+        }
+
+        Enquiry existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enquiry not found"));
+
+        existing.setName(enquiry.getName() != null ? enquiry.getName() : existing.getName());
+        existing.setPhone_no(enquiry.getPhone_no() != null ? enquiry.getPhone_no() : existing.getPhone_no());
+        existing.setEmail(enquiry.getEmail() != null ? enquiry.getEmail() : existing.getEmail());
+        existing.setBatch(enquiry.getBatch() != null ? enquiry.getBatch() : existing.getBatch());
+        existing.setSourceby(enquiry.getSourceby() != null ? enquiry.getSourceby() : existing.getSourceby());
+        existing.setConducts(enquiry.getConducts() != null ? enquiry.getConducts() : existing.getConducts());
+        existing.setStatus(enquiry.getStatus() != null ? enquiry.getStatus() : existing.getStatus());
+        existing.setEnquiry_date(enquiry.getEnquiry_date() != null ? enquiry.getEnquiry_date() : existing.getEnquiry_date());
+        existing.setRemark(enquiry.getRemark() != null ? enquiry.getRemark() : existing.getRemark());
+        existing.setDob(enquiry.getDob() != null ? enquiry.getDob() : existing.getDob());
+        existing.setGender(enquiry.getGender() != null ? enquiry.getGender() : existing.getGender());
+        existing.setMothertounge(enquiry.getMothertounge() != null ? enquiry.getMothertounge() : existing.getMothertounge());
+        existing.setFatherprofession(enquiry.getFatherprofession() != null ? enquiry.getFatherprofession() : existing.getFatherprofession());
+        existing.setEducationqualification(enquiry.getEducationqualification() != null ? enquiry.getEducationqualification() : existing.getEducationqualification());
+        existing.setAnnualincome(enquiry.getAnnualincome() != null ? enquiry.getAnnualincome() : existing.getAnnualincome());
+        existing.setAddress(enquiry.getAddress() != null ? enquiry.getAddress() : existing.getAddress());
+
+        if (image != null && !image.isEmpty()) {
+            existing.setPhotoUrl(image.getOriginalFilename());
+        }
+
+        return repository.save(existing);
+    }
+
+    @Override
+    public void deleteEnquiry(Long id, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("No permission to delete Enquiry");
+        }
+
+        repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enquiry not found"));
+
+        repository.deleteById(id);
+    }
 }

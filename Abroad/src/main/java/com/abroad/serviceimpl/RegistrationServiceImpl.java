@@ -6,9 +6,12 @@ import com.abroad.entity.Registration;
 import com.abroad.repository.ContinentRepository;
 import com.abroad.repository.CourseRepository;
 import com.abroad.repository.RegistrationRepository;
+import com.abroad.service.PermissionService;
 import com.abroad.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,73 +19,83 @@ import java.util.Optional;
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
     @Autowired
-    private RegistrationRepository registrationRepository;
-    @Autowired
-    private ContinentRepository continentRepository;
+    private RegistrationRepository repository;
 
     @Autowired
-    private CourseRepository courseRepository;
+    private PermissionService permissionService;
 
     @Override
-    public Registration saveRegistration(Registration registration) {
-        Long continentId = registration.getContinent() != null ? registration.getContinent().getId() : null;
-        Long courseId = registration.getCourse() != null ? registration.getCourse().getId() : null;
-
-        if (continentId != null) {
-            registration.setContinent(continentRepository.findById(continentId)
-                    .orElseThrow(() -> new RuntimeException("Continent not found with id: " + continentId)));
+    public Registration createRegistration(Registration registration, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "POST")) {
+            throw new AccessDeniedException("No permission to create Registration");
         }
 
-        if (courseId != null) {
-            registration.setCourse(courseRepository.findById(courseId)
-                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId)));
+        String branchCode = permissionService.fetchBranchCode(role, email);
+
+        if (image != null && !image.isEmpty()) {
+            registration.setImage(image.getOriginalFilename());
         }
 
-        return registrationRepository.save(registration);
-    }
+        registration.setCreatedByEmail(email);
+        registration.setRole(role);
+        registration.setBranchCode(branchCode);
 
-
-    @Override
-    public List<Registration> getAllRegistrations() {
-        return registrationRepository.findAll();
-    }
-
-    @Override
-    public Optional<Registration> getRegistrationById(Long id) {
-        return registrationRepository.findById(id);
+        return repository.save(registration);
     }
 
     @Override
-    public Registration updateRegistration(Long id, Registration updated) {
-        Registration existing = registrationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registration not found with id: " + id));
-
-        existing.setFirstName(updated.getFirstName());
-        existing.setLastName(updated.getLastName());
-        existing.setMobileNumber(updated.getMobileNumber());
-        existing.setEmail(updated.getEmail());
-        existing.setPassword(updated.getPassword());
-
-        // Get and set Continent if present
-        if (updated.getContinent() != null && updated.getContinent().getId() != null) {
-            Continent continent = continentRepository.findById(updated.getContinent().getId())
-                    .orElseThrow(() -> new RuntimeException("Continent not found"));
-            existing.setContinent(continent);
+    public List<Registration> getAllRegistrations(String role, String email) {
+        if (!permissionService.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view Registrations");
         }
 
-        // Get and set Course if present
-        if (updated.getCourse() != null && updated.getCourse().getId() != null) {
-            Course course = courseRepository.findById(updated.getCourse().getId())
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
-            existing.setCourse(course);
-        }
-
-        return registrationRepository.save(existing);
+        String branchCode = permissionService.fetchBranchCode(role, email);
+        return repository.findAllByBranchCode(branchCode);
     }
 
     @Override
-    public void deleteRegistration(Long id) {
-        registrationRepository.deleteById(id);
+    public Registration getRegistrationById(Long id, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "GET")) {
+            throw new AccessDeniedException("No permission to view Registration");
+        }
+
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
     }
 
+    @Override
+    public Registration updateRegistration(Long id, Registration registration, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "PUT")) {
+            throw new AccessDeniedException("No permission to update Registration");
+        }
+
+        Registration existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+
+        existing.setFirstName(registration.getFirstName() != null ? registration.getFirstName() : existing.getFirstName());
+        existing.setLastName(registration.getLastName() != null ? registration.getLastName() : existing.getLastName());
+        existing.setMobileNumber(registration.getMobileNumber() != null ? registration.getMobileNumber() : existing.getMobileNumber());
+        existing.setEmail(registration.getEmail() != null ? registration.getEmail() : existing.getEmail());
+        existing.setPassword(registration.getPassword() != null ? registration.getPassword() : existing.getPassword());
+        existing.setContinent(registration.getContinent() != null ? registration.getContinent() : existing.getContinent());
+        existing.setCourse(registration.getCourse() != null ? registration.getCourse() : existing.getCourse());
+
+        if (image != null && !image.isEmpty()) {
+            existing.setImage(image.getOriginalFilename());
+        }
+
+        return repository.save(existing);
+    }
+
+    @Override
+    public void deleteRegistration(Long id, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "DELETE")) {
+            throw new AccessDeniedException("No permission to delete Registration");
+        }
+
+        repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+
+        repository.deleteById(id);
+    }
 }

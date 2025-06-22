@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Entity
@@ -24,10 +25,17 @@ public class Footer {
     private String facebookLink;
     private String twitterLink;
     private String youtubeLink;
-
     private String whatsappLink;
 
     private String email;
     private String mobileNumber;
     private String address;
+
+    private String image; // Optional image upload (e.g., logo)
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
+
 }

@@ -1,6 +1,7 @@
 package com.abroad.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.sql.Date;
@@ -16,6 +17,7 @@ public class Enquiry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private Long phone_no;
     private String email;
@@ -31,10 +33,17 @@ public class Enquiry {
     private String fatherprofession;
     private String educationqualification;
     private Long annualincome;
+
     @Column(name = "photo_url")
     private String photoUrl;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
+    @Email
+    private String createdByEmail;
+    private String role;
+    private String branchCode;
+
 }

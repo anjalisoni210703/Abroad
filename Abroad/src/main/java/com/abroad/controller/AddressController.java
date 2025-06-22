@@ -1,7 +1,7 @@
 package com.abroad.controller;
 
-import com.abroad.entity.Contact;
-import com.abroad.service.ContactService;
+import com.abroad.entity.Address;
+import com.abroad.service.AddressService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -15,12 +15,12 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "https://pjsofttech.in")
-public class ContactController {
+public class AddressController {
     @Autowired
-    private ContactService service;
+    private AddressService service;
 
-    @PostMapping("/createContact")
-    public ResponseEntity<Contact> createContact(@RequestPart("contact") String contactJson,
+    @PostMapping("/createAddress")
+    public ResponseEntity<Address> createAddress(@RequestPart("address") String addressJson,
                                                  @RequestParam(value = "image", required = false) MultipartFile image,
                                                  @RequestParam String role,
                                                  @RequestParam String email) throws JsonProcessingException {
@@ -28,39 +28,38 @@ public class ContactController {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        Contact contact = mapper.readValue(contactJson, Contact.class);
-        return ResponseEntity.ok(service.createContact(contact, image, role, email));
+        Address address = mapper.readValue(addressJson, Address.class);
+        return ResponseEntity.ok(service.createAddress(address, image, role, email));
     }
 
-    @PutMapping("/updateContact/{id}")
-    public ResponseEntity<Contact> updateContact(@PathVariable Long id,
-                                                 @RequestPart("contact") String contactJson,
+    @PutMapping("/updateAddress/{id}")
+    public ResponseEntity<Address> updateAddress(@PathVariable Long id,
+                                                 @RequestPart("address") String addressJson,
                                                  @RequestParam(value = "image", required = false) MultipartFile image,
                                                  @RequestParam String role,
                                                  @RequestParam String email) throws JsonProcessingException {
-        Contact contact = new ObjectMapper().readValue(contactJson, Contact.class);
-        return ResponseEntity.ok(service.updateContact(id, contact, image, role, email));
+        Address address = new ObjectMapper().readValue(addressJson, Address.class);
+        return ResponseEntity.ok(service.updateAddress(id, address, image, role, email));
     }
 
-    @GetMapping("/getAllContacts")
-    public ResponseEntity<List<Contact>> getAllContacts(@RequestParam String role,
-                                                        @RequestParam String email) {
-        return ResponseEntity.ok(service.getAllContacts(role, email));
+    @GetMapping("/getAllAddresses")
+    public ResponseEntity<List<Address>> getAllAddresses(@RequestParam String role,
+                                                         @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllAddresses(role, email));
     }
 
-    @GetMapping("/getContactById/{id}")
-    public ResponseEntity<Contact> getContactById(@PathVariable Long id,
+    @GetMapping("/getAddressById/{id}")
+    public ResponseEntity<Address> getAddressById(@PathVariable Long id,
                                                   @RequestParam String role,
                                                   @RequestParam String email) {
-        return ResponseEntity.ok(service.getContactById(id, role, email));
+        return ResponseEntity.ok(service.getAddressById(id, role, email));
     }
 
-    @DeleteMapping("/deleteContact/{id}")
-    public ResponseEntity<String> deleteContact(@PathVariable Long id,
+    @DeleteMapping("/deleteAddress/{id}")
+    public ResponseEntity<String> deleteAddress(@PathVariable Long id,
                                                 @RequestParam String role,
                                                 @RequestParam String email) {
-        service.deleteContact(id, role, email);
-        return ResponseEntity.ok("Contact deleted successfully");
+        service.deleteAddress(id, role, email);
+        return ResponseEntity.ok("Address deleted successfully");
     }
-
 }
