@@ -58,6 +58,7 @@ public class PermissionServiceImpl implements PermissionService {
         };
     }
 
+    @Override
     public String fetchBranchCode(String role, String email) {
         String endpoint = switch (role.toLowerCase()) {
             case "branch" -> "/branch/getbranchcode";
