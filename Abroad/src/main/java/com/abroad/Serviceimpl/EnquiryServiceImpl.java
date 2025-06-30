@@ -4,12 +4,15 @@ import com.abroad.Entity.AbroadEnquiry;
 import com.abroad.Repository.*;
 import com.abroad.Service.PermissionService;
 import com.abroad.Service.S3Service;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -59,6 +62,7 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
             throw new RuntimeException("Failed to upload enquiry image", e);
         }
 
+        abroadEnquiry.setEnquiry_date(LocalDate.now());
         abroadEnquiry.setCreatedByEmail(email);
         abroadEnquiry.setRole(role);
         abroadEnquiry.setBranchCode(branchCode);
@@ -120,7 +124,13 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         existing.setEmail(abroadEnquiry.getEmail() != null ? abroadEnquiry.getEmail() : existing.getEmail());
         existing.setEnquiry_date(abroadEnquiry.getEnquiry_date() != null ? abroadEnquiry.getEnquiry_date() : existing.getEnquiry_date());
         existing.setAddress(abroadEnquiry.getAddress() != null ? abroadEnquiry.getAddress() : existing.getAddress());
-
+        existing.setPercentage(abroadEnquiry.getPercentage()!=0 ? abroadEnquiry.getPercentage():existing.getPercentage());
+        existing.setState(abroadEnquiry.getState() != null ? abroadEnquiry.getState() : existing.getState());
+        existing.setPassoutYear(abroadEnquiry.getPassoutYear() !=null ? abroadEnquiry.getPassoutYear() : existing.getPassoutYear());
+        existing.setFathersIncome(abroadEnquiry.getFathersIncome() !=0 ? abroadEnquiry.getFathersIncome():existing.getFathersIncome());
+        existing.setFathersOccupation(abroadEnquiry.getFathersOccupation() != null? abroadEnquiry.getFathersOccupation():existing.getFathersOccupation());
+        existing.setGender(abroadEnquiry.getGender()!=null ? abroadEnquiry.getGender():existing.getGender());
+        existing.setDob(abroadEnquiry.getDob()!=null ? abroadEnquiry.getDob():existing.getDob());
         try {
             if (image != null && !image.isEmpty()) {
                 // Delete old image if exists

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -22,7 +23,7 @@ public class AbroadEnquiry {
     private String name;
     private Long phone_no;
     private String email;
-    private Date enquiry_date;
+    private LocalDate enquiry_date;
     private String address;
     private String landmark;
     private String state;
@@ -34,7 +35,13 @@ public class AbroadEnquiry {
     private String stream;
     private String university;
     private String collage;
-
+    private double percentage;
+    private String status;
+    private String passoutYear;
+    private double fathersIncome;
+    private String fathersOccupation;
+    private String gender;
+    private Date dob;
     @Email
     private String createdByEmail;
     private String role;
