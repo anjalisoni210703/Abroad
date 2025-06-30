@@ -38,6 +38,7 @@ public class AbroadEnquiry {
     private double percentage;
     private String status;
     private String passoutYear;
+    private String passoutCourse;
     private double fathersIncome;
     private String fathersOccupation;
     private String gender;
