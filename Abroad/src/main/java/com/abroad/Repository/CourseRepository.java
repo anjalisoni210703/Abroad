@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<AbroadCourse, Long> {
     @Query("SELECT c FROM AbroadCourse c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
@@ -14,4 +15,7 @@ public interface CourseRepository extends JpaRepository<AbroadCourse, Long> {
     @Query("SELECT c FROM AbroadCourse c WHERE c.branchCode = :branchCode AND c.abroadStream.id = :streamId ORDER BY c.id DESC")
     List<AbroadCourse> findAllByBranchCodeAndStreamId(@Param("branchCode") String branchCode,
                                                       @Param("streamId") Long streamId);
+
+    Optional<AbroadCourse> findByCourseNameIgnoreCase(String courseName);
+
 }

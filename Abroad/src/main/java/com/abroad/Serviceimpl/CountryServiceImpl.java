@@ -44,13 +44,17 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<AbroadCountry> getAllCountries(String role, String email, String branchCode) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Countries");
-        }
+    public List<AbroadCountry> getAllCountries(String role, String email, String branchCode, Long continentId) {
+        if (!permissionService.hasPermission(role, email, "GET"))
+            throw new AccessDeniedException("No permission to view countries");
 
-        return countryRepository.findAllByBranchCode(branchCode);
+        if (continentId != null) {
+            return countryRepository.findAllByBranchCodeAndContinent(branchCode, continentId);
+        } else {
+            return countryRepository.findAllByBranchCode(branchCode);
+        }
     }
+
 
     @Override
     public AbroadCountry getCountryById(Long id, String role, String email, String branchCode) {

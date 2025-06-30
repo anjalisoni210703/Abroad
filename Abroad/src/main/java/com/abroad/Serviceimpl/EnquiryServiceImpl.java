@@ -1,7 +1,7 @@
 package com.abroad.Serviceimpl;
 
 import com.abroad.Entity.AbroadEnquiry;
-import com.abroad.Repository.EnquiryRepository;
+import com.abroad.Repository.*;
 import com.abroad.Service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,6 +18,25 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private ContinentRepository continentRepository;
+
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @Autowired
+    private UniversityRepository universityRepository;
+
+    @Autowired
+    private CollegeRepository collegeRepository;
+
+    @Autowired
+    private StreamRepository streamRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
+
+
     @Override
     public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email) {
         if (!permissionService.hasPermission(role, email, "POST")) {
@@ -25,6 +44,7 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         }
 
         String branchCode = permissionService.fetchBranchCode(role, email);
+
         if (image != null && !image.isEmpty()) {
             abroadEnquiry.setPhotoUrl(image.getOriginalFilename());
         }
@@ -33,8 +53,28 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         abroadEnquiry.setRole(role);
         abroadEnquiry.setBranchCode(branchCode);
 
+        // ✅ Resolve and set related entities by name
+        continentRepository.findByContinentnameIgnoreCase(abroadEnquiry.getContinent())
+                .ifPresent(abroadEnquiry::setAbroadContinent);
+
+        countryRepository.findByCountryIgnoreCase(abroadEnquiry.getCountry())
+                .ifPresent(abroadEnquiry::setAbroadCountry);
+
+        universityRepository.findByUniversityNameIgnoreCase(abroadEnquiry.getUniversity())
+                .ifPresent(abroadEnquiry::setAbroadUniversity);
+
+        collegeRepository.findByCollegeNameIgnoreCase(abroadEnquiry.getCollage())
+                .ifPresent(abroadEnquiry::setAbroadCollege);
+
+        streamRepository.findByNameIgnoreCase(abroadEnquiry.getStream())
+                .ifPresent(abroadEnquiry::setAbroadStream);
+
+        courseRepository.findByCourseNameIgnoreCase(abroadEnquiry.getCourse())
+                .ifPresent(abroadEnquiry::setAbroadCourse);
+
         return repository.save(abroadEnquiry);
     }
+
 
     @Override
     public List<AbroadEnquiry> getAllEnquiries(String role, String email) {

@@ -44,9 +44,10 @@ public class BlogController {
     }
 
     @GetMapping("/getAllBlogs")
-    public ResponseEntity<List<AbroadBlog>> getAllBlogs(@RequestParam String role,
-                                                        @RequestParam String email) {
-        return ResponseEntity.ok(service.getAllBlogs(role, email));
+    public ResponseEntity<List<AbroadBlog>> getAllBlogsByBranchCode(@RequestParam String branchCode,
+                                                                    @RequestParam String role,
+                                                                    @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllBlogsByBranchCode(branchCode, role, email));
     }
 
     @GetMapping("/getBlogById/{id}")

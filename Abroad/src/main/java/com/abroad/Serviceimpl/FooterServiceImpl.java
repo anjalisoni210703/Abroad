@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FooterServiceImpl implements FooterService {
@@ -26,6 +27,13 @@ public class FooterServiceImpl implements FooterService {
         }
 
         String branchCode = permissionService.fetchBranchCode(role, email);
+
+        // ❗ Enforce unique footer per branch code
+        Optional<AbroadFooter> existing = repository.findByBranchCode(branchCode);
+        if (existing.isPresent()) {
+            throw new RuntimeException("Footer already exists for this branch");
+        }
+
         if (image != null && !image.isEmpty()) {
             abroadFooter.setImage(image.getOriginalFilename());
         }
@@ -38,14 +46,13 @@ public class FooterServiceImpl implements FooterService {
     }
 
     @Override
-    public List<AbroadFooter> getAllFooters(String role, String email) {
+    public List<AbroadFooter> getFootersByBranchCode(String branchCode, String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Footers");
+            throw new AccessDeniedException("No permission to view Footers by branch");
         }
-
-        String branchCode = permissionService.fetchBranchCode(role, email);
         return repository.findAllByBranchCode(branchCode);
     }
+
 
     @Override
     public AbroadFooter getFooterById(Long id, String role, String email) {

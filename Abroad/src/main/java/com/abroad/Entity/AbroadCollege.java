@@ -25,6 +25,10 @@ public class AbroadCollege {
     @JsonIgnore
     private AbroadUniversity abroadUniversity;
 
+    @OneToMany
+    @JsonIgnore
+    private List<AbroadEnquiry> abroadEnquiries;
+
     @OneToMany(mappedBy = "abroadCollege",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<AbroadStream> abroadStreams;

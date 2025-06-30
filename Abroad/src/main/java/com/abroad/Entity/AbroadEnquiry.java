@@ -31,6 +31,9 @@ public class AbroadEnquiry {
     private String country;
     private String course;
     private String photoUrl;
+    private String stream;
+    private String university;
+    private String collage;
 
     @Email
     private String createdByEmail;
@@ -46,5 +49,25 @@ public class AbroadEnquiry {
     @JoinColumn(name = "stream_id")
     @JsonIgnore
     private AbroadStream abroadStream;
+
+    @ManyToOne
+    @JoinColumn(name = "continent_id")
+    @JsonIgnore
+    private AbroadContinent abroadContinent;
+
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    @JsonIgnore
+    private AbroadCountry abroadCountry;
+
+    @ManyToOne
+    @JoinColumn(name = "university_id")
+    @JsonIgnore
+    private AbroadUniversity abroadUniversity;
+
+    @ManyToOne
+    @JoinColumn(name = "college_id")
+    @JsonIgnore
+    private AbroadCollege abroadCollege;
 
 }

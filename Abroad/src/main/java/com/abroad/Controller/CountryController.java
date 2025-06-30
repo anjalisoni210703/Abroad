@@ -37,8 +37,9 @@ public class CountryController {
     @GetMapping("/getAllCountries")
     public ResponseEntity<List<AbroadCountry>> getAllCountries(@RequestParam String role,
                                                                @RequestParam String email,
-                                                               @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getAllCountries(role, email, branchCode));
+                                                               @RequestParam String branchCode,
+                                                               @RequestParam(required = false) Long continentId) {
+        return ResponseEntity.ok(service.getAllCountries(role, email, branchCode, continentId));
     }
 
     @GetMapping("/getCountryById/{id}")

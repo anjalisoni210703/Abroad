@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AboutUsServiceImpl implements AboutUsService {
@@ -20,22 +21,27 @@ public class AboutUsServiceImpl implements AboutUsService {
     @Autowired
     private PermissionService permissionService;
 
-        @Override
-        public AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image, String role, String email) {
-            if (!permissionService.hasPermission(role, email, "POST")) {
-                throw new AccessDeniedException("No permission to create AboutUs");
-            }
-
-            String branchCode = permissionService.fetchBranchCode(role, email);
-            String imageName = image != null ? image.getOriginalFilename() : null;
-
-            abroadAboutUs.setAboutUsImage(imageName);
-            abroadAboutUs.setCreatedByEmail(email);
-            abroadAboutUs.setRole(role);
-            abroadAboutUs.setBranchCode(branchCode);
-
-            return repository.save(abroadAboutUs);
+    @Override
+    public AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image, String role, String email) {
+        if (!permissionService.hasPermission(role, email, "POST")) {
+            throw new AccessDeniedException("No permission to create AboutUs");
         }
+
+        String branchCode = permissionService.fetchBranchCode(role, email);
+
+        Optional<AbroadAboutUs> existing = repository.findByBranchCode(branchCode);
+        if (existing.isPresent()) {
+            throw new RuntimeException("AboutUs already exists for this branch");
+        }
+
+        String imageName = image != null ? image.getOriginalFilename() : null;
+        abroadAboutUs.setAboutUsImage(imageName);
+        abroadAboutUs.setCreatedByEmail(email);
+        abroadAboutUs.setRole(role);
+        abroadAboutUs.setBranchCode(branchCode);
+
+        return repository.save(abroadAboutUs);
+    }
 
     @Override
     public List<AbroadAboutUs> getAllAboutUs(String role, String email, String branchCode) {

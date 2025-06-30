@@ -39,14 +39,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<AbroadBlog> getAllBlogs(String role, String email) {
+    public List<AbroadBlog> getAllBlogsByBranchCode(String branchCode, String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Blogs");
+            throw new AccessDeniedException("No permission to view Blogs by branch code");
         }
-
-        String branchCode = permissionService.fetchBranchCode(role, email);
         return repository.findAllByBranchCode(branchCode);
     }
+
 
     @Override
     public AbroadBlog getBlogById(Long id, String role, String email) {

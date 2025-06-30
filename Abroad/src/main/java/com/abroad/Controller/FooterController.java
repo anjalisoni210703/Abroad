@@ -43,9 +43,10 @@ public class FooterController {
     }
 
     @GetMapping("/getAllFooters")
-    public ResponseEntity<List<AbroadFooter>> getAllFooters(@RequestParam String role,
-                                                            @RequestParam String email) {
-        return ResponseEntity.ok(service.getAllFooters(role, email));
+    public ResponseEntity<List<AbroadFooter>> getFootersByBranchCode(@RequestParam String branchCode,
+                                                                     @RequestParam String role,
+                                                                     @RequestParam String email) {
+        return ResponseEntity.ok(service.getFootersByBranchCode(branchCode, role, email));
     }
 
     @GetMapping("/getFooterById/{id}")

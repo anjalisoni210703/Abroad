@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface StreamRepository extends JpaRepository<AbroadStream, Long> {
@@ -15,4 +16,7 @@ public interface StreamRepository extends JpaRepository<AbroadStream, Long> {
     @Query("SELECT s FROM AbroadStream s WHERE s.branchCode = :branchCode AND s.abroadCollege.id = :collegeId ORDER BY s.id DESC")
     List<AbroadStream> findAllByBranchCodeAndCollegeId(@Param("branchCode") String branchCode,
                                                        @Param("collegeId") Long collegeId);
+
+    Optional<AbroadStream> findByNameIgnoreCase(String name);
+
 }

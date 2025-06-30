@@ -25,6 +25,10 @@ public class AbroadContinent {
     @JsonIgnore
     private List<AbroadCountry> abroadCountries;
 
+    @OneToMany(mappedBy = "abroadContinent",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbroadEnquiry> abroadEnquiries;
+
     @Email
     private String createdByEmail;
     private String role;

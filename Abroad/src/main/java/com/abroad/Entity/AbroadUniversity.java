@@ -31,6 +31,10 @@ public class AbroadUniversity {
     @JsonIgnore
     private List<AbroadCollege> abroadColleges;
 
+    @OneToMany(mappedBy = "abroadUniversity",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbroadEnquiry> abroadEnquiries;
+
     @ManyToOne
     @JoinColumn(name = "country_id")
     @JsonIgnore

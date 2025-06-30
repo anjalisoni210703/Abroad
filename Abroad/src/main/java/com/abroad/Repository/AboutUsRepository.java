@@ -7,9 +7,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AboutUsRepository extends JpaRepository<AbroadAboutUs, Integer> {
     @Query("SELECT a FROM AbroadAboutUs a WHERE a.branchCode = :branchCode ORDER BY a.id DESC")
     List<AbroadAboutUs> findAllByBranchCode(@Param("branchCode") String branchCode);
+
+    Optional<AbroadAboutUs> findByBranchCode(String branchCode);
+
 }
