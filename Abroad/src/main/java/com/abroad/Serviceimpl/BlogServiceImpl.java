@@ -3,9 +3,11 @@ package com.abroad.Serviceimpl;
 import com.abroad.Entity.AbroadBlog;
 import com.abroad.Repository.BlogRepository;
 import com.abroad.Service.BlogService;
+import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.abroad.Service.PermissionService;
@@ -20,6 +22,10 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private S3Service s3Service;
+
+
     @Override
     public AbroadBlog createBlog(AbroadBlog abroadBlog, MultipartFile image, String role, String email) {
         if (!permissionService.hasPermission(role, email, "POST")) {
@@ -27,13 +33,19 @@ public class BlogServiceImpl implements BlogService {
         }
 
         String branchCode = permissionService.fetchBranchCode(role, email);
+
+        try {
+            if (image != null && !image.isEmpty()) {
+                String imageUrl = s3Service.uploadImage(image, branchCode);
+                abroadBlog.setImage(imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload blog image", e);
+        }
+
         abroadBlog.setCreatedByEmail(email);
         abroadBlog.setRole(role);
         abroadBlog.setBranchCode(branchCode);
-
-        if (image != null && !image.isEmpty()) {
-            abroadBlog.setImage(image.getOriginalFilename());
-        }
 
         return repository.save(abroadBlog);
     }
@@ -68,8 +80,17 @@ public class BlogServiceImpl implements BlogService {
 
         existing.setBlog(abroadBlog.getBlog() != null ? abroadBlog.getBlog() : existing.getBlog());
 
-        if (image != null && !image.isEmpty()) {
-            existing.setImage(image.getOriginalFilename());
+        try {
+            if (image != null && !image.isEmpty()) {
+                if (existing.getImage() != null) {
+                    s3Service.deleteImage(existing.getImage());
+                }
+
+                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                existing.setImage(newImageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update blog image", e);
         }
 
         return repository.save(existing);
@@ -81,8 +102,12 @@ public class BlogServiceImpl implements BlogService {
             throw new AccessDeniedException("No permission to delete Blog");
         }
 
-        repository.findById(id)
+        AbroadBlog existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+        if (existing.getImage() != null) {
+            s3Service.deleteImage(existing.getImage());
+        }
 
         repository.deleteById(id);
     }

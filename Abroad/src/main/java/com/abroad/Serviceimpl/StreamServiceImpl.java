@@ -5,6 +5,7 @@ import com.abroad.Entity.AbroadStream;
 import com.abroad.Repository.CollegeRepository;
 import com.abroad.Repository.StreamRepository;
 import com.abroad.Service.PermissionService;
+import com.abroad.Service.S3Service;
 import com.abroad.Service.StreamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +13,23 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StreamServiceImpl  implements StreamService {
+public class StreamServiceImpl implements StreamService {
     @Autowired
-    private StreamRepository repository;
+    private  StreamRepository repository;
 
     @Autowired
-    private CollegeRepository collegeRepository;
-
+    private  CollegeRepository collegeRepository;
 
     @Autowired
-    private PermissionService permissionService;
+    private  PermissionService permissionService;
+
+    @Autowired
+    private S3Service s3Service;
 
     @Override
     public AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email, Long collegeId) {
@@ -34,12 +38,16 @@ public class StreamServiceImpl  implements StreamService {
         }
 
         String branchCode = permissionService.fetchBranchCode(role, email);
-
         AbroadCollege college = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new RuntimeException("College not found"));
 
         if (image != null && !image.isEmpty()) {
-            abroadStream.setImage(image.getOriginalFilename());
+            try {
+                String imageUrl = s3Service.uploadImage(image, branchCode);
+                abroadStream.setImage(imageUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload stream image", e);
+            }
         }
 
         abroadStream.setCreatedByEmail(email);
@@ -56,11 +64,9 @@ public class StreamServiceImpl  implements StreamService {
             throw new AccessDeniedException("No permission to view Streams");
         }
 
-        if (collegeId != null) {
-            return repository.findAllByBranchCodeAndCollegeId(branchCode, collegeId);
-        } else {
-            return repository.findAllByBranchCode(branchCode);
-        }
+        return (collegeId != null)
+                ? repository.findAllByBranchCodeAndCollegeId(branchCode, collegeId)
+                : repository.findAllByBranchCode(branchCode);
     }
 
     @Override
@@ -85,7 +91,15 @@ public class StreamServiceImpl  implements StreamService {
         existing.setName(abroadStream.getName() != null ? abroadStream.getName() : existing.getName());
 
         if (image != null && !image.isEmpty()) {
-            existing.setImage(image.getOriginalFilename());
+            try {
+                if (existing.getImage() != null) {
+                    s3Service.deleteImage(existing.getImage());
+                }
+                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                existing.setImage(newImageUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to update stream image", e);
+            }
         }
 
         return repository.save(existing);
@@ -97,10 +111,13 @@ public class StreamServiceImpl  implements StreamService {
             throw new AccessDeniedException("No permission to delete Stream");
         }
 
-        repository.findById(id)
+        AbroadStream existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Stream not found"));
+
+        if (existing.getImage() != null) {
+            s3Service.deleteImage(existing.getImage());
+        }
 
         repository.deleteById(id);
     }
-
 }

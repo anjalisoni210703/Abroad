@@ -4,11 +4,13 @@ import com.abroad.Entity.AbroadAboutUs;
 import com.abroad.Repository.AboutUsRepository;
 import com.abroad.Service.AboutUsService;
 import com.abroad.Service.PermissionService;
+import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,9 @@ public class AboutUsServiceImpl implements AboutUsService {
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private S3Service s3Service;
 
     @Override
     public AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image, String role, String email) {
@@ -34,8 +39,15 @@ public class AboutUsServiceImpl implements AboutUsService {
             throw new RuntimeException("AboutUs already exists for this branch");
         }
 
-        String imageName = image != null ? image.getOriginalFilename() : null;
-        abroadAboutUs.setAboutUsImage(imageName);
+        try {
+            if (image != null && !image.isEmpty()) {
+                String imageUrl = s3Service.uploadImage(image, branchCode);
+                abroadAboutUs.setAboutUsImage(imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image to S3", e);
+        }
+
         abroadAboutUs.setCreatedByEmail(email);
         abroadAboutUs.setRole(role);
         abroadAboutUs.setBranchCode(branchCode);
@@ -80,12 +92,26 @@ public class AboutUsServiceImpl implements AboutUsService {
         existing.setAboutUsTitle(abroadAboutUs.getAboutUsTitle() != null ? abroadAboutUs.getAboutUsTitle() : existing.getAboutUsTitle());
         existing.setAboutUsDescription(abroadAboutUs.getAboutUsDescription() != null ? abroadAboutUs.getAboutUsDescription() : existing.getAboutUsDescription());
 
+        // Handle image update
         if (image != null && !image.isEmpty()) {
-            existing.setAboutUsImage(image.getOriginalFilename());
+            try {
+                // Delete old image if exists
+                if (existing.getAboutUsImage() != null) {
+                    s3Service.deleteImage(existing.getAboutUsImage());
+                }
+
+                // Upload new image
+                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                existing.setAboutUsImage(newImageUrl);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to handle image update", e);
+            }
         }
 
         return repository.save(existing);
     }
+
 
     @Override
     public void deleteAboutUs(int id, String role, String email) {
@@ -93,8 +119,13 @@ public class AboutUsServiceImpl implements AboutUsService {
             throw new AccessDeniedException("No permission to delete AboutUs");
         }
 
-        repository.findById(id)
+        AbroadAboutUs existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("AboutUs not found"));
+
+        // Delete image from S3 if exists
+        if (existing.getAboutUsImage() != null) {
+            s3Service.deleteImage(existing.getAboutUsImage());
+        }
 
         repository.deleteById(id);
     }

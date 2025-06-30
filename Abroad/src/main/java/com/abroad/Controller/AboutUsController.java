@@ -35,11 +35,11 @@ public class AboutUsController {
 
     @PutMapping("/updateAboutUs/{id}")
     public ResponseEntity<AbroadAboutUs> updateAboutUs(@PathVariable int id,
-                                                       @RequestPart("aboutUs") String AboutUSJson,
+                                                       @RequestPart("aboutUs") String aboutUsJson,
                                                        @RequestParam(value = "image", required = false) MultipartFile image,
                                                        @RequestParam String role,
-                                                       @RequestParam String email)  throws JsonProcessingException {
-        AbroadAboutUs abroadAboutUs = new ObjectMapper().readValue(AboutUSJson, AbroadAboutUs.class);
+                                                       @RequestParam String email) throws JsonProcessingException {
+        AbroadAboutUs abroadAboutUs = new ObjectMapper().readValue(aboutUsJson, AbroadAboutUs.class);
         return ResponseEntity.ok(service.updateAboutUs(id, abroadAboutUs, image, role, email));
     }
 

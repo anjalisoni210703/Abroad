@@ -3,11 +3,13 @@ package com.abroad.Serviceimpl;
 import com.abroad.Entity.AbroadEnquiry;
 import com.abroad.Repository.*;
 import com.abroad.Service.PermissionService;
+import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -36,6 +38,9 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private S3Service s3Service;
+
 
     @Override
     public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email) {
@@ -45,15 +50,20 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
 
         String branchCode = permissionService.fetchBranchCode(role, email);
 
-        if (image != null && !image.isEmpty()) {
-            abroadEnquiry.setPhotoUrl(image.getOriginalFilename());
+        try {
+            if (image != null && !image.isEmpty()) {
+                String imageUrl = s3Service.uploadImage(image, branchCode);
+                abroadEnquiry.setPhotoUrl(imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload enquiry image", e);
         }
 
         abroadEnquiry.setCreatedByEmail(email);
         abroadEnquiry.setRole(role);
         abroadEnquiry.setBranchCode(branchCode);
 
-        // ✅ Resolve and set related entities by name
+        // Set foreign key mappings
         continentRepository.findByContinentnameIgnoreCase(abroadEnquiry.getContinent())
                 .ifPresent(abroadEnquiry::setAbroadContinent);
 
@@ -111,8 +121,17 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         existing.setEnquiry_date(abroadEnquiry.getEnquiry_date() != null ? abroadEnquiry.getEnquiry_date() : existing.getEnquiry_date());
         existing.setAddress(abroadEnquiry.getAddress() != null ? abroadEnquiry.getAddress() : existing.getAddress());
 
-        if (image != null && !image.isEmpty()) {
-            existing.setPhotoUrl(image.getOriginalFilename());
+        try {
+            if (image != null && !image.isEmpty()) {
+                // Delete old image if exists
+                if (existing.getPhotoUrl() != null) {
+                    s3Service.deleteImage(existing.getPhotoUrl());
+                }
+                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                existing.setPhotoUrl(newImageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update enquiry image", e);
         }
 
         return repository.save(existing);
@@ -124,8 +143,12 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
             throw new AccessDeniedException("No permission to delete Enquiry");
         }
 
-        repository.findById(id)
+        AbroadEnquiry existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Enquiry not found"));
+
+        if (existing.getPhotoUrl() != null) {
+            s3Service.deleteImage(existing.getPhotoUrl());
+        }
 
         repository.deleteById(id);
     }
