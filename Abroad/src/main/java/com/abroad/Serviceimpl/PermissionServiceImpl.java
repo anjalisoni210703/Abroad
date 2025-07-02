@@ -15,6 +15,9 @@ public class PermissionServiceImpl implements PermissionService {
     private StaffService staffService;
 
     @Autowired
+    private AbroadUserServiceImpl abroadUserService;
+
+    @Autowired
     public PermissionServiceImpl(WebClient webClient) {
         this.webClient = webClient;
     }
@@ -53,6 +56,16 @@ public class PermissionServiceImpl implements PermissionService {
                     default -> false;
                 };
             }
+            case "USER" -> {
+                Map<String, Object> perms = abroadUserService.getPermissionsByEmail(email);
+                yield switch (action.toUpperCase()) {
+                    case "GET" -> Boolean.TRUE.equals(perms.get("candGet"));
+                    case "POST" -> Boolean.TRUE.equals(perms.get("candPost"));
+                    case "PUT" -> Boolean.TRUE.equals(perms.get("candPut"));
+                    case "DELETE" -> Boolean.TRUE.equals(perms.get("candDelete"));
+                    default -> false;
+                };
+            }
 
             default -> false;
         };
@@ -63,6 +76,7 @@ public class PermissionServiceImpl implements PermissionService {
         String endpoint = switch (role.toLowerCase()) {
             case "branch" -> "/branch/getbranchcode";
             case "staff" -> "/staff/getbranchcode";
+            case "user" -> null;
             default -> throw new IllegalArgumentException("Invalid role: " + role);
         };
 

@@ -2,8 +2,10 @@ package com.abroad.Serviceimpl;
 
 import com.abroad.Entity.AbroadCollege;
 import com.abroad.Entity.AbroadStream;
+import com.abroad.Entity.AbroadUniversity;
 import com.abroad.Repository.CollegeRepository;
 import com.abroad.Repository.StreamRepository;
+import com.abroad.Repository.UniversityRepository;
 import com.abroad.Service.PermissionService;
 import com.abroad.Service.S3Service;
 import com.abroad.Service.StreamService;
@@ -19,27 +21,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StreamServiceImpl implements StreamService {
-    @Autowired
-    private  StreamRepository repository;
 
     @Autowired
-    private  CollegeRepository collegeRepository;
+    private StreamRepository repository;
 
     @Autowired
-    private  PermissionService permissionService;
+    private UniversityRepository universityRepository;
+
+    @Autowired
+    private PermissionService permissionService;
 
     @Autowired
     private S3Service s3Service;
 
     @Override
-    public AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email, Long collegeId) {
+    public AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email, Long universityId) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Stream");
         }
 
         String branchCode = permissionService.fetchBranchCode(role, email);
-        AbroadCollege college = collegeRepository.findById(collegeId)
-                .orElseThrow(() -> new RuntimeException("College not found"));
+        AbroadUniversity university = universityRepository.findById(universityId)
+                .orElseThrow(() -> new RuntimeException("University not found"));
 
         if (image != null && !image.isEmpty()) {
             try {
@@ -53,19 +56,19 @@ public class StreamServiceImpl implements StreamService {
         abroadStream.setCreatedByEmail(email);
         abroadStream.setRole(role);
         abroadStream.setBranchCode(branchCode);
-        abroadStream.setAbroadCollege(college);
+        abroadStream.setAbroadUniversity(university);
 
         return repository.save(abroadStream);
     }
 
     @Override
-    public List<AbroadStream> getAllStreams(String role, String email, String branchCode, Long collegeId) {
+    public List<AbroadStream> getAllStreams(String role, String email, String branchCode, Long universityId) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Streams");
         }
 
-        return (collegeId != null)
-                ? repository.findAllByBranchCodeAndCollegeId(branchCode, collegeId)
+        return (universityId != null)
+                ? repository.findAllByBranchCodeAndCollegeId(branchCode, universityId)
                 : repository.findAllByBranchCode(branchCode);
     }
 
@@ -121,3 +124,4 @@ public class StreamServiceImpl implements StreamService {
         repository.deleteById(id);
     }
 }
+

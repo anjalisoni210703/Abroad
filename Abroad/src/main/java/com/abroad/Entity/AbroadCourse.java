@@ -40,6 +40,10 @@ public class AbroadCourse {
         @JsonIgnore
         private List<AbroadEnquiry> abroadEnquiries;
 
+        @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
+        @JsonIgnore
+        private List<AbroadUser> abroadUsers;
+
         @Email
         private String createdByEmail;
         private String role;

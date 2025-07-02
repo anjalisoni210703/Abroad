@@ -27,9 +27,9 @@ public class AbroadUniversity {
     private String role;
     private String branchCode;
 
-    @OneToMany(mappedBy = "abroadUniversity", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbroadCollege> abroadColleges;
+//    @OneToMany(mappedBy = "abroadUniversity", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<AbroadCollege> abroadColleges;
 
     @OneToMany(mappedBy = "abroadUniversity",cascade = CascadeType.ALL)
     @JsonIgnore
@@ -39,4 +39,8 @@ public class AbroadUniversity {
     @JoinColumn(name = "country_id")
     @JsonIgnore
     private AbroadCountry abroadCountry;
+
+    @OneToMany(mappedBy = "abroadUniversity",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbroadStream> abroadStream;
 }

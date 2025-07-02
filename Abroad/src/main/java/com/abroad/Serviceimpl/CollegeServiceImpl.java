@@ -37,7 +37,7 @@ public class CollegeServiceImpl implements CollegeService {
         abroadCollege.setCreatedByEmail(email);
         abroadCollege.setRole(role);
         abroadCollege.setBranchCode(branchCode);
-        abroadCollege.setAbroadUniversity(university);
+//        abroadCollege.setAbroadUniversity(university);
 
         return repository.save(abroadCollege);
     }
@@ -75,7 +75,7 @@ public class CollegeServiceImpl implements CollegeService {
                 .orElseThrow(() -> new RuntimeException("College not found"));
 
         existing.setCollegeName(abroadCollege.getCollegeName() != null ? abroadCollege.getCollegeName() : existing.getCollegeName());
-        existing.setAbroadUniversity(abroadCollege.getAbroadUniversity() != null ? abroadCollege.getAbroadUniversity() : existing.getAbroadUniversity());
+//        existing.setAbroadUniversity(abroadCollege.getAbroadUniversity() != null ? abroadCollege.getAbroadUniversity() : existing.getAbroadUniversity());
 
         return repository.save(existing);
     }
