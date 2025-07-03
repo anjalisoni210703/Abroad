@@ -13,6 +13,8 @@ import com.abroad.Service.AbroadUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,19 +40,38 @@ public class AbroadUserServiceImpl implements AbroadUserService {
     private JwtService jwtService;
 
 
+    @Autowired
+    private WebClient webClient;
+
     @Override
-    public AbroadUser createUser(AbroadUser user) {
-        // Validate and set continent
+    public AbroadUser createUser(AbroadUser user, String email) {
+        // Fetch branch code using WebClient
+        String branchCode = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/branch/getbranchcode")
+                        .queryParam("email", email)
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();  // Blocking to get value synchronously
+
+        if (branchCode == null || branchCode.isEmpty()) {
+            throw new IllegalArgumentException("Branch code is required");
+        }
+
+        user.setBranchCode(branchCode);
+        user.setCreatedByEmail(email);
+
+        // Set continent
         AbroadContinent continent = continentRepository.findByContinentnameIgnoreCase(user.getContinent())
                 .orElseThrow(() -> new RuntimeException("Continent not found: " + user.getContinent()));
         user.setAbroadContinent(continent);
 
-        // Validate and set course
+        // Set course
         AbroadCourse course = courseRepository.findByCourseNameIgnoreCase(user.getCourse())
                 .orElseThrow(() -> new RuntimeException("Course not found: " + user.getCourse()));
         user.setAbroadCourse(course);
 
-        // Permissions (optional default logic)
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCansPost(true);
         user.setCansGet(true);
@@ -59,7 +80,6 @@ public class AbroadUserServiceImpl implements AbroadUserService {
 
         return userRepository.save(user);
     }
-
 
     @Override
     public AbroadUser updateUser(Long id, AbroadUser updatedUser) {
@@ -148,5 +168,11 @@ public class AbroadUserServiceImpl implements AbroadUserService {
 
         return permissions;
     }
+
+    @Override
+    public Optional<AbroadUser> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 
 }

@@ -14,12 +14,11 @@ public class WebConfig
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://pjsofttech.in","http://localhost:3000") // Or specific origins
+                        .allowedOrigins("https://wayabroad.in","http://localhost:3000")  // Allow all origins (Change "*" to specific origin for security)
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(false);
             }
         };
     }
-
 }

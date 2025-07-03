@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @RestController
-@CrossOrigin(origins = "https://pjsofttech.in")
+@CrossOrigin(origins = "https://wayabroad.in")
 public class RegistrationController {
     @Autowired
     private RegistrationService service;

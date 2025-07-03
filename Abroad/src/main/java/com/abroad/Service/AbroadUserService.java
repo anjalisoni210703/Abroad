@@ -6,9 +6,10 @@ import com.abroad.Entity.AbroadUser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface AbroadUserService {
-    AbroadUser createUser(AbroadUser user);
+    AbroadUser createUser(AbroadUser user, String email);
     AbroadUser updateUser(Long id, AbroadUser user);
     AbroadUser getUserById(Long id);
     List<AbroadUser> getAllUsers();
@@ -16,4 +17,6 @@ public interface AbroadUserService {
 
     LoginResponse login(AuthRequest loginRequest);
     Map<String, Object> getPermissionsByEmail(String email);
+    Optional<AbroadUser> getUserByEmail(String email);
+
 }

@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://pjsofttech.in")
+@CrossOrigin(origins = "https://wayabroad.in")
 public class AbroadUserController {
 
     @Autowired
     private AbroadUserService userService;
 
     @PostMapping("/createUser")
-    public ResponseEntity<AbroadUser> createUser(@RequestBody AbroadUser user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<AbroadUser> createUser(@RequestBody AbroadUser user,
+                                                 @RequestParam String email) {
+        return ResponseEntity.ok(userService.createUser(user, email));
     }
 
     @PutMapping("/updateUser/{id}")
@@ -40,4 +41,14 @@ public class AbroadUserController {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully.");
     }
+
+    @GetMapping("/getBranchCodeByUserEmail")
+    public ResponseEntity<String> getBranchCodeByUserEmail(@RequestParam String email) {
+        AbroadUser user = userService
+                .getUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        return ResponseEntity.ok(user.getBranchCode());
+    }
+
 }

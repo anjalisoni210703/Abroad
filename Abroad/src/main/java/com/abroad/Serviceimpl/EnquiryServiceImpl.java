@@ -77,8 +77,8 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         universityRepository.findByUniversityNameIgnoreCase(abroadEnquiry.getUniversity())
                 .ifPresent(abroadEnquiry::setAbroadUniversity);
 
-        collegeRepository.findByCollegeNameIgnoreCase(abroadEnquiry.getCollage())
-                .ifPresent(abroadEnquiry::setAbroadCollege);
+//        collegeRepository.findByCollegeNameIgnoreCase(abroadEnquiry.getCollage())
+//                .ifPresent(abroadEnquiry::setAbroadCollege);
 
         streamRepository.findByNameIgnoreCase(abroadEnquiry.getStream())
                 .ifPresent(abroadEnquiry::setAbroadStream);

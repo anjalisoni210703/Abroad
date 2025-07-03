@@ -1,5 +1,6 @@
 package com.abroad.Serviceimpl;
 
+import com.abroad.Entity.AbroadUser;
 import com.abroad.Service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,26 +74,36 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public String fetchBranchCode(String role, String email) {
-        String endpoint = switch (role.toLowerCase()) {
-            case "branch" -> "/branch/getbranchcode";
-            case "staff" -> "/staff/getbranchcode";
-            case "user" -> null;
-            default -> throw new IllegalArgumentException("Invalid role: " + role);
-        };
+        switch (role.toLowerCase()) {
+            case "branch":
+                return webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("/branch/getbranchcode")
+                                .queryParam("email", email)
+                                .build())
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
 
-        if (endpoint == null) {
-            return null;
+            case "staff":
+                return webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("/staff/getbranchcode")
+                                .queryParam("email", email)
+                                .build())
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+
+            case "user":
+                // Call directly from service since it's local
+                return abroadUserService.getUserByEmail(email)
+                        .map(AbroadUser::getBranchCode)
+                        .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+            default:
+                throw new IllegalArgumentException("Invalid role: " + role);
         }
-
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(endpoint)
-                        .queryParam("email", email)
-                        .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
     }
-
 
 }

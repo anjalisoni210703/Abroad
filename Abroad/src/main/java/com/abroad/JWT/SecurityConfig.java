@@ -41,14 +41,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
                 .cors(cors -> cors.configurationSource(request -> {
                     var config = new org.springframework.web.cors.CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173","https://pjsofttech.in")); // Frontend origin
+                    config.setAllowedOrigins(List.of("http://localhost:5173","https://wayabroad.in")); // Frontend origin
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // HTTP methods
                     config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser").permitAll()
+                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

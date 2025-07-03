@@ -42,4 +42,8 @@ public class AbroadUser {
     @JoinColumn(name = "course_id")
     @JsonIgnore
     private AbroadCourse abroadCourse;
+
+    @Email
+    private String createdByEmail;
+    private String branchCode;
 }
