@@ -19,7 +19,9 @@ public class AbroadBlog {
     private String image;
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String blog;
+    private String description;
+    private String title;
+    private String category;
 
     @Email
     private String createdByEmail;

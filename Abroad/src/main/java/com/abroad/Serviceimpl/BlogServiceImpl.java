@@ -76,7 +76,9 @@ public class BlogServiceImpl implements BlogService {
         AbroadBlog existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
-        existing.setBlog(abroadBlog.getBlog() != null ? abroadBlog.getBlog() : existing.getBlog());
+        existing.setDescription(abroadBlog.getDescription() != null ? abroadBlog.getDescription() : existing.getDescription());
+        existing.setTitle(abroadBlog.getTitle() != null ? abroadBlog.getTitle() : existing.getTitle());
+        existing.setCategory(abroadBlog.getCategory() != null ? abroadBlog.getCategory() : existing.getCategory());
 
         try {
             if (image != null && !image.isEmpty()) {
