@@ -4,8 +4,13 @@ import com.abroad.Entity.AbroadEnquiry;
 import com.abroad.Repository.*;
 import com.abroad.Service.PermissionService;
 import com.abroad.Service.S3Service;
+import jakarta.persistence.criteria.Predicate;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -162,5 +168,50 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         }
 
         repository.deleteById(id);
+    }
+
+    @Override
+    public Page<AbroadEnquiry> filterEnquiries(String continent, String country, String stream, String course, String status,
+                                               String branchCode, String role, String email, String fullName,
+                                               String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
+                                               int page, int size) {
+
+        if (!permissionService.hasPermission(role, email, "POST"))
+            throw new AccessDeniedException("No permission");
+
+        Specification<AbroadEnquiry> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(cb.equal(root.get("branchCode"), branchCode));
+
+            if (continent != null) predicates.add(cb.equal(root.get("continent"), continent));
+            if (country != null) predicates.add(cb.equal(root.get("country"), country));
+            if (stream != null) predicates.add(cb.equal(root.get("stream"), stream));
+            if (course != null) predicates.add(cb.equal(root.get("course"), course));
+            if (status != null) predicates.add(cb.equal(root.get("status"), status));
+            if (fullName != null && !fullName.trim().isEmpty())
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + fullName.toLowerCase() + "%"));
+
+            if (enquiryDateFilter != null) {
+                LocalDate today = LocalDate.now();
+                switch (enquiryDateFilter.toLowerCase()) {
+                    case "today" -> predicates.add(cb.equal(root.get("enquiry_date"), today));
+                    case "last7days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(6), today));
+                    case "last30days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(29), today));
+                    case "last365days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(364), today));
+                    case "custom" -> {
+                        if (startDate != null && endDate != null) {
+                            predicates.add(cb.between(root.get("enquiry_date"), startDate, endDate));
+                        }
+                    }
+                }
+            }
+
+            query.orderBy(cb.desc(root.get("enquiry_date")));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAll(spec, pageable);
     }
 }

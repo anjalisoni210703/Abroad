@@ -7,10 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -61,5 +64,26 @@ public class EnquiryController {
                                                 @RequestParam String email) {
         service.deleteEnquiry(id, role, email);
         return ResponseEntity.ok("Enquiry deleted successfully");
+    }
+
+    @PostMapping("/filter")
+    public Page<AbroadEnquiry> filterEnquiries(
+            @RequestParam(required = false) String continent,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String stream,
+            @RequestParam(required = false) String course,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String enquiryDateFilter,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam String branchCode,
+            @RequestParam String role,
+            @RequestParam String email,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return service.filterEnquiries(continent, country, stream, course, status,
+                branchCode, role, email, fullName, enquiryDateFilter, startDate, endDate, page, size);
     }
 }
