@@ -48,7 +48,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail").permitAll()
+                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
