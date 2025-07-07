@@ -67,9 +67,19 @@ public class PermissionServiceImpl implements PermissionService {
                     default -> false;
                 };
             }
-
+            case "ADMIN" -> {
+                Map<String, Object> perms = staffService.getCrudPermissionForAdminByEmail(email);
+                yield switch (action.toUpperCase()) {
+                    case "GET" -> Boolean.TRUE.equals(perms.get("canGet"));
+                    case "POST" -> Boolean.TRUE.equals(perms.get("canPost"));
+                    case "PUT" -> Boolean.TRUE.equals(perms.get("canPut"));
+                    case "DELETE" -> Boolean.TRUE.equals(perms.get("canDelete"));
+                    default -> false;
+                };
+            }
             default -> false;
         };
+
     }
 
     @Override
@@ -96,10 +106,12 @@ public class PermissionServiceImpl implements PermissionService {
                         .block();
 
             case "user":
-                // Call directly from service since it's local
                 return abroadUserService.getUserByEmail(email)
                         .map(AbroadUser::getBranchCode)
                         .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+            case "admin":
+                return null;
 
             default:
                 throw new IllegalArgumentException("Invalid role: " + role);

@@ -77,4 +77,21 @@ public class StaffService
 
     }
 
+    public Map<String, Object> getCrudPermissionForAdminByEmail(String email) {
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/superAdmin/permissionForAdmin")
+                        .queryParam("email", email)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, token)  // Pass token directly
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
+
+    }
+
 }
