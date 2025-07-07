@@ -26,7 +26,9 @@ public class AbroadEnquiry {
     private LocalDate enquiry_date;
     private String address;
     private String landmark;
+    private String city;
     private String state;
+    private String pincode;
     private String district;
     private String continent;
     private String country;
@@ -43,6 +45,10 @@ public class AbroadEnquiry {
     private String fathersOccupation;
     private String gender;
     private Date dob;
+    private String applyFor;
+    private String passportNo;
+    private String source;
+
     @Email
     private String createdByEmail;
     private String role;
