@@ -11,16 +11,15 @@ import java.util.Optional;
 
 @Repository
 public interface CountryRepository extends JpaRepository<AbroadCountry, Long> {
-    @Query("SELECT c FROM AbroadCountry c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
-    List<AbroadCountry> findAllByBranchCode(@Param("branchCode") String branchCode);
-
-    @Query("SELECT c FROM AbroadCountry c WHERE c.id = :id AND c.branchCode = :branchCode")
-    Optional<AbroadCountry> findByIdAndBranchCode(@Param("id") Long id, @Param("branchCode") String branchCode);
+//    @Query("SELECT c FROM AbroadCountry c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
+//    List<AbroadCountry> findAllByBranchCode(@Param("branchCode") String branchCode);
+//
+//    @Query("SELECT c FROM AbroadCountry c WHERE c.id = :id AND c.branchCode = :branchCode")
+//    Optional<AbroadCountry> findByIdAndBranchCode(@Param("id") Long id, @Param("branchCode") String branchCode);
 
     Optional<AbroadCountry> findByCountryIgnoreCase(String country);
 
-    @Query("SELECT c FROM AbroadCountry c WHERE c.branchCode = :branchCode AND c.abroadContinent.id = :continentId ORDER BY c.id DESC")
-    List<AbroadCountry> findAllByBranchCodeAndContinent(@Param("branchCode") String branchCode,
-                                                        @Param("continentId") Long continentId);
+    @Query("SELECT c FROM AbroadCountry c WHERE  c.abroadContinent.id = :continentId ORDER BY c.id DESC")
+    List<AbroadCountry> findAllByBranchCodeAndContinent(@Param("continentId") Long continentId);
 
 }

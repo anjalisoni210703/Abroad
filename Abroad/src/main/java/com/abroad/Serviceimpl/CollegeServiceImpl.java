@@ -36,22 +36,22 @@ public class CollegeServiceImpl implements CollegeService {
 
         abroadCollege.setCreatedByEmail(email);
         abroadCollege.setRole(role);
-        abroadCollege.setBranchCode(branchCode);
+//        abroadCollege.setBranchCode(branchCode);
 //        abroadCollege.setAbroadUniversity(university);
 
         return repository.save(abroadCollege);
     }
 
     @Override
-    public List<AbroadCollege> getAllColleges(String role, String email, String branchCode, Long universityId) {
+    public List<AbroadCollege> getAllColleges(String role, String email, Long universityId) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Colleges");
         }
 
         if (universityId != null) {
-            return repository.findAllByBranchCodeAndUniversityId(branchCode, universityId);
+            return repository.findAllByBranchCodeAndUniversityId( universityId);
         } else {
-            return repository.findAllByBranchCode(branchCode);
+            return repository.findAll();
         }
     }
 

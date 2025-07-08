@@ -36,7 +36,7 @@ public class BlogServiceImpl implements BlogService {
 
         try {
             if (image != null && !image.isEmpty()) {
-                String imageUrl = s3Service.uploadImage(image, branchCode);
+                String imageUrl = s3Service.uploadImage(image);
                 abroadBlog.setImage(imageUrl);
             }
         } catch (IOException e) {
@@ -86,7 +86,7 @@ public class BlogServiceImpl implements BlogService {
                     s3Service.deleteImage(existing.getImage());
                 }
 
-                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                String newImageUrl = s3Service.uploadImage(image);
                 existing.setImage(newImageUrl);
             }
         } catch (IOException e) {

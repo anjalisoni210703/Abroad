@@ -20,17 +20,24 @@ public class AbroadCourse {
         private Long id;
 
         private String courseName;
-        private Double price;
-        private Double discountPrice;
+        private Double tutionFees;
+        private Double applicationFees;
 
         @Column(length = 1000)
         private String description;
 
         private LocalDate date;
-        private String validity;
-        private String categoryName;
+        private String Duration;
+        private String instituteRank;
         private String thumbnail;
-
+        private String intake;
+        private String websiteLink;
+        private String academicRequirements;
+        private String englishExamRequirements;
+        private String examScore;
+        private String city;
+        private String location;
+        private String additionalRequirements;
         @ManyToOne
         @JoinColumn(name = "stream_id")
         @JsonIgnore
@@ -47,6 +54,6 @@ public class AbroadCourse {
         @Email
         private String createdByEmail;
         private String role;
-        private String branchCode;
+//        private String branchCode;
     }
 

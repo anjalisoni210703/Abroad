@@ -40,13 +40,13 @@ public class StreamServiceImpl implements StreamService {
             throw new AccessDeniedException("No permission to create Stream");
         }
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
+//        String branchCode = permissionService.fetchBranchCode(role, email);
         AbroadUniversity university = universityRepository.findById(universityId)
                 .orElseThrow(() -> new RuntimeException("University not found"));
 
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = s3Service.uploadImage(image, branchCode);
+                String imageUrl = s3Service.uploadImage(image);
                 abroadStream.setImage(imageUrl);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload stream image", e);
@@ -55,21 +55,21 @@ public class StreamServiceImpl implements StreamService {
 
         abroadStream.setCreatedByEmail(email);
         abroadStream.setRole(role);
-        abroadStream.setBranchCode(branchCode);
+//        abroadStream.setBranchCode(branchCode);
         abroadStream.setAbroadUniversity(university);
 
         return repository.save(abroadStream);
     }
 
     @Override
-    public List<AbroadStream> getAllStreams(String role, String email, String branchCode, Long universityId) {
+    public List<AbroadStream> getAllStreams(String role, String email, Long universityId) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Streams");
         }
 
         return (universityId != null)
-                ? repository.findAllByBranchCodeAndCollegeId(branchCode, universityId)
-                : repository.findAllByBranchCode(branchCode);
+                ? repository.findAllByBranchCodeAndCollegeId( universityId)
+                : repository.findAll();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class StreamServiceImpl implements StreamService {
                 if (existing.getImage() != null) {
                     s3Service.deleteImage(existing.getImage());
                 }
-                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                String newImageUrl = s3Service.uploadImage(image);
                 existing.setImage(newImageUrl);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to update stream image", e);

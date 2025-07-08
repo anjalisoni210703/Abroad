@@ -25,7 +25,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public boolean hasPermission(String role, String email, String action) {
-        if ("ADMIN".equalsIgnoreCase(role)) {
+        if ("SUPERADMIN".equalsIgnoreCase(role)) {
             Boolean exists = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/superAdmin/existByEmail")
@@ -70,10 +70,10 @@ public class PermissionServiceImpl implements PermissionService {
             case "ADMIN" -> {
                 Map<String, Object> perms = staffService.getCrudPermissionForAdminByEmail(email);
                 yield switch (action.toUpperCase()) {
-                    case "GET" -> Boolean.TRUE.equals(perms.get("canGet"));
-                    case "POST" -> Boolean.TRUE.equals(perms.get("canPost"));
-                    case "PUT" -> Boolean.TRUE.equals(perms.get("canPut"));
-                    case "DELETE" -> Boolean.TRUE.equals(perms.get("canDelete"));
+                    case "GET" -> Boolean.TRUE.equals(perms.get("cansGet"));
+                    case "POST" -> Boolean.TRUE.equals(perms.get("cansPost"));
+                    case "PUT" -> Boolean.TRUE.equals(perms.get("cansPut"));
+                    case "DELETE" -> Boolean.TRUE.equals(perms.get("cansDelete"));
                     default -> false;
                 };
             }
@@ -84,38 +84,37 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public String fetchBranchCode(String role, String email) {
-        switch (role.toLowerCase()) {
-            case "branch":
-                return webClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path("/branch/getbranchcode")
-                                .queryParam("email", email)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
+        String branchCode = switch (role.toUpperCase()) {
+            case "BRANCH" -> webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/branch/getbranchcode")
+                            .queryParam("email", email)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            case "STAFF" -> webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/staff/getbranchcode")
+                            .queryParam("email", email)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            case "USER" -> abroadUserService.getUserByEmail(email)
+                    .map(AbroadUser::getBranchCode)
+                    .orElse(null);
+            case "ADMIN" -> null;
+            default -> throw new IllegalArgumentException("Invalid role: " + role);
+        };
 
-            case "staff":
-                return webClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path("/staff/getbranchcode")
-                                .queryParam("email", email)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
-
-            case "user":
-                return abroadUserService.getUserByEmail(email)
-                        .map(AbroadUser::getBranchCode)
-                        .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-
-            case "admin":
-                return null;
-
-            default:
-                throw new IllegalArgumentException("Invalid role: " + role);
+        // Only enforce non-null for non-admin
+        if (!"ADMIN".equalsIgnoreCase(role) && (branchCode == null || branchCode.trim().isEmpty())) {
+            throw new IllegalArgumentException("Branch code is required");
         }
+
+        return branchCode;
     }
+
 
 }

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public  interface ContinentRepository extends JpaRepository<AbroadContinent, Long> {
-    @Query("SELECT c FROM AbroadContinent c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
-    List<AbroadContinent> findAllByBranchCode(@Param("branchCode") String branchCode);
+//    @Query("SELECT c FROM AbroadContinent c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
+//    List<AbroadContinent> findAllByBranchCode(@Param("branchCode") String branchCode);
 
     Optional<AbroadContinent> findByContinentnameIgnoreCase(String continentname);
 

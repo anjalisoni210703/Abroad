@@ -41,7 +41,7 @@ public class AboutUsServiceImpl implements AboutUsService {
 
         try {
             if (image != null && !image.isEmpty()) {
-                String imageUrl = s3Service.uploadImage(image, branchCode);
+                String imageUrl = s3Service.uploadImage(image);
                 abroadAboutUs.setAboutUsImage(imageUrl);
             }
         } catch (IOException e) {
@@ -101,7 +101,7 @@ public class AboutUsServiceImpl implements AboutUsService {
                 }
 
                 // Upload new image
-                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                String newImageUrl = s3Service.uploadImage(image);
                 existing.setAboutUsImage(newImageUrl);
 
             } catch (IOException e) {

@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CollegeRepository  extends JpaRepository<AbroadCollege, Long> {
-    @Query("SELECT c FROM AbroadCollege c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
-    List<AbroadCollege> findAllByBranchCode(@Param("branchCode") String branchCode);
+//    @Query("SELECT c FROM AbroadCollege c WHERE c.branchCode = :branchCode ORDER BY c.id DESC")
+//    List<AbroadCollege> findAllByBranchCode(@Param("branchCode") String branchCode);
 
-    @Query("SELECT c FROM AbroadCollege c WHERE c.branchCode = :branchCode AND c.abroadUniversity.id = :universityId ORDER BY c.id DESC")
-    List<AbroadCollege> findAllByBranchCodeAndUniversityId(@Param("branchCode") String branchCode, @Param("universityId") Long universityId);
+    @Query("SELECT c FROM AbroadCollege c WHERE c.abroadUniversity.id = :universityId ORDER BY c.id DESC")
+    List<AbroadCollege> findAllByBranchCodeAndUniversityId( @Param("universityId") Long universityId);
 
     Optional<AbroadCollege> findByCollegeNameIgnoreCase(String collegeName);
 

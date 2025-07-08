@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface StreamService {
     AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email, Long universityId);
-    List<AbroadStream> getAllStreams(String role, String email, String branchCode, Long universityId);
+    List<AbroadStream> getAllStreams(String role, String email, Long universityId);
     AbroadStream getStreamById(Long id, String role, String email);
     AbroadStream updateStream(Long id, AbroadStream abroadStream, MultipartFile image, String role, String email);
     void deleteStream(Long id, String role, String email);

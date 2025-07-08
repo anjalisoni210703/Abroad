@@ -26,7 +26,7 @@ public class CountryServiceImpl implements CountryService {
     private PermissionService permissionService;
 
     @Override
-    public AbroadCountry createCountry(AbroadCountry country, Long continentId, MultipartFile image, String role, String email) {
+    public AbroadCountry createCountry(AbroadCountry country, Long continentId, String role, String email) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Country");
         }
@@ -38,41 +38,41 @@ public class CountryServiceImpl implements CountryService {
         country.setAbroadContinent(continent);
         country.setCreatedByEmail(email);
         country.setRole(role);
-        country.setBranchCode(branchCode);
+//        country.setBranchCode(branchCode);
 
         return countryRepository.save(country);
     }
 
     @Override
-    public List<AbroadCountry> getAllCountries(String role, String email, String branchCode, Long continentId) {
+    public List<AbroadCountry> getAllCountries(String role, String email, Long continentId) {
         if (!permissionService.hasPermission(role, email, "GET"))
             throw new AccessDeniedException("No permission to view countries");
 
         if (continentId != null) {
-            return countryRepository.findAllByBranchCodeAndContinent(branchCode, continentId);
+            return countryRepository.findAllByBranchCodeAndContinent(continentId);
         } else {
-            return countryRepository.findAllByBranchCode(branchCode);
+            return countryRepository.findAll();
         }
     }
 
 
     @Override
-    public AbroadCountry getCountryById(Long id, String role, String email, String branchCode) {
+    public AbroadCountry getCountryById(Long id, String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Country");
         }
 
-        return countryRepository.findByIdAndBranchCode(id, branchCode)
+        return countryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Country not found for this branch"));
     }
 
     @Override
-    public AbroadCountry updateCountry(Long id, AbroadCountry country, Long continentId, MultipartFile image, String role, String email, String branchCode) {
+    public AbroadCountry updateCountry(Long id, AbroadCountry country, Long continentId, String role, String email) {
         if (!permissionService.hasPermission(role, email, "PUT")) {
             throw new AccessDeniedException("No permission to update Country");
         }
 
-        AbroadCountry existing = countryRepository.findByIdAndBranchCode(id, branchCode)
+        AbroadCountry existing = countryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Country not found for this branch"));
 
         if (continentId != null) {
@@ -87,12 +87,12 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public void deleteCountry(Long id, String role, String email, String branchCode) {
+    public void deleteCountry(Long id, String role, String email) {
         if (!permissionService.hasPermission(role, email, "DELETE")) {
             throw new AccessDeniedException("No permission to delete Country");
         }
 
-        AbroadCountry country = countryRepository.findByIdAndBranchCode(id, branchCode)
+        AbroadCountry country = countryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Country not found for this branch"));
 
         countryRepository.delete(country);

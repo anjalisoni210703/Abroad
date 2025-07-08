@@ -47,9 +47,8 @@ public class StreamController {
     @GetMapping("/getAllStreams")
     public ResponseEntity<List<AbroadStream>> getAllStreams(@RequestParam String role,
                                                             @RequestParam String email,
-                                                            @RequestParam String branchCode,
                                                             @RequestParam(required = false) Long universityId) {
-        return ResponseEntity.ok(service.getAllStreams(role, email, branchCode, universityId));
+        return ResponseEntity.ok(service.getAllStreams(role, email, universityId));
     }
 
 

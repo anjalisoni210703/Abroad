@@ -36,5 +36,5 @@ public class AbroadCollege {
     @Email
     private String createdByEmail;
     private String role;
-    private String branchCode;
+//    private String branchCode;
 }

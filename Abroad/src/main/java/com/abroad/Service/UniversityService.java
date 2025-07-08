@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UniversityService {
     AbroadUniversity createUniversity(AbroadUniversity abroadUniversity, MultipartFile image, String role, String email, Long countryId);
-    List<AbroadUniversity> getAllUniversities(String role, String email, String branchCode, Long countryId);
+    List<AbroadUniversity> getAllUniversities(String role, String email, Long countryId);
 
     AbroadUniversity getUniversityById(Long id, String role, String email);
     AbroadUniversity updateUniversity(Long id, AbroadUniversity abroadUniversity, MultipartFile image, String role, String email);

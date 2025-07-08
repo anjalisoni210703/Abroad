@@ -20,7 +20,6 @@ public class ContinentController {
 
     @PostMapping("/createContinent")
     public ResponseEntity<AbroadContinent> createContinent(@RequestPart("continent") String continentJson,
-                                                           @RequestParam(value = "image", required = false) MultipartFile image,
                                                            @RequestParam String role,
                                                            @RequestParam String email) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
@@ -28,24 +27,22 @@ public class ContinentController {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadContinent abroadContinent = mapper.readValue(continentJson, AbroadContinent.class);
-        return ResponseEntity.ok(service.createContinent(abroadContinent, image, role, email));
+        return ResponseEntity.ok(service.createContinent(abroadContinent, role, email));
     }
 
     @PutMapping("/updateContinent/{id}")
     public ResponseEntity<AbroadContinent> updateContinent(@PathVariable Long id,
                                                            @RequestPart("continent") String continentJson,
-                                                           @RequestParam(value = "image", required = false) MultipartFile image,
                                                            @RequestParam String role,
                                                            @RequestParam String email) throws JsonProcessingException {
         AbroadContinent abroadContinent = new ObjectMapper().readValue(continentJson, AbroadContinent.class);
-        return ResponseEntity.ok(service.updateContinent(id, abroadContinent, image, role, email));
+        return ResponseEntity.ok(service.updateContinent(id, abroadContinent, role, email));
     }
 
     @GetMapping("/getAllContinents")
     public ResponseEntity<List<AbroadContinent>> getAllContinents(@RequestParam String role,
-                                                                  @RequestParam String email,
-                                                                  @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getAllContinents(role, email,branchCode));
+                                                                  @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllContinents(role, email));
     }
 
     @GetMapping("/getContinentById/{id}")

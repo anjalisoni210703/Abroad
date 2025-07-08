@@ -23,7 +23,6 @@ public class CountryController {
     @PostMapping("/createCountry")
     public ResponseEntity<AbroadCountry> createCountry(@RequestPart("country") String countryJson,
                                                        @RequestParam("continentId") Long continentId,
-                                                       @RequestParam(value = "image", required = false) MultipartFile image,
                                                        @RequestParam String role,
                                                        @RequestParam String email) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
@@ -31,43 +30,38 @@ public class CountryController {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadCountry country = mapper.readValue(countryJson, AbroadCountry.class);
-        return ResponseEntity.ok(service.createCountry(country, continentId, image, role, email));
+        return ResponseEntity.ok(service.createCountry(country, continentId, role, email));
     }
 
     @GetMapping("/getAllCountries")
     public ResponseEntity<List<AbroadCountry>> getAllCountries(@RequestParam String role,
                                                                @RequestParam String email,
-                                                               @RequestParam String branchCode,
                                                                @RequestParam(required = false) Long continentId) {
-        return ResponseEntity.ok(service.getAllCountries(role, email, branchCode, continentId));
+        return ResponseEntity.ok(service.getAllCountries(role, email, continentId));
     }
 
     @GetMapping("/getCountryById/{id}")
     public ResponseEntity<AbroadCountry> getCountryById(@PathVariable Long id,
                                                         @RequestParam String role,
-                                                        @RequestParam String email,
-                                                        @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getCountryById(id, role, email, branchCode));
+                                                        @RequestParam String email) {
+        return ResponseEntity.ok(service.getCountryById(id, role, email));
     }
 
     @PutMapping("/updateCountry/{id}")
     public ResponseEntity<AbroadCountry> updateCountry(@PathVariable Long id,
                                                        @RequestPart("country") String countryJson,
                                                        @RequestParam(value = "continentId", required = false) Long continentId,
-                                                       @RequestParam(value = "image", required = false) MultipartFile image,
                                                        @RequestParam String role,
-                                                       @RequestParam String email,
-                                                       @RequestParam String branchCode) throws JsonProcessingException {
+                                                       @RequestParam String email) throws JsonProcessingException {
         AbroadCountry country = new ObjectMapper().readValue(countryJson, AbroadCountry.class);
-        return ResponseEntity.ok(service.updateCountry(id, country, continentId, image, role, email, branchCode));
+        return ResponseEntity.ok(service.updateCountry(id, country, continentId, role, email));
     }
 
     @DeleteMapping("/deleteCountry/{id}")
     public ResponseEntity<String> deleteCountry(@PathVariable Long id,
                                                 @RequestParam String role,
-                                                @RequestParam String email,
-                                                @RequestParam String branchCode) {
-        service.deleteCountry(id, role, email, branchCode);
+                                                @RequestParam String email) {
+        service.deleteCountry(id, role, email);
         return ResponseEntity.ok("Country deleted successfully");
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CollegeService {
     AbroadCollege createCollege(AbroadCollege abroadCollege, MultipartFile image, String role, String email, Long universityId);
-    List<AbroadCollege> getAllColleges(String role, String email, String branchCode, Long universityId);
+    List<AbroadCollege> getAllColleges(String role, String email, Long universityId);
     AbroadCollege getCollegeById(Long id, String role, String email);
     AbroadCollege updateCollege(Long id, AbroadCollege abroadCollege, MultipartFile image, String role, String email);
     void deleteCollege(Long id, String role, String email);

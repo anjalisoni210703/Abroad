@@ -21,7 +21,6 @@ public class CourseController {
 
     @PostMapping("/createCourse")
     public ResponseEntity<AbroadCourse> createCourse(@RequestPart("course") String courseJson,
-                                                     @RequestParam(value = "image", required = false) MultipartFile image,
                                                      @RequestParam String role,
                                                      @RequestParam String email,
                                                      @RequestParam Long streamId) throws JsonProcessingException {
@@ -31,26 +30,24 @@ public class CourseController {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadCourse abroadCourse = mapper.readValue(courseJson, AbroadCourse.class);
-        return ResponseEntity.ok(service.createCourse(abroadCourse, image, role, email, streamId));
+        return ResponseEntity.ok(service.createCourse(abroadCourse, role, email, streamId));
     }
 
     @PutMapping("/updateCourse/{id}")
     public ResponseEntity<AbroadCourse> updateCourse(@PathVariable Long id,
                                                      @RequestPart("course") String courseJson,
-                                                     @RequestParam(value = "image", required = false) MultipartFile image,
                                                      @RequestParam String role,
                                                      @RequestParam String email) throws JsonProcessingException {
 
         AbroadCourse abroadCourse = new ObjectMapper().readValue(courseJson, AbroadCourse.class);
-        return ResponseEntity.ok(service.updateCourse(id, abroadCourse, image, role, email));
+        return ResponseEntity.ok(service.updateCourse(id, abroadCourse, role, email));
     }
 
     @GetMapping("/getAllCourses")
     public ResponseEntity<List<AbroadCourse>> getAllCourses(@RequestParam String role,
                                                             @RequestParam String email,
-                                                            @RequestParam String branchCode,
                                                             @RequestParam(required = false) Long streamId) {
-        return ResponseEntity.ok(service.getAllCourses(role, email, branchCode, streamId));
+        return ResponseEntity.ok(service.getAllCourses(role, email, streamId));
     }
 
     @GetMapping("/getCourseById/{id}")

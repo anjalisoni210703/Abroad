@@ -35,11 +35,11 @@ public class UniversityServiceImpl implements UniversityService {
             throw new AccessDeniedException("No permission to create University");
         }
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
+//        String branchCode = permissionService.fetchBranchCode(role, email);
 
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = s3Service.uploadImage(image, branchCode);
+                String imageUrl = s3Service.uploadImage(image);
                 abroadUniversity.setImage(imageUrl);
             } catch (IOException e) {
                 throw new RuntimeException("Image upload failed", e);
@@ -48,7 +48,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         abroadUniversity.setCreatedByEmail(email);
         abroadUniversity.setRole(role);
-        abroadUniversity.setBranchCode(branchCode);
+//        abroadUniversity.setBranchCode(branchCode);
         abroadUniversity.setAbroadCountry(
                 countryRepository.findById(countryId).orElseThrow(() -> new RuntimeException("Country not found"))
         );
@@ -57,15 +57,15 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public List<AbroadUniversity> getAllUniversities(String role, String email, String branchCode, Long countryId) {
+    public List<AbroadUniversity> getAllUniversities(String role, String email, Long countryId) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Universities");
         }
 
         if (countryId != null) {
-            return repository.findAllByBranchCodeAndCountry(branchCode, countryId);
+            return repository.findAllByBranchCodeAndCountry( countryId);
         } else {
-            return repository.findAllByBranchCode(branchCode);
+            return repository.findAll();
         }
     }
 
@@ -95,7 +95,7 @@ public class UniversityServiceImpl implements UniversityService {
                 if (existing.getImage() != null) {
                     s3Service.deleteImage(existing.getImage());
                 }
-                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                String newImageUrl = s3Service.uploadImage(image);
                 existing.setImage(newImageUrl);
             } catch (IOException e) {
                 throw new RuntimeException("Image upload/update failed", e);

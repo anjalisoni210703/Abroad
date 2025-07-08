@@ -46,9 +46,8 @@ public class CollegeController {
     @GetMapping("/getAllColleges")
     public ResponseEntity<List<AbroadCollege>> getAllColleges(@RequestParam String role,
                                                               @RequestParam String email,
-                                                              @RequestParam String branchCode,
                                                               @RequestParam(required = false) Long universityId) {
-        return ResponseEntity.ok(service.getAllColleges(role, email, branchCode, universityId));
+        return ResponseEntity.ok(service.getAllColleges(role, email, universityId));
     }
 
     @GetMapping("/getCollegeById/{id}")

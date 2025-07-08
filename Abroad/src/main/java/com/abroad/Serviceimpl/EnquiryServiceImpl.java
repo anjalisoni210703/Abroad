@@ -61,7 +61,7 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
 
         try {
             if (image != null && !image.isEmpty()) {
-                String imageUrl = s3Service.uploadImage(image, branchCode);
+                String imageUrl = s3Service.uploadImage(image);
                 abroadEnquiry.setPhotoUrl(imageUrl);
             }
         } catch (IOException e) {
@@ -149,7 +149,7 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
                 if (existing.getPhotoUrl() != null) {
                     s3Service.deleteImage(existing.getPhotoUrl());
                 }
-                String newImageUrl = s3Service.uploadImage(image, existing.getBranchCode());
+                String newImageUrl = s3Service.uploadImage(image);
                 existing.setPhotoUrl(newImageUrl);
             }
         } catch (IOException e) {

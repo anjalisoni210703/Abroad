@@ -19,7 +19,7 @@ public class ContinentServiceImpl implements ContinentService {
     private PermissionService permissionService;
 
     @Override
-    public AbroadContinent createContinent(AbroadContinent abroadContinent, MultipartFile image, String role, String email) {
+    public AbroadContinent createContinent(AbroadContinent abroadContinent, String role, String email) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Continent");
         }
@@ -27,19 +27,20 @@ public class ContinentServiceImpl implements ContinentService {
         String branchCode = permissionService.fetchBranchCode(role, email);
         abroadContinent.setCreatedByEmail(email);
         abroadContinent.setRole(role);
-        abroadContinent.setBranchCode(branchCode);
+//        abroadContinent.setBranchCode(branchCode);
 
         return repository.save(abroadContinent);
     }
 
     @Override
-    public List<AbroadContinent> getAllContinents(String role, String email,String branchCode) {
+    public List<AbroadContinent> getAllContinents(String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Continents");
         }
 
-//         branchCode = permissionService.fetchBranchCode(role, email);
-        return repository.findAllByBranchCode(branchCode);
+////         branchCode = permissionService.fetchBranchCode(role, email);
+//        return repository.findAllByBranchCode(branchCode);
+        return repository.findAll();
     }
 
     @Override
@@ -53,7 +54,7 @@ public class ContinentServiceImpl implements ContinentService {
     }
 
     @Override
-    public AbroadContinent updateContinent(Long id, AbroadContinent abroadContinent, MultipartFile image, String role, String email) {
+    public AbroadContinent updateContinent(Long id, AbroadContinent abroadContinent, String role, String email) {
         if (!permissionService.hasPermission(role, email, "PUT")) {
             throw new AccessDeniedException("No permission to update Continent");
         }

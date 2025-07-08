@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UniversityRepository extends JpaRepository<AbroadUniversity, Long> {
-    @Query("SELECT u FROM AbroadUniversity u WHERE u.branchCode = :branchCode ORDER BY u.id DESC")
-    List<AbroadUniversity> findAllByBranchCode(@Param("branchCode") String branchCode);
+//    @Query("SELECT u FROM AbroadUniversity u WHERE u.branchCode = :branchCode ORDER BY u.id DESC")
+//    List<AbroadUniversity> findAllByBranchCode(@Param("branchCode") String branchCode);
 
-    @Query("SELECT u FROM AbroadUniversity u WHERE u.branchCode = :branchCode AND u.abroadCountry.id = :countryId ORDER BY u.id DESC")
-    List<AbroadUniversity> findAllByBranchCodeAndCountry(@Param("branchCode") String branchCode, @Param("countryId") Long countryId);
+    @Query("SELECT u FROM AbroadUniversity u WHERE  u.abroadCountry.id = :countryId ORDER BY u.id DESC")
+    List<AbroadUniversity> findAllByBranchCodeAndCountry( @Param("countryId") Long countryId);
 
     Optional<AbroadUniversity> findByUniversityNameIgnoreCase(String universityName);
 
