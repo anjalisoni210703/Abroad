@@ -32,7 +32,7 @@ public class BlogServiceImpl implements BlogService {
             throw new AccessDeniedException("No permission to create Blog");
         }
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
+//        String branchCode = permissionService.fetchBranchCode(role, email);
 
         try {
             if (image != null && !image.isEmpty()) {
@@ -45,15 +45,15 @@ public class BlogServiceImpl implements BlogService {
 
         abroadBlog.setCreatedByEmail(email);
         abroadBlog.setRole(role);
-        abroadBlog.setBranchCode(branchCode);
+//        abroadBlog.setBranchCode(branchCode);
 
         return repository.save(abroadBlog);
     }
 
     @Override
-    public List<AbroadBlog> getAllBlogsByBranchCode(String branchCode) {
+    public List<AbroadBlog> getAllBlogsByBranchCode() {
 
-        return repository.findAllByBranchCode(branchCode);
+        return repository.findAll();
     }
 
 

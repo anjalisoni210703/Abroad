@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface BlogRepository extends JpaRepository<AbroadBlog, Long> {
-    @Query("SELECT b FROM AbroadBlog b WHERE b.branchCode = :branchCode ORDER BY b.id DESC")
-    List<AbroadBlog> findAllByBranchCode(@Param("branchCode") String branchCode);
+//    @Query("SELECT b FROM AbroadBlog b WHERE b.branchCode = :branchCode ORDER BY b.id DESC")
+//    List<AbroadBlog> findAllByBranchCode(@Param("branchCode") String branchCode);
 }
