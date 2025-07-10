@@ -24,17 +24,15 @@ public class AbroadBecomePartnerController {
 
     @GetMapping("/getAllPartners")
     public ResponseEntity<List<AbroadBecomePartner>> getAllPartners(@RequestParam String role,
-                                                                    @RequestParam String email,
-                                                                    @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getAllPartners(role, email, branchCode));
+                                                                    @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllPartners(role, email));
     }
 
     @GetMapping("/getPartnerById/{id}")
     public ResponseEntity<AbroadBecomePartner> getPartnerById(@PathVariable Long id,
                                                               @RequestParam String role,
-                                                              @RequestParam String email,
-                                                              @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getPartnerById(id, role, email, branchCode));
+                                                              @RequestParam String email) {
+        return ResponseEntity.ok(service.getPartnerById(id, role, email));
     }
 
     @PutMapping("/updatePartner/{id}")

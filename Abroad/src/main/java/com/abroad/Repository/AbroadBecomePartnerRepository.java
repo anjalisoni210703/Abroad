@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface AbroadBecomePartnerRepository extends JpaRepository<AbroadBecomePartner, Long> {
 
-    @Query("SELECT p FROM AbroadBecomePartner p WHERE p.branchCode = :branchCode ORDER BY p.id DESC")
-    List<AbroadBecomePartner> findAllByBranchCode(@Param("branchCode") String branchCode);
+//    @Query("SELECT p FROM AbroadBecomePartner p WHERE p.branchCode = :branchCode ORDER BY p.id DESC")
+//    List<AbroadBecomePartner> findAllByBranchCode(@Param("branchCode") String branchCode);
 }

@@ -26,24 +26,25 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
             throw new AccessDeniedException("No permission to create partner");
         }
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
+//        String branchCode = permissionService.fetchBranchCode(role, email);
         partner.setCreatedByEmail(email);
         partner.setRole(role);
-        partner.setBranchCode(branchCode);
+//        partner.setBranchCode(branchCode);
 
         return repository.save(partner);
     }
 
     @Override
-    public List<AbroadBecomePartner> getAllPartners(String role, String email, String branchCode) {
+    public List<AbroadBecomePartner> getAllPartners(String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view partners");
         }
-        return repository.findAllByBranchCode(branchCode);
+//        return repository.findAllByBranchCode(branchCode);
+        return repository.findAll();
     }
 
     @Override
-    public AbroadBecomePartner getPartnerById(Long id, String role, String email, String branchCode) {
+    public AbroadBecomePartner getPartnerById(Long id, String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view partner");
         }
@@ -51,9 +52,9 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
         AbroadBecomePartner partner = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
 
-        if (!partner.getBranchCode().equals(branchCode)) {
-            throw new AccessDeniedException("Access denied to this branch data");
-        }
+//        if (!partner.getBranchCode().equals(branchCode)) {
+//            throw new AccessDeniedException("Access denied to this branch data");
+//        }
 
         return partner;
     }
