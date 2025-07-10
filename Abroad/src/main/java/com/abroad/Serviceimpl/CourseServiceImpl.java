@@ -98,7 +98,7 @@ public class CourseServiceImpl implements CourseService {
         existing.setHostel(abroadCourse.getHostel()!=null?abroadCourse.getHostel():existing.getHostel());
         existing.setHostelFees(abroadCourse.getHostelFees()!=null?abroadCourse.getHostelFees():existing.getHostelFees());
         existing.setContractType(abroadCourse.getContractType()!=null?abroadCourse.getContractType():existing.getContractType());
-
+        existing.setExamType(abroadCourse.getExamType()!=null?abroadCourse.getExamType():existing.getExamType());
 
         return repository.save(existing);
     }
