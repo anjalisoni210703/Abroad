@@ -11,4 +11,12 @@ public interface CourseService {
     AbroadCourse getCourseById(Long id, String role, String email);
     AbroadCourse updateCourse(Long id, AbroadCourse abroadCourse, String role, String email);
     void deleteCourse(Long id, String role, String email);
+
+    List<AbroadCourse> filterCourses(List<Long> streamIds,
+                                     List<Long> universityIds,
+                                     List<Long> countryIds,
+                                     List<Long> continentIds,
+                                     String role,
+                                     String email);
+
 }

@@ -64,4 +64,15 @@ public class CourseController {
         service.deleteCourse(id, role, email);
         return ResponseEntity.ok("Course deleted successfully");
     }
+
+    @GetMapping("/filterCourses")
+    public ResponseEntity<List<AbroadCourse>> filterCourses(@RequestParam(required = false) List<Long> streamIds,
+                                                            @RequestParam(required = false) List<Long> universityIds,
+                                                            @RequestParam(required = false) List<Long> countryIds,
+                                                            @RequestParam(required = false) List<Long> continentIds,
+                                                            @RequestParam String role,
+                                                            @RequestParam String email) {
+        return ResponseEntity.ok(service.filterCourses(streamIds, universityIds, countryIds, continentIds, role, email));
+    }
+
 }

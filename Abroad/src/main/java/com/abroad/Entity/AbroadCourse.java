@@ -38,6 +38,7 @@ public class AbroadCourse {
         private String city;
         private String location;
         private String additionalRequirements;
+
         @ManyToOne
         @JoinColumn(name = "stream_id")
         @JsonIgnore
