@@ -21,11 +21,18 @@ public class AbroadBecomePartner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
     private String businessName;
-    private String email;
-    private String contactNumber;
-    private String city;
+    private String partnerName;
+    private String partnerContact;
+    private String partnerEmail;
+    private String partnerPassword;
+    private String partnerAddress;
+    private String partnerCountry;
+    private String partnerCity;
+    private String partnerDistrict;
+    private String partnerPincode;
+    private String state;
+    private String status;
 
     @Email
     private String createdByEmail;

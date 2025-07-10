@@ -68,11 +68,17 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
         AbroadBecomePartner existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
 
-        existing.setName(updated.getName() != null ? updated.getName() : existing.getName());
+        existing.setPartnerName(updated.getPartnerName() != null ? updated.getPartnerName() : existing.getPartnerName());
         existing.setBusinessName(updated.getBusinessName() != null ? updated.getBusinessName() : existing.getBusinessName());
-        existing.setEmail(updated.getEmail() != null ? updated.getEmail() : existing.getEmail());
-        existing.setContactNumber(updated.getContactNumber() != null ? updated.getContactNumber() : existing.getContactNumber());
-        existing.setCity(updated.getCity() != null ? updated.getCity() : existing.getCity());
+        existing.setPartnerEmail(updated.getPartnerEmail() != null ? updated.getPartnerEmail() : existing.getPartnerEmail());
+        existing.setPartnerContact(updated.getPartnerContact() != null ? updated.getPartnerContact() : existing.getPartnerContact());
+        existing.setPartnerCity(updated.getPartnerCity() != null ? updated.getPartnerCity() : existing.getPartnerCity());
+        existing.setPartnerAddress(updated.getPartnerAddress()!=null?updated.getPartnerAddress():existing.getPartnerAddress());
+        existing.setPartnerCountry(updated.getPartnerCountry()!=null?updated.getPartnerCountry():existing.getPartnerCountry());
+        existing.setPartnerDistrict(updated.getPartnerDistrict()!=null?updated.getPartnerDistrict():existing.getPartnerDistrict());
+        existing.setPartnerPincode(updated.getPartnerPincode()!=null?updated.getPartnerPincode():existing.getPartnerPincode());
+        existing.setState(updated.getState()!=null?updated.getState():existing.getState());
+        existing.setStatus(updated.getStatus()!=null?updated.getStatus():existing.getStatus());
 
         return repository.save(existing);
     }
