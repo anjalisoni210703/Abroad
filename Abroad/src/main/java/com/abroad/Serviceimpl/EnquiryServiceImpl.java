@@ -143,6 +143,11 @@ public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
         existing.setPassportNo(abroadEnquiry.getPassportNo() !=null ? abroadEnquiry.getPassportNo():existing.getPassportNo());
         existing.setApplyFor(abroadEnquiry.getApplyFor() !=null ? abroadEnquiry.getApplyFor(): existing.getApplyFor());
         existing.setSource(abroadEnquiry.getSource() !=null ? abroadEnquiry.getSource():existing.getSource());
+        existing.setFatherNumber(abroadEnquiry.getFatherNumber()!=null?abroadEnquiry.getFatherNumber():existing.getFatherNumber());
+        existing.setLoanRequirement(abroadEnquiry.getLoanRequirement()!=null?abroadEnquiry.getLoanRequirement():existing.getLoanRequirement());
+        existing.setAmount(abroadEnquiry.getAmount()!=null?abroadEnquiry.getAmount():existing.getAmount());
+        existing.setRemark(abroadEnquiry.getRemark()!=null?abroadEnquiry.getRemark():existing.getRemark());
+        existing.setYear(abroadEnquiry.getYear()!=null?abroadEnquiry.getYear():existing.getYear());
         try {
             if (image != null && !image.isEmpty()) {
                 // Delete old image if exists

@@ -25,7 +25,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public boolean hasPermission(String role, String email, String action) {
-        if ("SUPERADMIN".equalsIgnoreCase(role)) {
+        if ("ADMIN".equalsIgnoreCase(role)) {
             Boolean exists = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/superAdmin/existByEmail")
@@ -67,7 +67,7 @@ public class PermissionServiceImpl implements PermissionService {
                     default -> false;
                 };
             }
-            case "ADMIN" -> {
+            case "SUPERADMIN" -> {
                 Map<String, Object> perms = staffService.getCrudPermissionForAdminByEmail(email);
                 yield switch (action.toUpperCase()) {
                     case "GET" -> Boolean.TRUE.equals(perms.get("cansGet"));
@@ -104,12 +104,12 @@ public class PermissionServiceImpl implements PermissionService {
             case "USER" -> abroadUserService.getUserByEmail(email)
                     .map(AbroadUser::getBranchCode)
                     .orElse(null);
-            case "ADMIN" -> null;
+            case "SUPERADMIN" -> null;
             default -> throw new IllegalArgumentException("Invalid role: " + role);
         };
 
         // Only enforce non-null for non-admin
-        if (!"ADMIN".equalsIgnoreCase(role) && (branchCode == null || branchCode.trim().isEmpty())) {
+        if (!"SUPERADMIN".equalsIgnoreCase(role) && (branchCode == null || branchCode.trim().isEmpty())) {
             throw new IllegalArgumentException("Branch code is required");
         }
 

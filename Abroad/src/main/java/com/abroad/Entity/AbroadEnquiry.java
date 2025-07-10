@@ -41,6 +41,7 @@ public class AbroadEnquiry {
     private String status;
     private String passoutYear;
     private String passoutCourse;
+    private String fatherNumber;
     private double fathersIncome;
     private String fathersOccupation;
     private String gender;
@@ -48,6 +49,10 @@ public class AbroadEnquiry {
     private String applyFor;
     private String passportNo;
     private String source;
+    private String loanRequirement;
+    private String year;
+    private String amount;
+    private String remark;
 
     @Email
     private String createdByEmail;

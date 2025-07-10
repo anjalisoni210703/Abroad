@@ -42,6 +42,7 @@ public class AbroadCourse {
         private String scholarship;
         private String hostel;
         private String hostelFees;
+        private String contractType;
 
         @ManyToOne
         @JoinColumn(name = "stream_id")
