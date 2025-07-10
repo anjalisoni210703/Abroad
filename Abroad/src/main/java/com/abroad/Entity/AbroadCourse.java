@@ -38,6 +38,10 @@ public class AbroadCourse {
         private String city;
         private String location;
         private String additionalRequirements;
+        private String courseDetials;
+        private String scholarship;
+        private String hostel;
+        private String hostelFees;
 
         @ManyToOne
         @JoinColumn(name = "stream_id")

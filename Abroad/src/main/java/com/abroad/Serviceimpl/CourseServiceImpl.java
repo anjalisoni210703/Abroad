@@ -93,6 +93,10 @@ public class CourseServiceImpl implements CourseService {
         existing.setAdditionalRequirements(abroadCourse.getAdditionalRequirements()!=null?abroadCourse.getAdditionalRequirements():existing.getAdditionalRequirements());
         existing.setCity(abroadCourse.getCity()!=null?abroadCourse.getCity():existing.getCity());
         existing.setLocation(abroadCourse.getLocation()!=null?abroadCourse.getLocation():existing.getLocation());
+        existing.setCourseDetials(abroadCourse.getCourseDetials()!=null?abroadCourse.getCourseDetials():existing.getCourseDetials());
+        existing.setScholarship(abroadCourse.getScholarship()!=null?abroadCourse.getScholarship():existing.getScholarship());
+        existing.setHostel(abroadCourse.getHostel()!=null?abroadCourse.getHostel():existing.getHostel());
+        existing.setHostelFees(abroadCourse.getHostelFees()!=null?abroadCourse.getHostelFees():existing.getHostelFees());
 
         return repository.save(existing);
     }
