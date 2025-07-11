@@ -14,4 +14,6 @@ public  interface ContinentRepository extends JpaRepository<AbroadContinent, Lon
 
     Optional<AbroadContinent> findByContinentnameIgnoreCase(String continentname);
 
+    Optional<AbroadContinent> findById(Long id);
+
 }

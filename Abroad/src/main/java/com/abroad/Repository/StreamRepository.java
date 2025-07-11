@@ -17,4 +17,7 @@ public interface StreamRepository extends JpaRepository<AbroadStream, Long> {
     List<AbroadStream> findAllByBranchCodeAndCollegeId(@Param("universityId") Long universityId);
 
     Optional<AbroadStream> findByNameIgnoreCase(String name);
+
+    Optional<AbroadStream> findById(Long id);
+
 }

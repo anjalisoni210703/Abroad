@@ -17,4 +17,6 @@ public interface UniversityRepository extends JpaRepository<AbroadUniversity, Lo
 
     Optional<AbroadUniversity> findByUniversityNameIgnoreCase(String universityName);
 
+    Optional<AbroadUniversity> findById(Long id);
+
 }

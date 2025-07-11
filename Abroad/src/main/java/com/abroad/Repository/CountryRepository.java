@@ -22,4 +22,6 @@ public interface CountryRepository extends JpaRepository<AbroadCountry, Long> {
     @Query("SELECT c FROM AbroadCountry c WHERE  c.abroadContinent.id = :continentId ORDER BY c.id DESC")
     List<AbroadCountry> findAllByBranchCodeAndContinent(@Param("continentId") Long continentId);
 
+    Optional<AbroadCountry> findById(Long id);
+
 }

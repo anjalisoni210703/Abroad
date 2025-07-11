@@ -28,4 +28,6 @@ public interface CourseRepository extends JpaRepository<AbroadCourse, Long> {
                                      @Param("countryIds") List<Long> countryIds,
                                      @Param("continentIds") List<Long> continentIds);
 
+    Optional<AbroadCourse> findById(Long id);
+
 }
