@@ -19,24 +19,26 @@ public class ContinentController {
     private ContinentService service;
 
     @PostMapping("/createContinent")
-    public ResponseEntity<AbroadContinent> createContinent(@RequestPart("continent") String continentJson,
-                                                           @RequestParam String role,
-                                                           @RequestParam String email) throws JsonProcessingException {
+    public ResponseEntity<AbroadContinent> createContinentWithImage(@RequestPart("continent") String continentJson,
+                                                                    @RequestParam("image") MultipartFile image,
+                                                                    @RequestParam String role,
+                                                                    @RequestParam String email) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadContinent abroadContinent = mapper.readValue(continentJson, AbroadContinent.class);
-        return ResponseEntity.ok(service.createContinent(abroadContinent, role, email));
+        return ResponseEntity.ok(service.createContinent(abroadContinent, image, role, email));
     }
 
     @PutMapping("/updateContinent/{id}")
-    public ResponseEntity<AbroadContinent> updateContinent(@PathVariable Long id,
-                                                           @RequestPart("continent") String continentJson,
-                                                           @RequestParam String role,
-                                                           @RequestParam String email) throws JsonProcessingException {
+    public ResponseEntity<AbroadContinent> updateContinentWithImage(@PathVariable Long id,
+                                                                    @RequestPart("continent") String continentJson,
+                                                                    @RequestParam(value = "image", required = false) MultipartFile image,
+                                                                    @RequestParam String role,
+                                                                    @RequestParam String email) throws JsonProcessingException {
         AbroadContinent abroadContinent = new ObjectMapper().readValue(continentJson, AbroadContinent.class);
-        return ResponseEntity.ok(service.updateContinent(id, abroadContinent, role, email));
+        return ResponseEntity.ok(service.updateContinent(id, abroadContinent, image, role, email));
     }
 
     @GetMapping("/getAllContinents")

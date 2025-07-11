@@ -21,16 +21,17 @@ public class CountryController {
     private CountryService service;
 
     @PostMapping("/createCountry")
-    public ResponseEntity<AbroadCountry> createCountry(@RequestPart("country") String countryJson,
-                                                       @RequestParam("continentId") Long continentId,
-                                                       @RequestParam String role,
-                                                       @RequestParam String email) throws JsonProcessingException {
+    public ResponseEntity<AbroadCountry> createCountryWithImage(@RequestPart("country") String countryJson,
+                                                                @RequestParam("image") MultipartFile image,
+                                                                @RequestParam("continentId") Long continentId,
+                                                                @RequestParam String role,
+                                                                @RequestParam String email) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadCountry country = mapper.readValue(countryJson, AbroadCountry.class);
-        return ResponseEntity.ok(service.createCountry(country, continentId, role, email));
+        return ResponseEntity.ok(service.createCountry(country, image, continentId, role, email));
     }
 
     @GetMapping("/getAllCountries")
@@ -48,13 +49,14 @@ public class CountryController {
     }
 
     @PutMapping("/updateCountry/{id}")
-    public ResponseEntity<AbroadCountry> updateCountry(@PathVariable Long id,
-                                                       @RequestPart("country") String countryJson,
-                                                       @RequestParam(value = "continentId", required = false) Long continentId,
-                                                       @RequestParam String role,
-                                                       @RequestParam String email) throws JsonProcessingException {
+    public ResponseEntity<AbroadCountry> updateCountryWithImage(@PathVariable Long id,
+                                                                @RequestPart("country") String countryJson,
+                                                                @RequestParam(value = "image", required = false) MultipartFile image,
+                                                                @RequestParam(value = "continentId", required = false) Long continentId,
+                                                                @RequestParam String role,
+                                                                @RequestParam String email) throws JsonProcessingException {
         AbroadCountry country = new ObjectMapper().readValue(countryJson, AbroadCountry.class);
-        return ResponseEntity.ok(service.updateCountry(id, country, continentId, role, email));
+        return ResponseEntity.ok(service.updateCountry(id, country, image, continentId, role, email));
     }
 
     @DeleteMapping("/deleteCountry/{id}")

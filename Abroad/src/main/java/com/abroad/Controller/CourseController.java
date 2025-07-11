@@ -20,27 +20,27 @@ public class CourseController {
     private CourseService service;
 
     @PostMapping("/createCourse")
-    public ResponseEntity<AbroadCourse> createCourse(@RequestPart("course") String courseJson,
-                                                     @RequestParam String role,
-                                                     @RequestParam String email,
-                                                     @RequestParam Long streamId) throws JsonProcessingException {
-
+    public ResponseEntity<AbroadCourse> createCourseWithImage(@RequestPart("course") String courseJson,
+                                                              @RequestParam("image") MultipartFile image,
+                                                              @RequestParam String role,
+                                                              @RequestParam String email,
+                                                              @RequestParam Long streamId) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadCourse abroadCourse = mapper.readValue(courseJson, AbroadCourse.class);
-        return ResponseEntity.ok(service.createCourse(abroadCourse, role, email, streamId));
+        return ResponseEntity.ok(service.createCourse(abroadCourse, image, role, email, streamId));
     }
 
     @PutMapping("/updateCourse/{id}")
-    public ResponseEntity<AbroadCourse> updateCourse(@PathVariable Long id,
-                                                     @RequestPart("course") String courseJson,
-                                                     @RequestParam String role,
-                                                     @RequestParam String email) throws JsonProcessingException {
-
+    public ResponseEntity<AbroadCourse> updateCourseWithImage(@PathVariable Long id,
+                                                              @RequestPart("course") String courseJson,
+                                                              @RequestParam(value = "image", required = false) MultipartFile image,
+                                                              @RequestParam String role,
+                                                              @RequestParam String email) throws JsonProcessingException {
         AbroadCourse abroadCourse = new ObjectMapper().readValue(courseJson, AbroadCourse.class);
-        return ResponseEntity.ok(service.updateCourse(id, abroadCourse, role, email));
+        return ResponseEntity.ok(service.updateCourse(id, abroadCourse, image, role, email));
     }
 
     @GetMapping("/getAllCourses")

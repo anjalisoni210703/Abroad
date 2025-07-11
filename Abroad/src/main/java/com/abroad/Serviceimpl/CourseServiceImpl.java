@@ -6,11 +6,13 @@ import com.abroad.Repository.CourseRepository;
 import com.abroad.Repository.StreamRepository;
 import com.abroad.Service.CourseService;
 import com.abroad.Service.PermissionService;
+import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -23,24 +25,30 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private S3Service s3Service;
+
     @Override
-    public AbroadCourse createCourse(AbroadCourse abroadCourse, String role, String email, Long streamId) {
+    public AbroadCourse createCourse(AbroadCourse abroadCourse, MultipartFile image, String role, String email, Long streamId) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Course");
         }
 
-//        String branchCode = permissionService.fetchBranchCode(role, email);
-
         AbroadStream stream = streamRepository.findById(streamId)
                 .orElseThrow(() -> new RuntimeException("Stream not found"));
 
-
+        try {
+            if (image != null && !image.isEmpty()) {
+                String imageUrl = s3Service.uploadImage(image);
+                abroadCourse.setImage(imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload course image", e);
+        }
 
         abroadCourse.setAbroadStream(stream);
         abroadCourse.setCreatedByEmail(email);
         abroadCourse.setRole(role);
-//        abroadCourse.setBranchCode(branchCode);
-
         return repository.save(abroadCourse);
     }
 
@@ -69,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
 
 
     @Override
-    public AbroadCourse updateCourse(Long id, AbroadCourse abroadCourse, String role, String email) {
+    public AbroadCourse updateCourse(Long id, AbroadCourse abroadCourse, MultipartFile image, String role, String email) {
         if (!permissionService.hasPermission(role, email, "PUT")) {
             throw new AccessDeniedException("No permission to update Course");
         }
@@ -77,6 +85,7 @@ public class CourseServiceImpl implements CourseService {
         AbroadCourse existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
+        // Field updates
         existing.setCourseName(abroadCourse.getCourseName() != null ? abroadCourse.getCourseName() : existing.getCourseName());
         existing.setTutionFees(abroadCourse.getTutionFees() != null ? abroadCourse.getTutionFees() : existing.getTutionFees());
         existing.setApplicationFees(abroadCourse.getApplicationFees() != null ? abroadCourse.getApplicationFees() : existing.getApplicationFees());
@@ -89,7 +98,6 @@ public class CourseServiceImpl implements CourseService {
         existing.setAcademicRequirements(abroadCourse.getAcademicRequirements()!=null?abroadCourse.getAcademicRequirements():existing.getAcademicRequirements());
         existing.setEnglishExamRequirements(abroadCourse.getEnglishExamRequirements()!=null?abroadCourse.getEnglishExamRequirements():existing.getEnglishExamRequirements());
         existing.setExamScore(abroadCourse.getExamScore()!=null?abroadCourse.getExamScore():existing.getExamScore());
-        existing.setAcademicRequirements(abroadCourse.getAcademicRequirements()!=null?abroadCourse.getAcademicRequirements():existing.getAcademicRequirements());
         existing.setAdditionalRequirements(abroadCourse.getAdditionalRequirements()!=null?abroadCourse.getAdditionalRequirements():existing.getAdditionalRequirements());
         existing.setCity(abroadCourse.getCity()!=null?abroadCourse.getCity():existing.getCity());
         existing.setLocation(abroadCourse.getLocation()!=null?abroadCourse.getLocation():existing.getLocation());
@@ -99,6 +107,18 @@ public class CourseServiceImpl implements CourseService {
         existing.setHostelFees(abroadCourse.getHostelFees()!=null?abroadCourse.getHostelFees():existing.getHostelFees());
         existing.setContractType(abroadCourse.getContractType()!=null?abroadCourse.getContractType():existing.getContractType());
         existing.setExamType(abroadCourse.getExamType()!=null?abroadCourse.getExamType():existing.getExamType());
+
+        try {
+            if (image != null && !image.isEmpty()) {
+                if (existing.getImage() != null) {
+                    s3Service.deleteImage(existing.getImage());
+                }
+                String newImageUrl = s3Service.uploadImage(image);
+                existing.setImage(newImageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update course image", e);
+        }
 
         return repository.save(existing);
     }

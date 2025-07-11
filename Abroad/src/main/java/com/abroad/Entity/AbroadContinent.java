@@ -21,6 +21,8 @@ public class AbroadContinent {
 
     private String continentname;
 
+    private String image;
+
     @OneToMany(mappedBy = "abroadContinent",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<AbroadCountry> abroadCountries;

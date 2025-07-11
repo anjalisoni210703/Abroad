@@ -22,6 +22,7 @@ public class AbroadCountry {
     private Long id;
 
     private String country;
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "continent_id")

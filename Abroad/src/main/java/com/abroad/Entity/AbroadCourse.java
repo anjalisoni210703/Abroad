@@ -44,6 +44,8 @@ public class AbroadCourse {
         private String hostelFees;
         private String contractType;
         private String examType;
+        private String image;
+
         @ManyToOne
         @JoinColumn(name = "stream_id")
         @JsonIgnore
