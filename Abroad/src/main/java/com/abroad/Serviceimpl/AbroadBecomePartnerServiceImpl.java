@@ -21,14 +21,14 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
     private PermissionService permissionService;
 
     @Override
-    public AbroadBecomePartner createPartner(AbroadBecomePartner partner, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create partner");
-        }
+    public AbroadBecomePartner createPartner(AbroadBecomePartner partner) {
+//        if (!permissionService.hasPermission(role, email, "POST")) {
+//            throw new AccessDeniedException("No permission to create partner");
+//        }
 
 //        String branchCode = permissionService.fetchBranchCode(role, email);
-        partner.setCreatedByEmail(email);
-        partner.setRole(role);
+//        partner.setCreatedByEmail(email);
+//        partner.setRole(role);
 //        partner.setBranchCode(branchCode);
 
         return repository.save(partner);

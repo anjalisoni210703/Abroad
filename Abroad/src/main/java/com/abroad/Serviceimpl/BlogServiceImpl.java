@@ -58,10 +58,10 @@ public class BlogServiceImpl implements BlogService {
 
 
     @Override
-    public AbroadBlog getBlogById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Blog");
-        }
+    public AbroadBlog getBlogById(Long id) {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view Blog");
+//        }
 
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));

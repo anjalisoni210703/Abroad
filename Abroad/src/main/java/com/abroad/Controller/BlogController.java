@@ -49,10 +49,8 @@ public class BlogController {
     }
 
     @GetMapping("/getBlogById/{id}")
-    public ResponseEntity<AbroadBlog> getBlogById(@PathVariable Long id,
-                                                  @RequestParam String role,
-                                                  @RequestParam String email) {
-        return ResponseEntity.ok(service.getBlogById(id, role, email));
+    public ResponseEntity<AbroadBlog> getBlogById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getBlogById(id));
     }
 
     @DeleteMapping("/deleteBlog/{id}")

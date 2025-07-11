@@ -16,10 +16,8 @@ public class AbroadBecomePartnerController {
     private AbroadBecomePartnerService service;
 
     @PostMapping("/createPartner")
-    public ResponseEntity<AbroadBecomePartner> createPartner(@RequestBody AbroadBecomePartner partner,
-                                                             @RequestParam String role,
-                                                             @RequestParam String email) {
-        return ResponseEntity.ok(service.createPartner(partner, role, email));
+    public ResponseEntity<AbroadBecomePartner> createPartner(@RequestBody AbroadBecomePartner partner) {
+        return ResponseEntity.ok(service.createPartner(partner));
     }
 
     @GetMapping("/getAllPartners")
