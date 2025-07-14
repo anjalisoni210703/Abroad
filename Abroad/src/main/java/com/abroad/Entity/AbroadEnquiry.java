@@ -53,6 +53,11 @@ public class AbroadEnquiry {
     private String year;
     private String amount;
     private String remark;
+    private String conductBy;
+    private String gap;
+    private String gapYear;
+    private String entranceExam;
+    private String score;
 
     @Email
     private String createdByEmail;
