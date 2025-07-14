@@ -1,52 +1,49 @@
 package com.abroad.Controller;
 
 import com.abroad.Entity.AbroadExam;
-import com.abroad.Service.AbroadExamService;
+import com.abroad.Serviceimpl.AbroadExamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@CrossOrigin(origins = "https://wayabroad.in")
 public class AbroadExamController {
 
     @Autowired
-    private AbroadExamService service;
+    private AbroadExamServiceImpl abroadExamService;
 
-    @PostMapping("/createExam")
-    public ResponseEntity<AbroadExam> createExam(@RequestBody AbroadExam exam,
-                                                 @RequestParam String role,
-                                                 @RequestParam String email) {
-        return ResponseEntity.ok(service.createExam(exam, role, email));
-    }
-
-    @GetMapping("/getAllExams")
-    public ResponseEntity<List<AbroadExam>> getAllExams() {
-        return ResponseEntity.ok(service.getAllExams());
+    @PostMapping("/addExam")
+    public ResponseEntity<AbroadExam> addExam(@RequestParam String role,
+                                              @RequestParam String email,
+                                              @RequestBody AbroadExam exam){
+        return ResponseEntity.ok(abroadExamService.addExam(role, email, exam));
     }
 
     @GetMapping("/getExamById/{id}")
-    public ResponseEntity<AbroadExam> getExamById(@PathVariable Long id,
-                                                  @RequestParam String role,
-                                                  @RequestParam String email) {
-        return ResponseEntity.ok(service.getExamById(id, role, email));
+    public ResponseEntity<AbroadExam> getById(@RequestParam String role,
+                                              @RequestParam String email,
+                                              @PathVariable Long id){
+        return ResponseEntity.ok(abroadExamService.getById(role, email,id));
     }
 
-    @PutMapping("/updateExam/{id}")
-    public ResponseEntity<AbroadExam> updateExam(@PathVariable Long id,
-                                                 @RequestBody AbroadExam exam,
-                                                 @RequestParam String role,
-                                                 @RequestParam String email) {
-        return ResponseEntity.ok(service.updateExam(id, exam, role, email));
+    @GetMapping("/getAllExam")
+    public ResponseEntity<?> getAll(@RequestParam String role,
+                                    @RequestParam String email){
+        return ResponseEntity.ok(abroadExamService.getAll(role, email));
+    }
+
+    @PutMapping("/updateExams/{id}")
+    public ResponseEntity<AbroadExam> update(@RequestParam String role,
+                                              @RequestParam String email,
+                                              @PathVariable Long id,
+                                              @RequestBody AbroadExam uexam){
+        return ResponseEntity.ok(abroadExamService.updateExam(id,role, email,uexam));
     }
 
     @DeleteMapping("/deleteExam/{id}")
-    public ResponseEntity<String> deleteExam(@PathVariable Long id,
-                                             @RequestParam String role,
-                                             @RequestParam String email) {
-        service.deleteExam(id, role, email);
-        return ResponseEntity.ok("Exam deleted successfully");
+    public ResponseEntity<?> delete(@RequestParam String role,
+                                    @RequestParam String email,
+                                    @PathVariable Long id){
+        return ResponseEntity.ok(abroadExamService.deleteExam(id,role, email));
     }
 }

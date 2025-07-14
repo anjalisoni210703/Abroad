@@ -5,71 +5,54 @@ import com.abroad.Repository.AbroadExamRepository;
 import com.abroad.Service.AbroadExamService;
 import com.abroad.Service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AbroadExamServiceImpl implements AbroadExamService {
 
     @Autowired
-    private AbroadExamRepository repository;
+    private AbroadExamRepository abroadExamRepository;
 
     @Autowired
     private PermissionService permissionService;
 
     @Override
-    public AbroadExam createExam(AbroadExam exam, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create Exam");
+    public AbroadExam addExam(String role, String email, AbroadExam exam){
+        if(!permissionService.hasPermission(role,email,"Post")){
+            throw new RuntimeException("Access Denied");
         }
-
-        exam.setCreatedByEmail(email);
-        exam.setRole(role);
-        return repository.save(exam);
+        return abroadExamRepository.save(exam);
     }
 
     @Override
-    public List<AbroadExam> getAllExams() {
-        return repository.findAll();
+    public AbroadExam getById(String role, String email, Long id){
+        return abroadExamRepository.findById(id).get();
     }
 
     @Override
-    public AbroadExam getExamById(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Exam");
-        }
-
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Exam not found"));
+    public List<AbroadExam> getAll(String role, String email){
+        return abroadExamRepository.findAll();
     }
 
     @Override
-    public AbroadExam updateExam(Long id, AbroadExam exam, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "PUT")) {
-            throw new AccessDeniedException("No permission to update Exam");
+    public AbroadExam updateExam(Long id, String role, String email, AbroadExam uexam){
+        if(!permissionService.hasPermission(role,email,"Put")){
+            throw new RuntimeException("Access Denied");
         }
-
-        AbroadExam existing = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Exam not found"));
-
-        existing.setName(exam.getName() != null ? exam.getName() : existing.getName());
-        existing.setContactNumber(exam.getContactNumber() != null ? exam.getContactNumber() : existing.getContactNumber());
-        existing.setExamName(exam.getExamName() != null ? exam.getExamName() : existing.getExamName());
-
-        return repository.save(existing);
+        AbroadExam existingExam=abroadExamRepository.findById(id).get();
+        existingExam.setExamName(uexam.getExamName());
+        return  abroadExamRepository.save(existingExam);
     }
 
     @Override
-    public void deleteExam(Long id, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "DELETE")) {
-            throw new AccessDeniedException("No permission to delete Exam");
+    public Void deleteExam(Long id, String role, String email){
+        if(!permissionService.hasPermission(role,email,"Delete")){
+            throw new RuntimeException("Access Denied");
         }
-
-        AbroadExam exam = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Exam not found"));
-
-        repository.delete(exam);
+        abroadExamRepository.deleteById(id);
+        return null;
     }
 }
