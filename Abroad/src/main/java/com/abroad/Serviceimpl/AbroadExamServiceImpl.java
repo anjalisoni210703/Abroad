@@ -28,12 +28,12 @@ public class AbroadExamServiceImpl implements AbroadExamService {
     }
 
     @Override
-    public AbroadExam getById(String role, String email, Long id){
+    public AbroadExam getById(Long id){
         return abroadExamRepository.findById(id).get();
     }
 
     @Override
-    public List<AbroadExam> getAll(String role, String email){
+    public List<AbroadExam> getAll(){
         return abroadExamRepository.findAll();
     }
 

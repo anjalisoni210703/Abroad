@@ -9,9 +9,9 @@ import java.util.List;
 public interface AbroadExamService {
     AbroadExam addExam(String role, String email, AbroadExam exam);
 
-    AbroadExam getById(String role, String email, Long id);
+    AbroadExam getById( Long id);
 
-    List<AbroadExam> getAll(String role, String email);
+    List<AbroadExam> getAll();
 
     AbroadExam updateExam(Long id, String role, String email, AbroadExam uexam);
 

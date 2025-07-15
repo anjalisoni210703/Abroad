@@ -35,7 +35,7 @@ public class AbroadBecomePartner {
     private String state;
     private String status;
     private String conductedBy;
-    private String contracType;
+    private String contractType;
     private String instituteType;
     private String university;
     private String commissionPercent;
