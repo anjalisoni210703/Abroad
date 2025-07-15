@@ -61,6 +61,7 @@ public class AbroadEnquiry {
     private Boolean fatherITR;
     private Boolean yearITR;
     private Boolean amountITR;
+    private Boolean hasPassport;
 
     @Email
     private String createdByEmail;
