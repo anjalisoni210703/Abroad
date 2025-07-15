@@ -45,6 +45,7 @@ public class AbroadCourse {
         private String contractType;
         private String examType;
         private String image;
+        private String applicationLink;
 
         @ManyToOne
         @JoinColumn(name = "stream_id")
