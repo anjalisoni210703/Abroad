@@ -5,7 +5,9 @@ import com.abroad.Service.AbroadBecomePartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -48,4 +50,18 @@ public class AbroadBecomePartnerController {
         service.deletePartner(id, role, email);
         return ResponseEntity.ok("Partner deleted successfully");
     }
+
+    @PostMapping("/uploadPdf/{id}")
+    public ResponseEntity<?> uploadPdf(@PathVariable Long id,
+                                       @RequestParam String role,
+                                       @RequestParam String email,
+                                       @RequestParam("contract") MultipartFile contract,
+                                       @RequestParam("commission") MultipartFile commission,
+                                       @RequestParam("pan") MultipartFile pan,
+                                        @RequestParam("gst") MultipartFile gst) throws IOException {
+
+            return ResponseEntity.ok(service.UploadPdf(id, role, email, contract, commission, gst,pan));
+
+    }
+
 }

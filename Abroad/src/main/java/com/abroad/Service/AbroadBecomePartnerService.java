@@ -1,13 +1,22 @@
 package com.abroad.Service;
 
 import com.abroad.Entity.AbroadBecomePartner;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface AbroadBecomePartnerService {
     AbroadBecomePartner createPartner(AbroadBecomePartner partner);
+
     List<AbroadBecomePartner> getAllPartners(String role, String email);
+
     AbroadBecomePartner getPartnerById(Long id, String role, String email);
+
     AbroadBecomePartner updatePartner(Long id, AbroadBecomePartner partner, String role, String email);
+
     void deletePartner(Long id, String role, String email);
+
+    Map<String, Map<String,String>> UploadPdf(Long id, String role, String email, MultipartFile contract, MultipartFile commission, MultipartFile gst, MultipartFile pan) throws IOException;
 }

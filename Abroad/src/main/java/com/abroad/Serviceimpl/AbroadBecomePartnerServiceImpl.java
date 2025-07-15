@@ -5,11 +5,16 @@ import com.abroad.Exception.ResourceNotFoundException;
 import com.abroad.Repository.AbroadBecomePartnerRepository;
 import com.abroad.Service.AbroadBecomePartnerService;
 import com.abroad.Service.PermissionService;
+import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerService {
@@ -19,6 +24,9 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private S3Service s3Service;
 
     @Override
     public AbroadBecomePartner createPartner(AbroadBecomePartner partner) {
@@ -93,5 +101,26 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
                 .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
 
         repository.deleteById(id);
+    }
+
+    @Override
+    public Map<String,Map<String,String>> UploadPdf(Long id, String role, String email, MultipartFile contract, MultipartFile commission, MultipartFile gst, MultipartFile pan) throws IOException {
+        if (!permissionService.hasPermission(role, email, "Post")) {
+            throw new AccessDeniedException("Access Denied");
+        }
+        AbroadBecomePartner partner=repository.findById(id).get();
+        partner.setContractPdf(s3Service.uploadImage(contract));
+        partner.setCommissionPdf(s3Service.uploadImage(commission));
+        partner.setGstPdf(s3Service.uploadImage(gst));
+        partner.setPanPdf(s3Service.uploadImage(pan));
+        repository.save(partner);
+        Map<String,String> pdfUrls=new HashMap<>();
+        pdfUrls.put("Pan",partner.getPanPdf());
+        pdfUrls.put("GSt",partner.getGstPdf());
+        pdfUrls.put("Commission",partner.getCommissionPdf());
+        pdfUrls.put("Contract",partner.getContractPdf());
+        Map<String,Map<String,String>> urls=new HashMap<>();
+        urls.put("PDFs",pdfUrls);
+        return urls;
     }
 }

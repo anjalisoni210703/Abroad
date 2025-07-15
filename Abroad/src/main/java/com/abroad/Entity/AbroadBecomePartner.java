@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,20 @@ public class AbroadBecomePartner {
     private String partnerPincode;
     private String state;
     private String status;
+    private String conductedBy;
+    private String contracType;
+    private String instituteType;
+    private String university;
+    private String commissionPercent;
+    private String remark;
+    private String designation;
+    @Pattern(regexp = "^[1-9]\\d{9}$", message = "Phone number must be upto 10 digits")
+    private String mobileNo;
+
+    private String contractPdf;
+    private String commissionPdf;
+    private String panPdf;
+    private String gstPdf;
 
     @Email
     private String createdByEmail;
