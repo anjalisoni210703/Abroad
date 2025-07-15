@@ -58,10 +58,10 @@ public class AbroadEnquiry {
     private String gapYear;
     private String entranceExam;
     private String score;
-    private Boolean fatherITR;
-    private Boolean yearITR;
-    private Boolean amountITR;
-    private Boolean hasPassport;
+    private String fatherITR;
+    private String  yearITR;
+    private String amountITR;
+    private String  hasPassport;
 
     @Email
     private String createdByEmail;
