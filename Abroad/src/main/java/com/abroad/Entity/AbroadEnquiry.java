@@ -58,6 +58,9 @@ public class AbroadEnquiry {
     private String gapYear;
     private String entranceExam;
     private String score;
+    private Boolean fatherITR;
+    private Boolean yearITR;
+    private Boolean amountITR;
 
     @Email
     private String createdByEmail;
