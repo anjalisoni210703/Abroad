@@ -35,14 +35,20 @@ public class AbroadBecomePartner {
     private String state;
     private String status;
     private String conductedBy;
-    private String contracType;
+    private String contractType;
     private String instituteType;
     private String university;
     private String commissionPercent;
     private String remark;
     private String designation;
+
     @Pattern(regexp = "^[1-9]\\d{9}$", message = "Phone number must be upto 10 digits")
     private String mobileNo;
+    private String businessContact;
+    private String authorDesignation;
+
+    @Email
+    private String businessEmail;
 
     private String contractPdf;
     private String commissionPdf;

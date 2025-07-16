@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "https://wayabroad.in")
 public class AbroadExamController {
 
     @Autowired
@@ -20,16 +21,13 @@ public class AbroadExamController {
     }
 
     @GetMapping("/getExamById/{id}")
-    public ResponseEntity<AbroadExam> getById(@RequestParam String role,
-                                              @RequestParam String email,
-                                              @PathVariable Long id){
-        return ResponseEntity.ok(abroadExamService.getById(role, email,id));
+    public ResponseEntity<AbroadExam> getById(@PathVariable Long id){
+        return ResponseEntity.ok(abroadExamService.getById(id));
     }
 
     @GetMapping("/getAllExam")
-    public ResponseEntity<?> getAll(@RequestParam String role,
-                                    @RequestParam String email){
-        return ResponseEntity.ok(abroadExamService.getAll(role, email));
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(abroadExamService.getAll());
     }
 
     @PutMapping("/updateExams/{id}")
