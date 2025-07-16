@@ -87,6 +87,21 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
         existing.setPartnerPincode(updated.getPartnerPincode()!=null?updated.getPartnerPincode():existing.getPartnerPincode());
         existing.setState(updated.getState()!=null?updated.getState():existing.getState());
         existing.setStatus(updated.getStatus()!=null?updated.getStatus():existing.getStatus());
+        existing.setBusinessEmail(updated.getBusinessEmail()!=null?updated.getBusinessEmail():existing.getBusinessEmail());
+        existing.setBusinessName(updated.getBusinessName()!=null?updated.getBusinessName():existing.getBusinessName());
+        existing.setBusinessContact(updated.getBusinessContact()!=null?updated.getBusinessContact():existing.getBusinessContact());
+        existing.setRemark(updated.getRemark()!=null?updated.getRemark():existing.getRemark());
+        existing.setCommissionPercent(updated.getCommissionPercent()!=null?updated.getCommissionPercent():existing.getCommissionPercent());
+        existing.setAuthorDesignation(updated.getAuthorDesignation()!=null?updated.getAuthorDesignation():existing.getAuthorDesignation());
+        existing.setConductedBy(updated.getConductedBy()!=null?updated.getConductedBy():existing.getConductedBy());
+        existing.setDesignation(updated.getDesignation()!=null?updated.getDesignation():existing.getDesignation());
+        existing.setContractType(updated.getContractType()!=null?updated.getContractType():existing.getContractType());
+        existing.setInstituteType(updated.getInstituteType()!=null?updated.getInstituteType():existing.getInstituteType());
+        existing.setUniversity(updated.getUniversity()!=null?updated.getUniversity():existing.getUniversity());
+        existing.setMobileNo(updated.getMobileNo()!=null?updated.getMobileNo():existing.getMobileNo());
+        existing.setAuthorName(updated.getAuthorName()!=null?updated.getAuthorName():existing.getAuthorName());
+        existing.setAuthorEmail(updated.getAuthorEmail()!=null?updated.getAuthorEmail():existing.getAuthorEmail());
+        existing.setAuthorcontact(updated.getAuthorcontact()!=null?updated.getAuthorcontact():existing.getAuthorcontact());
 
         return repository.save(existing);
     }

@@ -58,7 +58,7 @@ public class AbroadBecomePartnerController {
                                        @RequestParam("contract") MultipartFile contract,
                                        @RequestParam("commission") MultipartFile commission,
                                        @RequestParam("pan") MultipartFile pan,
-                                        @RequestParam("gst") MultipartFile gst) throws IOException {
+                                       @RequestParam("gst") MultipartFile gst) throws IOException {
 
             return ResponseEntity.ok(service.UploadPdf(id, role, email, contract, commission, gst,pan));
 
