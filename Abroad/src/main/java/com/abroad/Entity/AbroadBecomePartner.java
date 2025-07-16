@@ -46,6 +46,9 @@ public class AbroadBecomePartner {
     private String mobileNo;
     private String businessContact;
     private String authorDesignation;
+    private String authorName;
+    private String authorEmail;
+    private String authorcontact;
 
     @Email
     private String businessEmail;
