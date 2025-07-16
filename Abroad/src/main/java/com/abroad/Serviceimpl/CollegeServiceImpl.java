@@ -37,7 +37,7 @@ public class CollegeServiceImpl implements CollegeService {
         abroadCollege.setCreatedByEmail(email);
         abroadCollege.setRole(role);
 //        abroadCollege.setBranchCode(branchCode);
-//        abroadCollege.setAbroadUniversity(university);
+        abroadCollege.setAbroadUniversity(university);
 
         return repository.save(abroadCollege);
     }

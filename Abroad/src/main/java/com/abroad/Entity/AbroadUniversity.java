@@ -27,20 +27,25 @@ public class AbroadUniversity {
     private String role;
 //    private String branchCode;
 
-//    @OneToMany(mappedBy = "abroadUniversity", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<AbroadCollege> abroadColleges;
+    @OneToMany(mappedBy = "abroadUniversity", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbroadCollege> abroadColleges;
 
     @OneToMany(mappedBy = "abroadUniversity",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<AbroadEnquiry> abroadEnquiries;
 
     @ManyToOne
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "city_id")
     @JsonIgnore
-    private AbroadCountry abroadCountry;
+    private AbroadCity abroadCity;
 
-    @OneToMany(mappedBy = "abroadUniversity",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbroadStream> abroadStream;
+//    @ManyToOne
+//    @JoinColumn(name = "country_id") // This is the fix
+//    @JsonIgnore
+//    private AbroadCountry abroadCountry;
+
+//    @OneToMany(mappedBy = "abroadUniversity",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<AbroadStream> abroadStream;
 }

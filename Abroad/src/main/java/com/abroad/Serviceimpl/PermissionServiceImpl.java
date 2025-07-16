@@ -57,16 +57,16 @@ public class PermissionServiceImpl implements PermissionService {
                     default -> false;
                 };
             }
-            case "USER" -> {
-                Map<String, Object> perms = abroadUserService.getPermissionsByEmail(email);
-                yield switch (action.toUpperCase()) {
-                    case "GET" -> Boolean.TRUE.equals(perms.get("candGet"));
-                    case "POST" -> Boolean.TRUE.equals(perms.get("candPost"));
-                    case "PUT" -> Boolean.TRUE.equals(perms.get("candPut"));
-                    case "DELETE" -> Boolean.TRUE.equals(perms.get("candDelete"));
-                    default -> false;
-                };
-            }
+//            case "USER" -> {
+//                Map<String, Object> perms = abroadUserService.getPermissionsByEmail(email);
+//                yield switch (action.toUpperCase()) {
+//                    case "GET" -> Boolean.TRUE.equals(perms.get("candGet"));
+//                    case "POST" -> Boolean.TRUE.equals(perms.get("candPost"));
+//                    case "PUT" -> Boolean.TRUE.equals(perms.get("candPut"));
+//                    case "DELETE" -> Boolean.TRUE.equals(perms.get("candDelete"));
+//                    default -> false;
+//                };
+//            }
             case "SUPERADMIN" -> {
                 Map<String, Object> perms = staffService.getCrudPermissionForAdminByEmail(email);
                 yield switch (action.toUpperCase()) {
@@ -101,9 +101,9 @@ public class PermissionServiceImpl implements PermissionService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            case "USER" -> abroadUserService.getUserByEmail(email)
-                    .map(AbroadUser::getBranchCode)
-                    .orElse(null);
+//            case "USER" -> abroadUserService.getUserByEmail(email)
+//                    .map(AbroadUser::getBranchCode)
+//                    .orElse(null);
             case "SUPERADMIN" -> null;
             default -> throw new IllegalArgumentException("Invalid role: " + role);
         };

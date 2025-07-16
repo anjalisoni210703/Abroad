@@ -13,10 +13,14 @@ public interface CourseService {
     void deleteCourse(Long id, String role, String email);
 
     List<AbroadCourse> filterCourses(List<Long> streamIds,
+                                     List<Long> collegeIds,
                                      List<Long> universityIds,
+                                     List<Long> cityIds,
+                                     List<Long> stateIds,
                                      List<Long> countryIds,
                                      List<Long> continentIds,
                                      String role,
                                      String email);
+
 
 }

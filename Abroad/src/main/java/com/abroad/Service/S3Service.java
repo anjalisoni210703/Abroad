@@ -45,7 +45,7 @@ public class S3Service {
         }
 
         // Use original file name
-        String fileKey = "/abroad-sys/doct/" + originalFilename;
+        String fileKey = "abroad-sys/doct/" + originalFilename;
 
         // Save file temporarily
         java.nio.file.Path tempPath = Files.createTempFile("upload-", originalFilename);
@@ -69,7 +69,7 @@ public class S3Service {
     public void deleteImage(String fileUrl) {
         try {
             // Extract S3 key from URL
-            String key = fileUrl.substring(fileUrl.indexOf(SYSTEM_NAME + "/"));
+            String key = fileUrl.substring(fileUrl.indexOf(SYSTEM_NAME));
 
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                     .bucket(bucketName)

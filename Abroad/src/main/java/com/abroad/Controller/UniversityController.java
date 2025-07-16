@@ -24,12 +24,12 @@ public class UniversityController {
                                                              @RequestParam(value = "image", required = false) MultipartFile image,
                                                              @RequestParam String role,
                                                              @RequestParam String email,
-                                                             @RequestParam Long countryId) throws JsonProcessingException {
+                                                             @RequestParam Long cityId) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadUniversity abroadUniversity = mapper.readValue(universityJson, AbroadUniversity.class);
-        return ResponseEntity.ok(service.createUniversity(abroadUniversity, image, role, email, countryId));
+        return ResponseEntity.ok(service.createUniversity(abroadUniversity, image, role, email, cityId));
     }
 
     @PutMapping("/updateUniversity/{id}")
@@ -46,8 +46,8 @@ public class UniversityController {
     @GetMapping("/getAllUniversities")
     public ResponseEntity<List<AbroadUniversity>> getAllUniversities(@RequestParam String role,
                                                                      @RequestParam String email,
-                                                                     @RequestParam(required = false) Long countryId) {
-        return ResponseEntity.ok(service.getAllUniversities(role, email, countryId));
+                                                                     @RequestParam(required = false) Long cityId) {
+        return ResponseEntity.ok(service.getAllUniversities(role, email, cityId));
     }
 
     @GetMapping("/getUniversityById/{id}")

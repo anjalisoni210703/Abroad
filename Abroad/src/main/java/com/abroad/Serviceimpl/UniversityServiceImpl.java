@@ -1,6 +1,7 @@
 package com.abroad.Serviceimpl;
 
 import com.abroad.Entity.AbroadUniversity;
+import com.abroad.Repository.CityRepository;
 import com.abroad.Repository.CountryRepository;
 import com.abroad.Repository.UniversityRepository;
 import com.abroad.Service.PermissionService;
@@ -24,13 +25,13 @@ public class UniversityServiceImpl implements UniversityService {
     private PermissionService permissionService;
 
     @Autowired
-    private CountryRepository countryRepository;
+    private CityRepository countryRepository;
 
     @Autowired
     private S3Service s3Service;
 
     @Override
-    public AbroadUniversity createUniversity(AbroadUniversity abroadUniversity, MultipartFile image, String role, String email, Long countryId) {
+    public AbroadUniversity createUniversity(AbroadUniversity abroadUniversity, MultipartFile image, String role, String email, Long cityId) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create University");
         }
@@ -49,21 +50,21 @@ public class UniversityServiceImpl implements UniversityService {
         abroadUniversity.setCreatedByEmail(email);
         abroadUniversity.setRole(role);
 //        abroadUniversity.setBranchCode(branchCode);
-        abroadUniversity.setAbroadCountry(
-                countryRepository.findById(countryId).orElseThrow(() -> new RuntimeException("Country not found"))
+        abroadUniversity.setAbroadCity(
+                countryRepository.findById(cityId).orElseThrow(() -> new RuntimeException("Country not found"))
         );
 
         return repository.save(abroadUniversity);
     }
 
     @Override
-    public List<AbroadUniversity> getAllUniversities(String role, String email, Long countryId) {
+    public List<AbroadUniversity> getAllUniversities(String role, String email, Long cityId) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Universities");
         }
 
-        if (countryId != null) {
-            return repository.findAllByBranchCodeAndCountry( countryId);
+        if (cityId != null) {
+            return repository.findAllByBranchCodeAndCountry( cityId);
         } else {
             return repository.findAll();
         }

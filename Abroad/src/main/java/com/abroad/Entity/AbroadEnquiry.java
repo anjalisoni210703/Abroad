@@ -98,4 +98,13 @@ public class AbroadEnquiry {
     @JsonIgnore
     private AbroadCollege abroadCollege;
 
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    @JsonIgnore
+    private AbroadCity abroadCity;
+
+    @ManyToOne
+    @JoinColumn(name = "state_id")
+    @JsonIgnore
+    private AbroadState abroadState;
 }
