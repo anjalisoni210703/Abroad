@@ -137,7 +137,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<AbroadCourse> filterCourses(List<Long> streamIds,
+                                            List<Long> collegeIds,
                                             List<Long> universityIds,
+                                            List<Long> cityIds,
+                                            List<Long> stateIds,
                                             List<Long> countryIds,
                                             List<Long> continentIds,
                                             String role,
@@ -147,13 +150,15 @@ public class CourseServiceImpl implements CourseService {
             throw new AccessDeniedException("No permission to filter Courses");
         }
 
-        // Null check conversion: if the lists are empty, convert to null to enable filtering
         streamIds = (streamIds != null && !streamIds.isEmpty()) ? streamIds : null;
+        collegeIds = (collegeIds != null && !collegeIds.isEmpty()) ? collegeIds : null;
         universityIds = (universityIds != null && !universityIds.isEmpty()) ? universityIds : null;
+        cityIds = (cityIds != null && !cityIds.isEmpty()) ? cityIds : null;
+        stateIds = (stateIds != null && !stateIds.isEmpty()) ? stateIds : null;
         countryIds = (countryIds != null && !countryIds.isEmpty()) ? countryIds : null;
         continentIds = (continentIds != null && !continentIds.isEmpty()) ? continentIds : null;
 
-        return repository.filterCourses(streamIds, universityIds, countryIds, continentIds);
+        return repository.filterCourses(streamIds, collegeIds, universityIds, cityIds, stateIds, countryIds, continentIds);
     }
 
 

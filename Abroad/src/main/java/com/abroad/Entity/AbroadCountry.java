@@ -29,13 +29,17 @@ public class AbroadCountry {
     @JsonIgnore
     private AbroadContinent abroadContinent;
 
-    @OneToMany(mappedBy = "abroadCountry",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbroadUniversity> university;
+//    @OneToMany(mappedBy = "abroadCountry",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<AbroadUniversity> university;
 
     @OneToMany(mappedBy = "abroadCountry",cascade =CascadeType.ALL )
     @JsonIgnore
     private List<AbroadEnquiry> abroadEnquiries;
+
+    @OneToMany(mappedBy = "abroadCountry",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbroadState> abroadStates;
 
     @Email
     private String createdByEmail;

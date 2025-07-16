@@ -66,13 +66,30 @@ public class CourseController {
     }
 
     @GetMapping("/filterCourses")
-    public ResponseEntity<List<AbroadCourse>> filterCourses(@RequestParam(required = false) List<Long> streamIds,
-                                                            @RequestParam(required = false) List<Long> universityIds,
-                                                            @RequestParam(required = false) List<Long> countryIds,
-                                                            @RequestParam(required = false) List<Long> continentIds,
-                                                            @RequestParam String role,
-                                                            @RequestParam String email) {
-        return ResponseEntity.ok(service.filterCourses(streamIds, universityIds, countryIds, continentIds, role, email));
+    public ResponseEntity<List<AbroadCourse>> filterCourses(
+            @RequestParam(required = false) List<Long> streamIds,
+            @RequestParam(required = false) List<Long> collegeIds,
+            @RequestParam(required = false) List<Long> universityIds,
+            @RequestParam(required = false) List<Long> cityIds,
+            @RequestParam(required = false) List<Long> stateIds,
+            @RequestParam(required = false) List<Long> countryIds,
+            @RequestParam(required = false) List<Long> continentIds,
+            @RequestParam String role,
+            @RequestParam String email) {
+
+        List<AbroadCourse> result = service.filterCourses(
+                streamIds,
+                collegeIds,
+                universityIds,
+                cityIds,
+                stateIds,
+                countryIds,
+                continentIds,
+                role,
+                email
+        );
+
+        return ResponseEntity.ok(result);
     }
 
 }
