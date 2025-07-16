@@ -21,7 +21,7 @@ public class CourseController {
 
     @PostMapping("/createCourse")
     public ResponseEntity<AbroadCourse> createCourseWithImage(@RequestPart("course") String courseJson,
-                                                              @RequestParam("image") MultipartFile image,
+                                                              @RequestParam(value = "image",required = false) MultipartFile image,
                                                               @RequestParam String role,
                                                               @RequestParam String email,
                                                               @RequestParam Long streamId) throws JsonProcessingException {
