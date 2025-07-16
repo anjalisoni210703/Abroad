@@ -45,7 +45,7 @@ public class AbroadBecomePartner {
     @Pattern(regexp = "^[1-9]\\d{9}$", message = "Phone number must be upto 10 digits")
     private String mobileNo;
     private String businessContact;
-    private String authorDesg;
+    private String authorDesignation;
 
     @Email
     private String businessEmail;
