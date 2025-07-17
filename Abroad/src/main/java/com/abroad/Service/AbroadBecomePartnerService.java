@@ -1,6 +1,7 @@
 package com.abroad.Service;
 
 import com.abroad.Entity.AbroadBecomePartner;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.Map;
 public interface AbroadBecomePartnerService {
     AbroadBecomePartner createPartner(AbroadBecomePartner partner);
 
-    List<AbroadBecomePartner> getAllPartners(String role, String email);
+    Page<AbroadBecomePartner> getAllPartners(String role, String email, int page, int size, AbroadBecomePartner partner);
 
     AbroadBecomePartner getPartnerById(Long id, String role, String email);
 

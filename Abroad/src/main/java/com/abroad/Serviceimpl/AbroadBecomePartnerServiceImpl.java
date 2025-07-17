@@ -2,18 +2,22 @@ package com.abroad.Serviceimpl;
 
 import com.abroad.Entity.AbroadBecomePartner;
 import com.abroad.Exception.ResourceNotFoundException;
+import com.abroad.Pagination.PatnerSpecification;
 import com.abroad.Repository.AbroadBecomePartnerRepository;
 import com.abroad.Service.AbroadBecomePartnerService;
 import com.abroad.Service.PermissionService;
 import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,12 +47,14 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
     }
 
     @Override
-    public List<AbroadBecomePartner> getAllPartners(String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
+    public Page<AbroadBecomePartner> getAllPartners(String role, String email, int page, int size, AbroadBecomePartner partner) {
+        if (!permissionService.hasPermission(role, email, "Post")) {
             throw new AccessDeniedException("No permission to view partners");
         }
 //        return repository.findAllByBranchCode(branchCode);
-        return repository.findAll();
+        Pageable pageable = PageRequest.of(page,size);
+        Specification<AbroadBecomePartner> spec= PatnerSpecification.build(partner);
+        return repository.findAll(spec,pageable);
     }
 
     @Override

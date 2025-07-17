@@ -22,10 +22,13 @@ public class AbroadBecomePartnerController {
         return ResponseEntity.ok(service.createPartner(partner));
     }
 
-    @GetMapping("/getAllPartners")
-    public ResponseEntity<List<AbroadBecomePartner>> getAllPartners(@RequestParam String role,
-                                                                    @RequestParam String email) {
-        return ResponseEntity.ok(service.getAllPartners(role, email));
+    @PostMapping("/getAllPartners")
+    public ResponseEntity<?> getAllPartners(@RequestParam String role,
+                                                                    @RequestParam String email,
+                                                                    @RequestParam int page,
+                                                                    @RequestParam int size,
+                                                                    @RequestBody AbroadBecomePartner partner) {
+        return ResponseEntity.ok(service.getAllPartners(role, email,page,size,partner));
     }
 
     @GetMapping("/getPartnerById/{id}")
