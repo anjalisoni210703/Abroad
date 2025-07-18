@@ -12,7 +12,7 @@ public class CourseNameController {
     @Autowired
     private CourseNameService courseNameService;
 
-    @PostMapping("createCourseeName")
+    @PostMapping("createCourseName")
     public ResponseEntity<CourseName> createCourseName(@RequestParam String role,
                                                        @RequestParam String email,
                                                        @RequestBody CourseName courseName){
