@@ -48,13 +48,20 @@
         private CourseRepository courseRepository;
 
         @Autowired
+        private StateRepository stateRepository;
+
+        @Autowired
+        private CityRepository cityRepository;
+
+        @Autowired
         private S3Service s3Service;
 
 
         @Override
         public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email,
-                                           Long continentId, Long countryId, Long universityId,
-                                           Long streamId, Long courseId) {
+                                           Long continentId, Long countryId, Long universityId, Long courseId,
+                                           Long stateId, Long cityId, Long collegeId) {
+
             if (!permissionService.hasPermission(role, email, "POST")) {
                 throw new AccessDeniedException("No permission to create Enquiry");
             }
@@ -79,12 +86,15 @@
             continentRepository.findById(continentId).ifPresent(c -> abroadEnquiry.setContinent(c.getContinentname()));
             countryRepository.findById(countryId).ifPresent(c -> abroadEnquiry.setCountry(c.getCountry()));
             universityRepository.findById(universityId).ifPresent(u -> abroadEnquiry.setUniversity(u.getUniversityName()));
-//            collegeRepository.findById(collegeId).ifPresent(cl -> abroadEnquiry.setCollage(cl.getCollegeName()));
-            streamRepository.findById(streamId).ifPresent(s -> abroadEnquiry.setStream(s.getName()));
+//            streamRepository.findById(streamId).ifPresent(s -> abroadEnquiry.setStream(s.getName()));
             courseRepository.findById(courseId).ifPresent(c -> abroadEnquiry.setCourse(c.getCourseName()));
+            collegeRepository.findById(collegeId).ifPresent(cl -> abroadEnquiry.setCollage(cl.getCollegeName()));
+            stateRepository.findById(stateId).ifPresent(s -> abroadEnquiry.setState(s.getState()));
+            cityRepository.findById(cityId).ifPresent(c -> abroadEnquiry.setCity(c.getCity()));
 
             return repository.save(abroadEnquiry);
         }
+
 
 
 
