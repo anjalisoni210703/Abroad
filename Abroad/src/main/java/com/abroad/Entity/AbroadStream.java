@@ -25,14 +25,14 @@ public class AbroadStream {
 
     private String image;
 
-    @ManyToOne
-    @JoinColumn(name = "collage_id")
-    @JsonIgnore
-    private AbroadCollege abroadCollege;
-
-    @OneToMany(mappedBy ="abroadStream",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbroadCourse> abroadCourses;
+//    @ManyToOne
+//    @JoinColumn(name = "collage_id")
+//    @JsonIgnore
+//    private AbroadCollege abroadCollege;
+//
+//    @OneToMany(mappedBy ="abroadStream",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<AbroadCourse> abroadCourses;
 
     @OneToMany(mappedBy = "abroadStream",cascade = CascadeType.ALL)
     @JsonIgnore

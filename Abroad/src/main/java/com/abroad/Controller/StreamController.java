@@ -23,15 +23,14 @@ public class StreamController {
     public ResponseEntity<AbroadStream> createStream(@RequestPart("stream") String streamJson,
                                                      @RequestParam(value = "image", required = false) MultipartFile image,
                                                      @RequestParam String role,
-                                                     @RequestParam String email,
-                                                     @RequestParam Long collegeId) throws JsonProcessingException {
+                                                     @RequestParam String email) throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadStream abroadStream = mapper.readValue(streamJson, AbroadStream.class);
-        return ResponseEntity.ok(service.createStream(abroadStream, image, role, email, collegeId));
+        return ResponseEntity.ok(service.createStream(abroadStream, image, role, email));
     }
 
     @PutMapping("/updateStream/{id}")
@@ -46,9 +45,8 @@ public class StreamController {
 
     @GetMapping("/getAllStreams")
     public ResponseEntity<List<AbroadStream>> getAllStreams(@RequestParam String role,
-                                                            @RequestParam String email,
-                                                            @RequestParam(required = false) Long collegeId) {
-        return ResponseEntity.ok(service.getAllStreams(role, email, collegeId));
+                                                            @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllStreams(role, email));
     }
 
 

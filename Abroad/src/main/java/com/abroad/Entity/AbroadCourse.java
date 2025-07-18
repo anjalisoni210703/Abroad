@@ -47,10 +47,14 @@ public class AbroadCourse {
         private String image;
         private String applicationLink;
 
+//        @ManyToOne
+//        @JoinColumn(name = "stream_id")
+//        @JsonIgnore
+//        private AbroadStream abroadStream;
         @ManyToOne
-        @JoinColumn(name = "stream_id")
+        @JoinColumn(name = "college_id")
         @JsonIgnore
-        private AbroadStream abroadStream;
+        private AbroadCollege abroadCollege;
 
         @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
         @JsonIgnore
@@ -59,6 +63,10 @@ public class AbroadCourse {
         @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
         @JsonIgnore
         private List<AbroadUser> abroadUsers;
+
+        @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
+        @JsonIgnore
+        private List<AbroadLead> abroadLeads;
 
         @Email
         private String createdByEmail;
