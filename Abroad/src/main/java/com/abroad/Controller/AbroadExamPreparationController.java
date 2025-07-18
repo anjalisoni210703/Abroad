@@ -17,10 +17,8 @@ public class AbroadExamPreparationController {
     private AbroadExamPreparationServiceImpl service;
 
     @PostMapping("/createExamPreparation")
-    public ResponseEntity<AbroadExamPreparation> createExam(@RequestBody AbroadExamPreparation exam,
-                                                            @RequestParam String role,
-                                                            @RequestParam String email) {
-        return ResponseEntity.ok(service.createExam(exam, role, email));
+    public ResponseEntity<AbroadExamPreparation> createExam(@RequestBody AbroadExamPreparation exam) {
+        return ResponseEntity.ok(service.createExam(exam));
     }
 
     @GetMapping("/getAllExamsPreparation")

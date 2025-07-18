@@ -108,7 +108,6 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
         existing.setAuthorName(updated.getAuthorName()!=null?updated.getAuthorName():existing.getAuthorName());
         existing.setAuthorEmail(updated.getAuthorEmail()!=null?updated.getAuthorEmail():existing.getAuthorEmail());
         existing.setAuthorcontact(updated.getAuthorcontact()!=null?updated.getAuthorcontact():existing.getAuthorcontact());
-
         return repository.save(existing);
     }
 

@@ -145,6 +145,10 @@
             existing.setGapYear(abroadEnquiry.getGapYear()!=null?abroadEnquiry.getGapYear():existing.getGapYear());
             existing.setEntranceExam(abroadEnquiry.getEntranceExam()!=null?abroadEnquiry.getEntranceExam():existing.getEntranceExam());
             existing.setScore(abroadEnquiry.getScore()!=null?abroadEnquiry.getScore():existing.getScore());
+            existing.setFatherITR(abroadEnquiry.getFatherITR()!=null?abroadEnquiry.getFatherITR():existing.getFatherITR());
+            existing.setAmountITR(abroadEnquiry.getAmountITR()!=null?abroadEnquiry.getAmountITR():existing.getAmountITR());
+            existing.setYearITR(abroadEnquiry.getYearITR()!=null?abroadEnquiry.getYearITR():existing.getYearITR());
+            existing.setHasPassport(abroadEnquiry.getHasPassport()!=null?abroadEnquiry.getHasPassport():existing.getHasPassport());
             try {
                 if (image != null && !image.isEmpty()) {
                     // Delete old image if exists

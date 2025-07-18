@@ -20,13 +20,13 @@ public class AbroadExamPreparationServiceImpl implements AbroadExamPreparationSe
     private PermissionService permissionService;
 
     @Override
-    public AbroadExamPreparation createExam(AbroadExamPreparation exam, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create Exam");
-        }
-
-        exam.setCreatedByEmail(email);
-        exam.setRole(role);
+    public AbroadExamPreparation createExam(AbroadExamPreparation exam) {
+//        if (!permissionService.hasPermission(role, email, "POST")) {
+//            throw new AccessDeniedException("No permission to create Exam");
+//        }
+//
+//        exam.setCreatedByEmail(email);
+//        exam.setRole(role);
         return repository.save(exam);
     }
 
