@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseName {
+public class AbroadCourseName {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
