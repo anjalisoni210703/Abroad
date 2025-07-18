@@ -35,14 +35,14 @@ public class StreamServiceImpl implements StreamService {
     private S3Service s3Service;
 
     @Override
-    public AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email, Long collegeId) {
+    public AbroadStream createStream(AbroadStream abroadStream, MultipartFile image, String role, String email) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Stream");
         }
 
 //        String branchCode = permissionService.fetchBranchCode(role, email);
-        AbroadCollege university = universityRepository.findById(collegeId)
-                .orElseThrow(() -> new RuntimeException("College not found"));
+//        AbroadCollege university = universityRepository.findById(collegeId)
+//                .orElseThrow(() -> new RuntimeException("College not found"));
 
         if (image != null && !image.isEmpty()) {
             try {
@@ -56,20 +56,22 @@ public class StreamServiceImpl implements StreamService {
         abroadStream.setCreatedByEmail(email);
         abroadStream.setRole(role);
 //        abroadStream.setBranchCode(branchCode);
-        abroadStream.setAbroadCollege(university);
+//        abroadStream.setAbroadCollege(university);
 
         return repository.save(abroadStream);
     }
 
     @Override
-    public List<AbroadStream> getAllStreams(String role, String email, Long collegeId) {
+    public List<AbroadStream> getAllStreams(String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Streams");
         }
 
-        return (collegeId != null)
-                ? repository.findAllByBranchCodeAndCollegeId( collegeId)
-                : repository.findAll();
+        return repository.findAll();
+
+//        return (collegeId != null)
+//                ? repository.findAllByBranchCodeAndCollegeId( collegeId)
+//                : repository.findAll();
     }
 
     @Override

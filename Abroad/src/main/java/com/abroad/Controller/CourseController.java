@@ -24,13 +24,13 @@ public class CourseController {
                                                               @RequestParam(value = "image",required = false) MultipartFile image,
                                                               @RequestParam String role,
                                                               @RequestParam String email,
-                                                              @RequestParam Long streamId) throws JsonProcessingException {
+                                                              @RequestParam Long collegeId) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadCourse abroadCourse = mapper.readValue(courseJson, AbroadCourse.class);
-        return ResponseEntity.ok(service.createCourse(abroadCourse, image, role, email, streamId));
+        return ResponseEntity.ok(service.createCourse(abroadCourse, image, role, email, collegeId));
     }
 
     @PutMapping("/updateCourse/{id}")
@@ -65,31 +65,31 @@ public class CourseController {
         return ResponseEntity.ok("Course deleted successfully");
     }
 
-    @GetMapping("/filterCourses")
-    public ResponseEntity<List<AbroadCourse>> filterCourses(
-            @RequestParam(required = false) List<Long> streamIds,
-            @RequestParam(required = false) List<Long> collegeIds,
-            @RequestParam(required = false) List<Long> universityIds,
-            @RequestParam(required = false) List<Long> cityIds,
-            @RequestParam(required = false) List<Long> stateIds,
-            @RequestParam(required = false) List<Long> countryIds,
-            @RequestParam(required = false) List<Long> continentIds,
-            @RequestParam String role,
-            @RequestParam String email) {
-
-        List<AbroadCourse> result = service.filterCourses(
-                streamIds,
-                collegeIds,
-                universityIds,
-                cityIds,
-                stateIds,
-                countryIds,
-                continentIds,
-                role,
-                email
-        );
-
-        return ResponseEntity.ok(result);
-    }
+//    @GetMapping("/filterCourses")
+//    public ResponseEntity<List<AbroadCourse>> filterCourses(
+//            @RequestParam(required = false) List<Long> streamIds,
+//            @RequestParam(required = false) List<Long> collegeIds,
+//            @RequestParam(required = false) List<Long> universityIds,
+//            @RequestParam(required = false) List<Long> cityIds,
+//            @RequestParam(required = false) List<Long> stateIds,
+//            @RequestParam(required = false) List<Long> countryIds,
+//            @RequestParam(required = false) List<Long> continentIds,
+//            @RequestParam String role,
+//            @RequestParam String email) {
+//
+//        List<AbroadCourse> result = service.filterCourses(
+//                streamIds,
+//                collegeIds,
+//                universityIds,
+//                cityIds,
+//                stateIds,
+//                countryIds,
+//                continentIds,
+//                role,
+//                email
+//        );
+//
+//        return ResponseEntity.ok(result);
+//    }
 
 }

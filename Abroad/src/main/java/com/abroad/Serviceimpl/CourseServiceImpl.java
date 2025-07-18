@@ -1,7 +1,9 @@
 package com.abroad.Serviceimpl;
 
+import com.abroad.Entity.AbroadCollege;
 import com.abroad.Entity.AbroadCourse;
 import com.abroad.Entity.AbroadStream;
+import com.abroad.Repository.CollegeRepository;
 import com.abroad.Repository.CourseRepository;
 import com.abroad.Repository.StreamRepository;
 import com.abroad.Service.CourseService;
@@ -20,7 +22,7 @@ public class CourseServiceImpl implements CourseService {
     private CourseRepository repository;
 
     @Autowired
-    private StreamRepository streamRepository;
+    private CollegeRepository streamRepository;
 
     @Autowired
     private PermissionService permissionService;
@@ -29,12 +31,12 @@ public class CourseServiceImpl implements CourseService {
     private S3Service s3Service;
 
     @Override
-    public AbroadCourse createCourse(AbroadCourse abroadCourse, MultipartFile image, String role, String email, Long streamId) {
+    public AbroadCourse createCourse(AbroadCourse abroadCourse, MultipartFile image, String role, String email, Long collegeId) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Course");
         }
 
-        AbroadStream stream = streamRepository.findById(streamId)
+        AbroadCollege stream = streamRepository.findById(collegeId)
                 .orElseThrow(() -> new RuntimeException("Stream not found"));
 
         try {
@@ -46,20 +48,20 @@ public class CourseServiceImpl implements CourseService {
             throw new RuntimeException("Failed to upload course image", e);
         }
 
-        abroadCourse.setAbroadStream(stream);
+        abroadCourse.setAbroadCollege(stream);
         abroadCourse.setCreatedByEmail(email);
         abroadCourse.setRole(role);
         return repository.save(abroadCourse);
     }
 
     @Override
-    public List<AbroadCourse> getAllCourses(String role, String email, Long streamId) {
+    public List<AbroadCourse> getAllCourses(String role, String email, Long collegeId) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view Courses");
         }
 
-        if (streamId != null) {
-            return repository.findAllByBranchCodeAndStreamId( streamId);
+        if (collegeId != null) {
+            return repository.findAllByBranchCodeAndStreamId( collegeId);
         } else {
             return repository.findAll();
         }
@@ -135,31 +137,31 @@ public class CourseServiceImpl implements CourseService {
         repository.deleteById(id);
     }
 
-    @Override
-    public List<AbroadCourse> filterCourses(List<Long> streamIds,
-                                            List<Long> collegeIds,
-                                            List<Long> universityIds,
-                                            List<Long> cityIds,
-                                            List<Long> stateIds,
-                                            List<Long> countryIds,
-                                            List<Long> continentIds,
-                                            String role,
-                                            String email) {
-
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to filter Courses");
-        }
-
-        streamIds = (streamIds != null && !streamIds.isEmpty()) ? streamIds : null;
-        collegeIds = (collegeIds != null && !collegeIds.isEmpty()) ? collegeIds : null;
-        universityIds = (universityIds != null && !universityIds.isEmpty()) ? universityIds : null;
-        cityIds = (cityIds != null && !cityIds.isEmpty()) ? cityIds : null;
-        stateIds = (stateIds != null && !stateIds.isEmpty()) ? stateIds : null;
-        countryIds = (countryIds != null && !countryIds.isEmpty()) ? countryIds : null;
-        continentIds = (continentIds != null && !continentIds.isEmpty()) ? continentIds : null;
-
-        return repository.filterCourses(streamIds, collegeIds, universityIds, cityIds, stateIds, countryIds, continentIds);
-    }
+//    @Override
+//    public List<AbroadCourse> filterCourses(List<Long> streamIds,
+//                                            List<Long> collegeIds,
+//                                            List<Long> universityIds,
+//                                            List<Long> cityIds,
+//                                            List<Long> stateIds,
+//                                            List<Long> countryIds,
+//                                            List<Long> continentIds,
+//                                            String role,
+//                                            String email) {
+//
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to filter Courses");
+//        }
+//
+//        streamIds = (streamIds != null && !streamIds.isEmpty()) ? streamIds : null;
+//        collegeIds = (collegeIds != null && !collegeIds.isEmpty()) ? collegeIds : null;
+//        universityIds = (universityIds != null && !universityIds.isEmpty()) ? universityIds : null;
+//        cityIds = (cityIds != null && !cityIds.isEmpty()) ? cityIds : null;
+//        stateIds = (stateIds != null && !stateIds.isEmpty()) ? stateIds : null;
+//        countryIds = (countryIds != null && !countryIds.isEmpty()) ? countryIds : null;
+//        continentIds = (continentIds != null && !continentIds.isEmpty()) ? continentIds : null;
+//
+//        return repository.filterCourses(streamIds, collegeIds, universityIds, cityIds, stateIds, countryIds, continentIds);
+//    }
 
 
 }

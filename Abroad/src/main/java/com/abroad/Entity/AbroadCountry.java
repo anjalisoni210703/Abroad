@@ -41,6 +41,10 @@ public class AbroadCountry {
     @JsonIgnore
     private List<AbroadState> abroadStates;
 
+    @OneToMany(mappedBy = "abroadCountry",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbroadLead> abroadLeads;
+
     @Email
     private String createdByEmail;
     private String role;
