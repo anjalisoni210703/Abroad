@@ -46,7 +46,7 @@ public class AbroadCourse {
         private String examType;
         private String image;
         private String applicationLink;
-
+        private String streamName;
 //        @ManyToOne
 //        @JoinColumn(name = "stream_id")
 //        @JsonIgnore
