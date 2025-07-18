@@ -89,7 +89,7 @@ public class EnquiryController {
             @RequestParam(required = false) String enquiryDateFilter,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam String branchCode,
+            @RequestParam(required = false) String branchCode,
             @RequestParam String role,
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,

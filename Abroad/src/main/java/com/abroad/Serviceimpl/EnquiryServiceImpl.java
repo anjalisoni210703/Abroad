@@ -203,7 +203,10 @@
             Specification<AbroadEnquiry> spec = (root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
-                predicates.add(cb.equal(root.get("branchCode"), branchCode));
+//                predicates.add(cb.equal(root.get("branchCode"), branchCode));
+                if (branchCode != null && !branchCode.equalsIgnoreCase("All")) {
+                    predicates.add(cb.equal(root.get("branchCode"), branchCode));
+                }
 
                 if (continent != null) predicates.add(cb.equal(root.get("continent"), continent));
                 if (country != null) predicates.add(cb.equal(root.get("country"), country));
