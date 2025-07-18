@@ -30,15 +30,18 @@ public class EnquiryController {
                                                        @RequestParam Long continentId,
                                                        @RequestParam Long countryId,
                                                        @RequestParam Long universityId,
-                                                       @RequestParam Long streamId,
-                                                       @RequestParam Long courseId) throws JsonProcessingException {
+//                                                       @RequestParam Long streamId,
+                                                       @RequestParam Long courseId,
+                                                       @RequestParam Long stateId,
+                                                       @RequestParam Long cityId,
+                                                       @RequestParam Long collegeId) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadEnquiry abroadEnquiry = mapper.readValue(enquiryJson, AbroadEnquiry.class);
         AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image, role, email,
-                continentId, countryId, universityId, streamId, courseId);
+                continentId, countryId, universityId, courseId, stateId, cityId, collegeId);
 
         return ResponseEntity.ok(created);
     }
