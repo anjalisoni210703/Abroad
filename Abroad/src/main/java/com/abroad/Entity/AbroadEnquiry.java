@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -107,4 +108,8 @@ public class AbroadEnquiry {
     @JoinColumn(name = "state_id")
     @JsonIgnore
     private AbroadState abroadState;
+
+    @OneToMany(mappedBy = "enquiry",cascade = CascadeType.ALL,fetch =FetchType.LAZY )
+    @JsonIgnore
+    private List<LeadVisit> leadVisits;
 }

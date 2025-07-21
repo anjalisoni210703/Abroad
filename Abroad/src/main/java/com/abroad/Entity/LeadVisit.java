@@ -26,9 +26,9 @@ public class LeadVisit {
     private String visitCount;
 
     @ManyToOne
-    @JoinColumn(name="lead_id",nullable = false)
+    @JoinColumn(name="enquiry_id",nullable = false)
     @JsonBackReference
-    private AbroadLead lead;
+    private AbroadEnquiry enquiry;
 
     @Email
     private String createdByEmail;

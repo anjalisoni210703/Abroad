@@ -47,8 +47,5 @@ public class AbroadLead {
     @JsonIgnore
     private AbroadCourse abroadCourse;
 
-    @OneToMany(mappedBy = "lead",cascade = CascadeType.ALL,fetch =FetchType.LAZY )
-    @JsonIgnore
-    private List<LeadVisit> leadVisits;
 
 }

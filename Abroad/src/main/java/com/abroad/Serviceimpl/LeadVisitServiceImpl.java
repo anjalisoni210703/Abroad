@@ -1,8 +1,10 @@
 package com.abroad.Serviceimpl;
 
+import com.abroad.Entity.AbroadEnquiry;
 import com.abroad.Entity.AbroadLead;
 import com.abroad.Entity.LeadVisit;
 import com.abroad.Repository.AbroadLeadRepository;
+import com.abroad.Repository.EnquiryRepository;
 import com.abroad.Repository.LeadVisitRepository;
 import com.abroad.Service.LeadVisitService;
 import com.abroad.Service.PermissionService;
@@ -17,7 +19,7 @@ import java.util.List;
 public class LeadVisitServiceImpl implements LeadVisitService {
 
     @Autowired
-    private AbroadLeadRepository leadRepository;
+    private EnquiryRepository enquiryRepository;
 
     @Autowired
     private LeadVisitRepository leadVisitRepository;
@@ -26,15 +28,15 @@ public class LeadVisitServiceImpl implements LeadVisitService {
     private PermissionService permissionService;
 
     @Override
-    public LeadVisit addVisit(Long lead_id, String role, String email, String remark, String visitCount, String status){
+    public LeadVisit addVisit(Long inquiry_id, String role, String email, String remark, String visitCount, String status){
         if (!permissionService.hasPermission(role, email, "Post")) {
             throw new AccessDeniedException("No permission to view lead");
         }
-        AbroadLead lead=leadRepository.findById(lead_id).get();
+        AbroadEnquiry enquiry=enquiryRepository.findById(inquiry_id).get();
 
             LeadVisit visit=new LeadVisit();
 
-            visit.setLead(lead);
+            visit.setEnquiry(enquiry);
             visit.setStatus(status);
             visit.setVisitCount(visitCount);
             visit.setVisitDate(LocalDate.now());
@@ -76,7 +78,7 @@ public class LeadVisitServiceImpl implements LeadVisitService {
             throw new AccessDeniedException("No permission to view leads");
         }
 
-        List<LeadVisit> visits=leadRepository.findById(lead_id).get().getLeadVisits();
+        List<LeadVisit> visits=enquiryRepository.findById(lead_id).get().getLeadVisits();
         return visits;
     }
 
