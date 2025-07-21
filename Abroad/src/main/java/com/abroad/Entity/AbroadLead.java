@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -44,4 +46,9 @@ public class AbroadLead {
     @JoinColumn(name = "course_id")
     @JsonIgnore
     private AbroadCourse abroadCourse;
+
+    @OneToMany(mappedBy = "lead",cascade = CascadeType.ALL,fetch =FetchType.LAZY )
+    @JsonIgnore
+    private List<LeadVisit> leadVisits;
+
 }
