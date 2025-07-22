@@ -5,12 +5,14 @@ import com.abroad.Entity.AbroadUniversity;
 import com.abroad.Repository.CollegeRepository;
 import com.abroad.Repository.UniversityRepository;
 import com.abroad.Service.CollegeService;
+import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.abroad.Service.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -24,8 +26,11 @@ public class CollegeServiceImpl implements CollegeService {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private S3Service s3Service;
+
     @Override
-    public AbroadCollege createCollege(AbroadCollege abroadCollege, MultipartFile image, String role, String email, Long universityId) {
+    public AbroadCollege createCollege(AbroadCollege abroadCollege, MultipartFile image, String role, String email, Long universityId) throws IOException {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create College");
         }
@@ -38,6 +43,7 @@ public class CollegeServiceImpl implements CollegeService {
         abroadCollege.setRole(role);
 //        abroadCollege.setBranchCode(branchCode);
         abroadCollege.setAbroadUniversity(university);
+        abroadCollege.setImage(s3Service.uploadImage(image));
 
         return repository.save(abroadCollege);
     }
@@ -76,7 +82,17 @@ public class CollegeServiceImpl implements CollegeService {
 
         existing.setCollegeName(abroadCollege.getCollegeName() != null ? abroadCollege.getCollegeName() : existing.getCollegeName());
 //        existing.setAbroadUniversity(abroadCollege.getAbroadUniversity() != null ? abroadCollege.getAbroadUniversity() : existing.getAbroadUniversity());
-
+        try {
+            if (image != null && !image.isEmpty()) {
+                if (existing.getImage() != null) {
+                    s3Service.deleteImage(existing.getImage());
+                }
+                String newImageUrl = s3Service.uploadImage(image);
+                existing.setImage(newImageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update course image", e);
+        }
         return repository.save(existing);
     }
 

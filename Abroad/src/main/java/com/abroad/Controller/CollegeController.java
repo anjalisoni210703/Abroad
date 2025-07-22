@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class CollegeController {
                                                        @RequestParam(value = "image", required = false) MultipartFile image,
                                                        @RequestParam String role,
                                                        @RequestParam String email,
-                                                       @RequestParam Long universityId) throws JsonProcessingException {
+                                                       @RequestParam Long universityId) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

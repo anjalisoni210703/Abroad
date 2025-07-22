@@ -20,6 +20,8 @@ public class AbroadCollege {
 
     private String collegeName;
 
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "university_id")
     @JsonIgnore
