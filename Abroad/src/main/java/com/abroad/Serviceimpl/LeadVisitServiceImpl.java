@@ -28,11 +28,11 @@ public class LeadVisitServiceImpl implements LeadVisitService {
     private PermissionService permissionService;
 
     @Override
-    public LeadVisit addVisit(Long inquiry_id, String role, String email, String remark, String visitCount, String status){
+    public LeadVisit addVisit(Long enquiry_id, String role, String email, String remark, String visitCount, String status){
         if (!permissionService.hasPermission(role, email, "Post")) {
             throw new AccessDeniedException("No permission to view lead");
         }
-        AbroadEnquiry enquiry=enquiryRepository.findById(inquiry_id).get();
+        AbroadEnquiry enquiry=enquiryRepository.findById(enquiry_id).get();
 
             LeadVisit visit=new LeadVisit();
 

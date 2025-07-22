@@ -17,14 +17,14 @@ public class LeadVisitController {
     @Autowired
     private LeadVisitServiceImpl leadVisitService;
 
-    @PostMapping("/addLeadVisit/{inquiry_id}")
-    public ResponseEntity<LeadVisit> addVisit(@PathVariable Long inquiry_id,
+    @PostMapping("/addLeadVisit/{enquiry_id}")
+    public ResponseEntity<LeadVisit> addVisit(@PathVariable Long enquiry_id,
                                               @RequestParam String role,
                                               @RequestParam String email,
                                               @RequestParam String remark,
                                               @RequestParam String status,
                                               @RequestParam String visitCount) {
-        return ResponseEntity.ok(leadVisitService.addVisit(inquiry_id,role,email ,remark, visitCount, status));
+        return ResponseEntity.ok(leadVisitService.addVisit(enquiry_id,role,email ,remark, visitCount, status));
     }
 
     @GetMapping("/getAllVisits")
