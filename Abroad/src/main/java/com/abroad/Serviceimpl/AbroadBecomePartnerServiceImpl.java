@@ -98,7 +98,7 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
         existing.setBusinessContact(updated.getBusinessContact()!=null?updated.getBusinessContact():existing.getBusinessContact());
         existing.setRemark(updated.getRemark()!=null?updated.getRemark():existing.getRemark());
         existing.setCommissionPercent(updated.getCommissionPercent()!=null?updated.getCommissionPercent():existing.getCommissionPercent());
-        existing.setAuthorDesignation(updated.getAuthorDesignation()!=null?updated.getAuthorDesignation():existing.getAuthorDesignation());
+        existing.setAuthorityDesignation(updated.getAuthorityDesignation()!=null?updated.getAuthorityDesignation():existing.getAuthorityDesignation());
         existing.setConductedBy(updated.getConductedBy()!=null?updated.getConductedBy():existing.getConductedBy());
         existing.setDesignation(updated.getDesignation()!=null?updated.getDesignation():existing.getDesignation());
         existing.setContractType(updated.getContractType()!=null?updated.getContractType():existing.getContractType());
