@@ -1,6 +1,6 @@
     package com.abroad.Serviceimpl;
 
-    import com.abroad.Entity.AbroadEnquiry;
+    import com.abroad.Entity.*;
     import com.abroad.Repository.*;
     import com.abroad.Service.PermissionService;
     import com.abroad.Service.S3Service;
@@ -83,14 +83,34 @@
             abroadEnquiry.setBranchCode(branchCode);
 
             // Set names from IDs
-            continentRepository.findById(continentId).ifPresent(c -> abroadEnquiry.setContinent(c.getContinentname()));
-            countryRepository.findById(countryId).ifPresent(c -> abroadEnquiry.setCountry(c.getCountry()));
-            universityRepository.findById(universityId).ifPresent(u -> abroadEnquiry.setUniversity(u.getUniversityName()));
+           AbroadContinent continent= continentRepository.findById(continentId).orElseThrow(()-> new RuntimeException("continent not found"));
+           abroadEnquiry.setAbroadContinent(continent);
+           abroadEnquiry.setContinent(continent.getContinentname());
+
+          AbroadCountry country= countryRepository.findById(countryId).orElseThrow(()->new RuntimeException("countery not found"));
+          abroadEnquiry.setCountry(country.getCountry());
+          abroadEnquiry.setAbroadCountry(country);
+
+           AbroadUniversity university= universityRepository.findById(universityId).orElseThrow(()-> new RuntimeException("university not found"));
+           abroadEnquiry.setUniversity(university.getUniversityName());
+           abroadEnquiry.setAbroadUniversity(university);
+
 //            streamRepository.findById(streamId).ifPresent(s -> abroadEnquiry.setStream(s.getName()));
-            courseRepository.findById(courseId).ifPresent(c -> abroadEnquiry.setCourse(c.getCourseName()));
-            collegeRepository.findById(collegeId).ifPresent(cl -> abroadEnquiry.setCollage(cl.getCollegeName()));
-            stateRepository.findById(stateId).ifPresent(s -> abroadEnquiry.setState(s.getState()));
-            cityRepository.findById(cityId).ifPresent(c -> abroadEnquiry.setCity(c.getCity()));
+           AbroadCourse course= courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("course not found"));
+           abroadEnquiry.setCourse(course.getCourseName());
+           abroadEnquiry.setAbroadCourse(course);
+
+           AbroadCollege college= collegeRepository.findById(collegeId).orElseThrow(()->new RuntimeException("college not found"));
+           abroadEnquiry.setCollage(college.getCollegeName());
+           abroadEnquiry.setAbroadCollege(college);
+
+           AbroadState state= stateRepository.findById(stateId).orElseThrow(()->new RuntimeException("state not found"));
+           abroadEnquiry.setState(state.getState());
+           abroadEnquiry.setAbroadState(state);
+
+           AbroadCity city= cityRepository.findById(cityId).orElseThrow(()->new RuntimeException("city not found"));
+           abroadEnquiry.setCity(city.getCity());
+           abroadEnquiry.setAbroadCity(city);
 
             return repository.save(abroadEnquiry);
         }
@@ -192,10 +212,12 @@
         }
 
         @Override
-        public Page<AbroadEnquiry> filterEnquiries(String continent, String country, String stream, String course, String status,
-                                                   String branchCode, String role, String email, String fullName,
-                                                   String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
-                                                   int page, int size) {
+        public Page<AbroadEnquiry> filterEnquiries(
+                String continent, String country, String stream, String course, String status,
+                String branchCode, String role, String email, String fullName,
+                String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
+                String applyFor, // NEW PARAM
+                int page, int size) {
 
             if (!permissionService.hasPermission(role, email, "POST"))
                 throw new AccessDeniedException("No permission");
@@ -203,7 +225,6 @@
             Specification<AbroadEnquiry> spec = (root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
-//                predicates.add(cb.equal(root.get("branchCode"), branchCode));
                 if (branchCode != null && !branchCode.equalsIgnoreCase("All")) {
                     predicates.add(cb.equal(root.get("branchCode"), branchCode));
                 }
@@ -213,8 +234,11 @@
                 if (stream != null) predicates.add(cb.equal(root.get("stream"), stream));
                 if (course != null) predicates.add(cb.equal(root.get("course"), course));
                 if (status != null) predicates.add(cb.equal(root.get("status"), status));
-                if (fullName != null && !fullName.trim().isEmpty())
+                if (applyFor != null) predicates.add(cb.equal(root.get("applyFor"), applyFor)); // <-- NEW
+
+                if (fullName != null && !fullName.trim().isEmpty()) {
                     predicates.add(cb.like(cb.lower(root.get("name")), "%" + fullName.toLowerCase() + "%"));
+                }
 
                 if (enquiryDateFilter != null) {
                     LocalDate today = LocalDate.now();
@@ -238,4 +262,5 @@
             Pageable pageable = PageRequest.of(page, size);
             return repository.findAll(spec, pageable);
         }
+
     }

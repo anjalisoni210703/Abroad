@@ -16,8 +16,11 @@ public interface EnquiryService {
     AbroadEnquiry getEnquiryById(Long id, String role, String email);
     AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email);
     void deleteEnquiry(Long id, String role, String email);
-    Page<AbroadEnquiry> filterEnquiries(String continent, String country, String stream, String course, String status,
-                                        String branchCode, String role, String email, String fullName,
-                                        String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
-                                        int page, int size);
+    Page<AbroadEnquiry> filterEnquiries(
+            String continent, String country, String stream, String course, String status,
+            String branchCode, String role, String email, String fullName,
+            String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
+            String applyFor, 
+            int page, int size
+    );
 }
