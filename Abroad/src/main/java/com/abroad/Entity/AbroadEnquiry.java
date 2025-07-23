@@ -111,5 +111,5 @@ public class AbroadEnquiry {
 
     @OneToMany(mappedBy = "enquiry",cascade = CascadeType.ALL,fetch =FetchType.LAZY )
     @JsonIgnore
-    private List<LeadVisit> leadVisits;
+    private List<AbroadLeadVisit> leadVisits;
 }

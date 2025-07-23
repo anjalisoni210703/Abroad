@@ -8,13 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LeadVisit {
+public class AbroadLeadVisit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

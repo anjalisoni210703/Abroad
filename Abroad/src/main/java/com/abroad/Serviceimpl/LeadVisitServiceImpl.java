@@ -1,9 +1,7 @@
 package com.abroad.Serviceimpl;
 
 import com.abroad.Entity.AbroadEnquiry;
-import com.abroad.Entity.AbroadLead;
-import com.abroad.Entity.LeadVisit;
-import com.abroad.Repository.AbroadLeadRepository;
+import com.abroad.Entity.AbroadLeadVisit;
 import com.abroad.Repository.EnquiryRepository;
 import com.abroad.Repository.LeadVisitRepository;
 import com.abroad.Service.LeadVisitService;
@@ -28,13 +26,13 @@ public class LeadVisitServiceImpl implements LeadVisitService {
     private PermissionService permissionService;
 
     @Override
-    public LeadVisit addVisit(Long enquiry_id, String role, String email, String remark, String visitCount, String status){
+    public AbroadLeadVisit addVisit(Long enquiry_id, String role, String email, String remark, String visitCount, String status){
         if (!permissionService.hasPermission(role, email, "Post")) {
             throw new AccessDeniedException("No permission to view lead");
         }
         AbroadEnquiry enquiry=enquiryRepository.findById(enquiry_id).get();
 
-            LeadVisit visit=new LeadVisit();
+            AbroadLeadVisit visit=new AbroadLeadVisit();
 
             visit.setEnquiry(enquiry);
             visit.setStatus(status);
@@ -48,7 +46,7 @@ public class LeadVisitServiceImpl implements LeadVisitService {
             return leadVisitRepository.save(visit);
     }
     @Override
-    public List<LeadVisit> getAllVisits(String role, String email){
+    public List<AbroadLeadVisit> getAllVisits(String role, String email){
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission");
         }
@@ -56,7 +54,7 @@ public class LeadVisitServiceImpl implements LeadVisitService {
     }
 
     @Override
-    public LeadVisit getVisitById(Long id, String role, String email){
+    public AbroadLeadVisit getVisitById(Long id, String role, String email){
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission");
         }
@@ -73,12 +71,12 @@ public class LeadVisitServiceImpl implements LeadVisitService {
     }
 
     @Override
-    public List<LeadVisit> getVisitByLeadId(Long lead_id, String role, String email){
+    public List<AbroadLeadVisit> getVisitByLeadId(Long lead_id, String role, String email){
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view leads");
         }
 
-        List<LeadVisit> visits=enquiryRepository.findById(lead_id).get().getLeadVisits();
+        List<AbroadLeadVisit> visits=enquiryRepository.findById(lead_id).get().getLeadVisits();
         return visits;
     }
 
