@@ -90,12 +90,16 @@ public class EnquiryController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) String branchCode,
+            @RequestParam(required = false) String applyFor,
             @RequestParam String role,
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return service.filterEnquiries(continent, country, stream, course, status,
-                branchCode, role, email, fullName, enquiryDateFilter, startDate, endDate, page, size);
+        return service.filterEnquiries(
+                continent, country, stream, course, status,
+                branchCode, role, email, fullName,
+                enquiryDateFilter, startDate, endDate, applyFor, page, size
+        );
     }
 }

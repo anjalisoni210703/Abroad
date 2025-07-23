@@ -20,4 +20,8 @@ public interface AbroadBecomePartnerService {
     void deletePartner(Long id, String role, String email);
 
     Map<String, Map<String,String>> UploadPdf(Long id, String role, String email, MultipartFile contract, MultipartFile commission, MultipartFile gst, MultipartFile pan) throws IOException;
+
+    Page<AbroadBecomePartner> filterPartners(String name, String email, String businessEmail, String instituteType,
+                                             String contractType, String conductedBy, String status,
+                                             String role, String createdByEmail, int page, int size);
 }

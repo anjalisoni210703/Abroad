@@ -3,6 +3,7 @@ package com.abroad.Controller;
 import com.abroad.Entity.AbroadBecomePartner;
 import com.abroad.Service.AbroadBecomePartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +66,24 @@ public class AbroadBecomePartnerController {
 
             return ResponseEntity.ok(service.UploadPdf(id, role, email, contract, commission, gst,pan));
 
+    }
+
+    @PostMapping("/filterBecomePartner")
+    public Page<AbroadBecomePartner> filterPartners(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String businessEmail,
+            @RequestParam(required = false) String instituteType,
+            @RequestParam(required = false) String contractType,
+            @RequestParam(required = false) String conductedBy,
+            @RequestParam(required = false) String status,
+            @RequestParam String role,
+            @RequestParam String createdByEmail,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return service.filterPartners(name, email, businessEmail, instituteType,
+                contractType, conductedBy, status, role, createdByEmail, page, size);
     }
 
 }

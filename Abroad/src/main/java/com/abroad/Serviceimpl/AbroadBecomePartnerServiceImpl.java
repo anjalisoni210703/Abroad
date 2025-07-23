@@ -7,6 +7,7 @@ import com.abroad.Repository.AbroadBecomePartnerRepository;
 import com.abroad.Service.AbroadBecomePartnerService;
 import com.abroad.Service.PermissionService;
 import com.abroad.Service.S3Service;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -142,5 +145,45 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
         Map<String,Map<String,String>> urls=new HashMap<>();
         urls.put("PDFs",pdfUrls);
         return urls;
+    }
+
+    @Override
+    public Page<AbroadBecomePartner> filterPartners(String name, String email, String businessEmail, String instituteType,
+                                                    String contractType, String conductedBy, String status,
+                                                    String role, String createdByEmail, int page, int size) {
+
+        if (!permissionService.hasPermission(role, createdByEmail, "POST"))
+            throw new AccessDeniedException("No permission");
+
+        Specification<AbroadBecomePartner> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (name != null && !name.trim().isEmpty())
+                predicates.add(cb.like(cb.lower(root.get("partnerName")), "%" + name.toLowerCase() + "%"));
+
+            if (email != null && !email.trim().isEmpty())
+                predicates.add(cb.equal(cb.lower(root.get("partnerEmail")), email.toLowerCase()));
+
+            if (businessEmail != null && !businessEmail.trim().isEmpty())
+                predicates.add(cb.equal(cb.lower(root.get("businessEmail")), businessEmail.toLowerCase()));
+
+            if (instituteType != null && !instituteType.trim().isEmpty())
+                predicates.add(cb.equal(root.get("instituteType"), instituteType));
+
+            if (contractType != null && !contractType.trim().isEmpty())
+                predicates.add(cb.equal(root.get("contractType"), contractType));
+
+            if (conductedBy != null && !conductedBy.trim().isEmpty())
+                predicates.add(cb.equal(cb.lower(root.get("conductedBy")), conductedBy.toLowerCase()));
+
+            if (status != null && !status.trim().isEmpty())
+                predicates.add(cb.equal(cb.lower(root.get("status")), status.toLowerCase()));
+
+            query.orderBy(cb.desc(root.get("id")));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAll(spec, pageable);
     }
 }
