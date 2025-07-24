@@ -110,6 +110,9 @@ public class CourseServiceImpl implements CourseService {
         existing.setContractType(abroadCourse.getContractType()!=null?abroadCourse.getContractType():existing.getContractType());
         existing.setExamType(abroadCourse.getExamType()!=null?abroadCourse.getExamType():existing.getExamType());
         existing.setStreamName(abroadCourse.getStreamName()!=null?abroadCourse.getStreamName():existing.getStreamName());
+        existing.setFeesINR(abroadCourse.getFeesINR()!=null?abroadCourse.getFeesINR():existing.getFeesINR());
+        existing.setTutionFeesINR(abroadCourse.getTutionFeesINR()!=null?abroadCourse.getTutionFeesINR():existing.getTutionFeesINR());
+
 
         try {
             if (image != null && !image.isEmpty()) {
