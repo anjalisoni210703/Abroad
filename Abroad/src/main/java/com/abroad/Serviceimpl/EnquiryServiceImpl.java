@@ -81,15 +81,14 @@
 
             try{
                 List<String> uploadedUrls = new ArrayList<>();
-
+                if(documents!=null && !documents.isEmpty()){
                 for (MultipartFile document : documents) {
-                    if (!document.isEmpty()) {
-                        String url = s3Service.uploadImage(document); // Upload and get file URL
-                        uploadedUrls.add(url);
-                    }
+                    String url = s3Service.uploadImage(document); // Upload and get file URL
+                    uploadedUrls.add(url);
                 }
                 abroadEnquiry.setUploadDocuments(uploadedUrls);
-            } catch (IOException e) {
+            }
+            }catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
