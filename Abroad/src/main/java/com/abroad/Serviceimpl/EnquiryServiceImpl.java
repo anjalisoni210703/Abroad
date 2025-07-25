@@ -150,7 +150,7 @@
             existing.setName(abroadEnquiry.getName() != null ? abroadEnquiry.getName() : existing.getName());
             existing.setPhone_no(abroadEnquiry.getPhone_no() != null ? abroadEnquiry.getPhone_no() : existing.getPhone_no());
             existing.setEmail(abroadEnquiry.getEmail() != null ? abroadEnquiry.getEmail() : existing.getEmail());
-            existing.setEnquiry_date(abroadEnquiry.getEnquiry_date() != null ? abroadEnquiry.getEnquiry_date() : existing.getEnquiry_date());
+            existing.setEnquiry_date(LocalDate.now());
             existing.setAddress(abroadEnquiry.getAddress() != null ? abroadEnquiry.getAddress() : existing.getAddress());
             existing.setPercentage(abroadEnquiry.getPercentage()!=0 ? abroadEnquiry.getPercentage():existing.getPercentage());
             existing.setState(abroadEnquiry.getState() != null ? abroadEnquiry.getState() : existing.getState());
