@@ -37,8 +37,11 @@ public class AbroadCourse {
         private String examScore;
         private String city;
         private String location;
+        @Lob
         private String additionalRequirements;
+        @Lob
         private String courseDetials;
+        @Lob
         private String scholarship;
         private String hostel;
         private String hostelFees;
@@ -47,6 +50,8 @@ public class AbroadCourse {
         private String image;
         private String applicationLink;
         private String streamName;
+        private String tutionFeesINR;
+        private String feesINR;
 //        @ManyToOne
 //        @JoinColumn(name = "stream_id")
 //        @JsonIgnore

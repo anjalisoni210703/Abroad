@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "https://wayabroad.in")
@@ -25,6 +26,7 @@ public class EnquiryController {
     @PostMapping("/createEnquiry")
     public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") String enquiryJson,
                                                        @RequestParam(value = "image", required = false) MultipartFile image,
+                                                       @RequestParam(value = "documents", required = false) List<MultipartFile> documents,
                                                        @RequestParam String role,
                                                        @RequestParam String email,
                                                        @RequestParam Long continentId,
@@ -40,7 +42,7 @@ public class EnquiryController {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadEnquiry abroadEnquiry = mapper.readValue(enquiryJson, AbroadEnquiry.class);
-        AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image, role, email,
+        AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image, documents,role, email,
                 continentId, countryId, universityId, courseId, stateId, cityId, collegeId);
 
         return ResponseEntity.ok(created);
@@ -51,10 +53,11 @@ public class EnquiryController {
     public ResponseEntity<AbroadEnquiry> updateEnquiry(@PathVariable Long id,
                                                        @RequestPart("enquiry") String enquiryJson,
                                                        @RequestParam(value = "image", required = false) MultipartFile image,
+                                                       @RequestParam ( required = false) Map<String, MultipartFile> updateDoc,
                                                        @RequestParam String role,
                                                        @RequestParam String email) throws JsonProcessingException {
         AbroadEnquiry abroadEnquiry = new ObjectMapper().readValue(enquiryJson, AbroadEnquiry.class);
-        return ResponseEntity.ok(service.updateEnquiry(id, abroadEnquiry, image, role, email));
+        return ResponseEntity.ok(service.updateEnquiry(id, abroadEnquiry, image, updateDoc,role, email));
     }
 
     @GetMapping("/getAllEnquiries")

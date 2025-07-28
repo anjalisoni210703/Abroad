@@ -18,8 +18,10 @@ public class AbroadBlog {
 
     private String image;
     @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 20000)
     private String description;
+    @Lob
+    @Column(length = 20000)
     private String title;
     private String category;
 

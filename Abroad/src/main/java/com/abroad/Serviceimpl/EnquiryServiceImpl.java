@@ -19,7 +19,9 @@
     import java.sql.Date;
     import java.time.LocalDate;
     import java.util.ArrayList;
+    import java.util.HashMap;
     import java.util.List;
+    import java.util.Map;
 
     @Service
     public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
@@ -77,6 +79,20 @@
                 throw new RuntimeException("Failed to upload enquiry image", e);
             }
 
+            try{
+                List<String> uploadedUrls = new ArrayList<>();
+                if(documents!=null && !documents.isEmpty()){
+                for (MultipartFile document : documents) {
+                    String url = s3Service.uploadImage(document); // Upload and get file URL
+                    uploadedUrls.add(url);
+                }
+                abroadEnquiry.setUploadDocuments(uploadedUrls);
+            }
+            }catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
             abroadEnquiry.setEnquiry_date(LocalDate.now());
             abroadEnquiry.setCreatedByEmail(email);
             abroadEnquiry.setRole(role);
@@ -115,6 +131,15 @@
             return repository.save(abroadEnquiry);
         }
 
+//        private String extractExamName(String filename) {
+//            if (filename == null || filename.isEmpty()) return "UNKNOWN";
+//
+//            // Split by dot, take name before extension
+//            String name = filename.split("\\.")[0];
+//
+//            // Optionally clean underscores/spaces etc.
+//            return name.toUpperCase().replaceAll("[^A-Z]", "");
+//        }
 
 
 
@@ -150,6 +175,7 @@
             existing.setName(abroadEnquiry.getName() != null ? abroadEnquiry.getName() : existing.getName());
             existing.setPhone_no(abroadEnquiry.getPhone_no() != null ? abroadEnquiry.getPhone_no() : existing.getPhone_no());
             existing.setEmail(abroadEnquiry.getEmail() != null ? abroadEnquiry.getEmail() : existing.getEmail());
+//            existing.setEnquiry_date(abroadEnquiry.getEnquiry_date() != null ? abroadEnquiry.getEnquiry_date() : existing.getEnquiry_date());
             existing.setEnquiry_date(LocalDate.now());
             existing.setAddress(abroadEnquiry.getAddress() != null ? abroadEnquiry.getAddress() : existing.getAddress());
             existing.setPercentage(abroadEnquiry.getPercentage()!=0 ? abroadEnquiry.getPercentage():existing.getPercentage());
@@ -191,6 +217,31 @@
             } catch (IOException e) {
                 throw new RuntimeException("Failed to update enquiry image", e);
             }
+            try{
+                List<String> existingDocs = existing.getUploadDocuments();
+
+                for (Map.Entry<String, MultipartFile> entry : updateDoc.entrySet()) {
+                    String key = entry.getKey();
+                    if (!key.matches("\\d+")) continue;
+                    Integer index =  Integer.parseInt(entry.getKey());
+                    MultipartFile newFile = entry.getValue();
+
+                    if (index < 0 || index >= existingDocs.size()) {
+                        throw new IllegalArgumentException("Invalid index: " + index);
+                    }
+
+                    if (!newFile.isEmpty()) {
+                        String newUrl = s3Service.uploadImage(newFile);  // Your existing S3 upload
+                        existingDocs.set(index, newUrl);  // Replace URL at that index
+                    }
+                }
+
+                existing.setUploadDocuments(existingDocs);  // Update entity
+                repository.save(existing);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
 
             return repository.save(existing);
         }
