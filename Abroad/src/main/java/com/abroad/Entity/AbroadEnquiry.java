@@ -64,8 +64,12 @@ public class AbroadEnquiry {
     private String amountITR;
     private String  hasPassport;
 
-    @ElementCollection
-    private List<String> uploadDocuments;
+    private String document1;
+    private String document2;
+
+
+//    @ElementCollection
+//    private List<String> uploadDocuments;
 
     @Email
     private String createdByEmail;

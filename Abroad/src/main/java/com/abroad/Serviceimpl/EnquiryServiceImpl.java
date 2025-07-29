@@ -60,8 +60,8 @@
 
 
         @Override
-        public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email,
-                                           Long continentId, Long countryId, Long universityId, Long courseId,
+        public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
+                                           String role, String email, Long continentId, Long countryId, Long universityId, Long courseId,
                                            Long stateId, Long cityId, Long collegeId) {
 
             if (!permissionService.hasPermission(role, email, "POST")) {
@@ -75,58 +75,53 @@
                     String imageUrl = s3Service.uploadImage(image);
                     abroadEnquiry.setPhotoUrl(imageUrl);
                 }
+
+                if (document1 != null && !document1.isEmpty()) {
+                    String doc1Url = s3Service.uploadImage(document1);
+                    abroadEnquiry.setDocument1(doc1Url);
+                }
+
+                if (document2 != null && !document2.isEmpty()) {
+                    String doc2Url = s3Service.uploadImage(document2);
+                    abroadEnquiry.setDocument2(doc2Url);
+                }
+
             } catch (IOException e) {
-                throw new RuntimeException("Failed to upload enquiry image", e);
+                throw new RuntimeException("Failed to upload file(s)", e);
             }
-
-//            try{
-//                List<String> uploadedUrls = new ArrayList<>();
-//                if(documents!=null && !documents.isEmpty()){
-//                for (MultipartFile document : documents) {
-//                    String url = s3Service.uploadImage(document); // Upload and get file URL
-//                    uploadedUrls.add(url);
-//                }
-//                abroadEnquiry.setUploadDocuments(uploadedUrls);
-//            }
-//            }catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-
 
             abroadEnquiry.setEnquiry_date(LocalDate.now());
             abroadEnquiry.setCreatedByEmail(email);
             abroadEnquiry.setRole(role);
             abroadEnquiry.setBranchCode(branchCode);
 
-            // Set names from IDs
-           AbroadContinent continent= continentRepository.findById(continentId).orElseThrow(()-> new RuntimeException("continent not found"));
-           abroadEnquiry.setAbroadContinent(continent);
-           abroadEnquiry.setContinent(continent.getContinentname());
+            AbroadContinent continent = continentRepository.findById(continentId).orElseThrow(() -> new RuntimeException("Continent not found"));
+            abroadEnquiry.setAbroadContinent(continent);
+            abroadEnquiry.setContinent(continent.getContinentname());
 
-          AbroadCountry country= countryRepository.findById(countryId).orElseThrow(()->new RuntimeException("countery not found"));
-          abroadEnquiry.setCountry(country.getCountry());
-          abroadEnquiry.setAbroadCountry(country);
+            AbroadCountry country = countryRepository.findById(countryId).orElseThrow(() -> new RuntimeException("Country not found"));
+            abroadEnquiry.setCountry(country.getCountry());
+            abroadEnquiry.setAbroadCountry(country);
 
-           AbroadUniversity university= universityRepository.findById(universityId).orElseThrow(()-> new RuntimeException("university not found"));
-           abroadEnquiry.setUniversity(university.getUniversityName());
-           abroadEnquiry.setAbroadUniversity(university);
+            AbroadUniversity university = universityRepository.findById(universityId).orElseThrow(() -> new RuntimeException("University not found"));
+            abroadEnquiry.setUniversity(university.getUniversityName());
+            abroadEnquiry.setAbroadUniversity(university);
 
-//            streamRepository.findById(streamId).ifPresent(s -> abroadEnquiry.setStream(s.getName()));
-           AbroadCourse course= courseRepository.findById(courseId).orElseThrow(()->new RuntimeException("course not found"));
-           abroadEnquiry.setCourse(course.getCourseName());
-           abroadEnquiry.setAbroadCourse(course);
+            AbroadCourse course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+            abroadEnquiry.setCourse(course.getCourseName());
+            abroadEnquiry.setAbroadCourse(course);
 
-           AbroadCollege college= collegeRepository.findById(collegeId).orElseThrow(()->new RuntimeException("college not found"));
-           abroadEnquiry.setCollage(college.getCollegeName());
-           abroadEnquiry.setAbroadCollege(college);
+            AbroadCollege college = collegeRepository.findById(collegeId).orElseThrow(() -> new RuntimeException("College not found"));
+            abroadEnquiry.setCollage(college.getCollegeName());
+            abroadEnquiry.setAbroadCollege(college);
 
-           AbroadState state= stateRepository.findById(stateId).orElseThrow(()->new RuntimeException("state not found"));
-           abroadEnquiry.setState(state.getState());
-           abroadEnquiry.setAbroadState(state);
+            AbroadState state = stateRepository.findById(stateId).orElseThrow(() -> new RuntimeException("State not found"));
+            abroadEnquiry.setState(state.getState());
+            abroadEnquiry.setAbroadState(state);
 
-           AbroadCity city= cityRepository.findById(cityId).orElseThrow(()->new RuntimeException("city not found"));
-           abroadEnquiry.setCity(city.getCity());
-           abroadEnquiry.setAbroadCity(city);
+            AbroadCity city = cityRepository.findById(cityId).orElseThrow(() -> new RuntimeException("City not found"));
+            abroadEnquiry.setCity(city.getCity());
+            abroadEnquiry.setAbroadCity(city);
 
             return repository.save(abroadEnquiry);
         }
@@ -164,14 +159,15 @@
         }
 
         @Override
-        public AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email) {
+        public AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
+                                           String role, String email) {
+
             if (!permissionService.hasPermission(role, email, "PUT")) {
                 throw new AccessDeniedException("No permission to update Enquiry");
             }
 
             AbroadEnquiry existing = repository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Enquiry not found"));
-
             existing.setName(abroadEnquiry.getName() != null ? abroadEnquiry.getName() : existing.getName());
             existing.setPhone_no(abroadEnquiry.getPhone_no() != null ? abroadEnquiry.getPhone_no() : existing.getPhone_no());
             existing.setEmail(abroadEnquiry.getEmail() != null ? abroadEnquiry.getEmail() : existing.getEmail());
@@ -207,43 +203,31 @@
             existing.setHasPassport(abroadEnquiry.getHasPassport()!=null?abroadEnquiry.getHasPassport():existing.getHasPassport());
             try {
                 if (image != null && !image.isEmpty()) {
-                    // Delete old image if exists
                     if (existing.getPhotoUrl() != null) {
                         s3Service.deleteImage(existing.getPhotoUrl());
                     }
-                    String newImageUrl = s3Service.uploadImage(image);
-                    existing.setPhotoUrl(newImageUrl);
+                    existing.setPhotoUrl(s3Service.uploadImage(image));
                 }
+
+                if (document1 != null && !document1.isEmpty()) {
+                    if (existing.getDocument1() != null) {
+                        s3Service.deleteImage(existing.getDocument1());
+                    }
+                    existing.setDocument1(s3Service.uploadImage(document1));
+                }
+
+                if (document2 != null && !document2.isEmpty()) {
+                    if (existing.getDocument2() != null) {
+                        s3Service.deleteImage(existing.getDocument2());
+                    }
+                    existing.setDocument2(s3Service.uploadImage(document2));
+                }
+
             } catch (IOException e) {
-                throw new RuntimeException("Failed to update enquiry image", e);
+                throw new RuntimeException("Failed to upload/update documents", e);
             }
-//            try{
-//                List<String> existingDocs = existing.getUploadDocuments();
-//
-//                for (Map.Entry<String, MultipartFile> entry : updateDoc.entrySet()) {
-//                    String key = entry.getKey();
-//                    if (!key.matches("\\d+")) continue;
-//                    Integer index =  Integer.parseInt(entry.getKey());
-//                    MultipartFile newFile = entry.getValue();
-//
-//                    if (index < 0 || index >= existingDocs.size()) {
-//                        throw new IllegalArgumentException("Invalid index: " + index);
-//                    }
-//
-//                    if (!newFile.isEmpty()) {
-//                        String newUrl = s3Service.uploadImage(newFile);  // Your existing S3 upload
-//                        existingDocs.set(index, newUrl);  // Replace URL at that index
-//                    }
-//                }
-//
-//                existing.setUploadDocuments(existingDocs);  // Update entity
-//                repository.save(existing);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
 
-
-            return repository.save(existing);
+                return repository.save(existing);
         }
 
         @Override
