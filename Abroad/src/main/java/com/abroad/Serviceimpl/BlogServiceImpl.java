@@ -111,4 +111,14 @@ public class BlogServiceImpl implements BlogService {
 
         repository.deleteById(id);
     }
+
+    @Override
+    public AbroadBlog getBlogByTitle(String title) {
+        AbroadBlog blog = repository.findByTitleIgnoreCase(title);
+        if (blog == null) {
+            throw new RuntimeException("Blog with title '" + title + "' not found");
+        }
+        return blog;
+    }
+
 }

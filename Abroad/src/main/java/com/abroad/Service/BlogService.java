@@ -11,4 +11,7 @@ public interface BlogService {
     AbroadBlog getBlogById(Long id);
     AbroadBlog updateBlog(Long id, AbroadBlog abroadBlog, MultipartFile image, String role, String email);
     void deleteBlog(Long id, String role, String email);
+
+    AbroadBlog getBlogByTitle(String title);
+
 }

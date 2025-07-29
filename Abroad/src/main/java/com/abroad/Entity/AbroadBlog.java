@@ -20,9 +20,10 @@ public class AbroadBlog {
     @Lob
     @Column(length = 20000)
     private String description;
-    @Lob
-    @Column(length = 20000)
+
+    @Column(length = 255)
     private String title;
+
     private String category;
 
     @Email

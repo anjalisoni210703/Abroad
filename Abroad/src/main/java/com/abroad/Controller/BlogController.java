@@ -61,5 +61,10 @@ public class BlogController {
         return ResponseEntity.ok("Blog deleted successfully");
     }
 
+    @GetMapping("/getBlogByTitle")
+    public ResponseEntity<AbroadBlog> getBlogByTitle(@RequestParam String title) {
+        return ResponseEntity.ok(service.getBlogByTitle(title));
     }
+
+}
 
