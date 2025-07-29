@@ -23,41 +23,51 @@ public class EnquiryController {
     @Autowired
     private EnquiryService service;
 
-    @PostMapping("/createEnquiry")
-    public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") String enquiryJson,
-                                                       @RequestParam(value = "image", required = false) MultipartFile image,
-                                                       @RequestParam(value = "documents", required = false) List<MultipartFile> documents,
-                                                       @RequestParam String role,
-                                                       @RequestParam String email,
-                                                       @RequestParam Long continentId,
-                                                       @RequestParam Long countryId,
-                                                       @RequestParam Long universityId,
+//
+@PostMapping("/createEnquiry")
+public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") String enquiryJson,
+                                                   @RequestParam(value = "image", required = false) MultipartFile image,
+                                                   @RequestParam String role,
+                                                   @RequestParam String email,
+                                                   @RequestParam Long continentId,
+                                                   @RequestParam Long countryId,
+                                                   @RequestParam Long universityId,
 //                                                       @RequestParam Long streamId,
-                                                       @RequestParam Long courseId,
-                                                       @RequestParam Long stateId,
-                                                       @RequestParam Long cityId,
-                                                       @RequestParam Long collegeId) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                                                   @RequestParam Long courseId,
+                                                   @RequestParam Long stateId,
+                                                   @RequestParam Long cityId,
+                                                   @RequestParam Long collegeId) throws JsonProcessingException {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        AbroadEnquiry abroadEnquiry = mapper.readValue(enquiryJson, AbroadEnquiry.class);
-        AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image, documents,role, email,
-                continentId, countryId, universityId, courseId, stateId, cityId, collegeId);
+    AbroadEnquiry abroadEnquiry = mapper.readValue(enquiryJson, AbroadEnquiry.class);
+    AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image,role, email,
+            continentId, countryId, universityId, courseId, stateId, cityId, collegeId);
 
-        return ResponseEntity.ok(created);
-    }
+    return ResponseEntity.ok(created);
+}
 
+
+//    @PutMapping("/updateEnquiry/{id}")
+//    public ResponseEntity<AbroadEnquiry> updateEnquiry(@PathVariable Long id,
+//                                                       @RequestPart("enquiry") String enquiryJson,
+//                                                       @RequestParam(value = "image", required = false) MultipartFile image,
+//                                                       @RequestParam ( required = false) Map<String, MultipartFile> updateDoc,
+//                                                       @RequestParam String role,
+//                                                       @RequestParam String email) throws JsonProcessingException {
+//        AbroadEnquiry abroadEnquiry = new ObjectMapper().readValue(enquiryJson, AbroadEnquiry.class);
+//        return ResponseEntity.ok(service.updateEnquiry(id, abroadEnquiry, image, updateDoc,role, email));
+//    }
 
     @PutMapping("/updateEnquiry/{id}")
     public ResponseEntity<AbroadEnquiry> updateEnquiry(@PathVariable Long id,
                                                        @RequestPart("enquiry") String enquiryJson,
                                                        @RequestParam(value = "image", required = false) MultipartFile image,
-                                                       @RequestParam ( required = false) Map<String, MultipartFile> updateDoc,
                                                        @RequestParam String role,
                                                        @RequestParam String email) throws JsonProcessingException {
         AbroadEnquiry abroadEnquiry = new ObjectMapper().readValue(enquiryJson, AbroadEnquiry.class);
-        return ResponseEntity.ok(service.updateEnquiry(id, abroadEnquiry, image, updateDoc,role, email));
+        return ResponseEntity.ok(service.updateEnquiry(id, abroadEnquiry, image,role, email));
     }
 
     @GetMapping("/getAllEnquiries")

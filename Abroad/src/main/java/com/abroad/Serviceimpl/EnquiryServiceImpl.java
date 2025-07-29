@@ -79,18 +79,18 @@
                 throw new RuntimeException("Failed to upload enquiry image", e);
             }
 
-            try{
-                List<String> uploadedUrls = new ArrayList<>();
-                if(documents!=null && !documents.isEmpty()){
-                for (MultipartFile document : documents) {
-                    String url = s3Service.uploadImage(document); // Upload and get file URL
-                    uploadedUrls.add(url);
-                }
-                abroadEnquiry.setUploadDocuments(uploadedUrls);
-            }
-            }catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+//            try{
+//                List<String> uploadedUrls = new ArrayList<>();
+//                if(documents!=null && !documents.isEmpty()){
+//                for (MultipartFile document : documents) {
+//                    String url = s3Service.uploadImage(document); // Upload and get file URL
+//                    uploadedUrls.add(url);
+//                }
+//                abroadEnquiry.setUploadDocuments(uploadedUrls);
+//            }
+//            }catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
 
 
             abroadEnquiry.setEnquiry_date(LocalDate.now());
@@ -217,30 +217,30 @@
             } catch (IOException e) {
                 throw new RuntimeException("Failed to update enquiry image", e);
             }
-            try{
-                List<String> existingDocs = existing.getUploadDocuments();
-
-                for (Map.Entry<String, MultipartFile> entry : updateDoc.entrySet()) {
-                    String key = entry.getKey();
-                    if (!key.matches("\\d+")) continue;
-                    Integer index =  Integer.parseInt(entry.getKey());
-                    MultipartFile newFile = entry.getValue();
-
-                    if (index < 0 || index >= existingDocs.size()) {
-                        throw new IllegalArgumentException("Invalid index: " + index);
-                    }
-
-                    if (!newFile.isEmpty()) {
-                        String newUrl = s3Service.uploadImage(newFile);  // Your existing S3 upload
-                        existingDocs.set(index, newUrl);  // Replace URL at that index
-                    }
-                }
-
-                existing.setUploadDocuments(existingDocs);  // Update entity
-                repository.save(existing);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+//            try{
+//                List<String> existingDocs = existing.getUploadDocuments();
+//
+//                for (Map.Entry<String, MultipartFile> entry : updateDoc.entrySet()) {
+//                    String key = entry.getKey();
+//                    if (!key.matches("\\d+")) continue;
+//                    Integer index =  Integer.parseInt(entry.getKey());
+//                    MultipartFile newFile = entry.getValue();
+//
+//                    if (index < 0 || index >= existingDocs.size()) {
+//                        throw new IllegalArgumentException("Invalid index: " + index);
+//                    }
+//
+//                    if (!newFile.isEmpty()) {
+//                        String newUrl = s3Service.uploadImage(newFile);  // Your existing S3 upload
+//                        existingDocs.set(index, newUrl);  // Replace URL at that index
+//                    }
+//                }
+//
+//                existing.setUploadDocuments(existingDocs);  // Update entity
+//                repository.save(existing);
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
 
 
             return repository.save(existing);

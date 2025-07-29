@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 public interface EnquiryService {
-    AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image,List<MultipartFile> files, String role, String email,
-                                Long continentId, Long countryId, Long universityId, Long courseId,
-                                Long stateId, Long cityId, Long collegeId);
+    public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email,
+                                       Long continentId, Long countryId, Long universityId, Long courseId,
+                                       Long stateId, Long cityId, Long collegeId);
+//    AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image,List<MultipartFile> files, String role, String email,
+//                                Long continentId, Long countryId, Long universityId, Long courseId,
+//                                Long stateId, Long cityId, Long collegeId);
 
     List<AbroadEnquiry> getAllEnquiries(String role, String email);
     AbroadEnquiry getEnquiryById(Long id, String role, String email);
-    AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, Map<String, MultipartFile> updateDoc, String role, String email);
+//    AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, Map<String, MultipartFile> updateDoc, String role, String email);
+public AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, String role, String email);
     void deleteEnquiry(Long id, String role, String email);
     Page<AbroadEnquiry> filterEnquiries(
             String continent, String country, String stream, String course, String status,
