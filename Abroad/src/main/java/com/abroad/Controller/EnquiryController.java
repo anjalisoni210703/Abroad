@@ -34,6 +34,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
                                                    @RequestParam Long continentId,
                                                    @RequestParam Long countryId,
                                                    @RequestParam Long universityId,
+                                                   @RequestParam Long courseId,
                                                    @RequestParam Long stateId,
                                                    @RequestParam Long cityId,
                                                    @RequestParam Long collegeId) throws JsonProcessingException {
@@ -45,7 +46,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     AbroadEnquiry abroadEnquiry = mapper.readValue(enquiryJson, AbroadEnquiry.class);
 
     AbroadEnquiry created = service.createEnquiry(abroadEnquiry, image, document1, document2,
-            role, email, continentId, countryId, universityId, stateId, cityId, collegeId);
+            role, email, continentId, countryId, universityId, courseId, stateId, cityId, collegeId);
 
     return ResponseEntity.ok(created);
 }

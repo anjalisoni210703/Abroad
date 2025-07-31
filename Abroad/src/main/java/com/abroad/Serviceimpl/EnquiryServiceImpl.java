@@ -5,7 +5,6 @@
     import com.abroad.Service.PermissionService;
     import com.abroad.Service.S3Service;
     import jakarta.persistence.criteria.Predicate;
-    import org.joda.time.DateTime;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.PageRequest;
@@ -16,12 +15,9 @@
     import org.springframework.web.multipart.MultipartFile;
 
     import java.io.IOException;
-    import java.sql.Date;
     import java.time.LocalDate;
     import java.util.ArrayList;
-    import java.util.HashMap;
     import java.util.List;
-    import java.util.Map;
 
     @Service
     public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
@@ -61,7 +57,7 @@
 
         @Override
         public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
-                                           String role, String email, Long continentId, Long countryId, Long universityId,
+                                           String role, String email, Long continentId, Long countryId, Long universityId, Long courseId,
                                            Long stateId, Long cityId, Long collegeId) {
 
             if (!permissionService.hasPermission(role, email, "POST")) {
@@ -107,8 +103,8 @@
             abroadEnquiry.setUniversity(university.getUniversityName());
             abroadEnquiry.setAbroadUniversity(university);
 
-//            AbroadCourse course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-//            abroadEnquiry.setCourse(course.getCourseName());
+            AbroadCourse course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+            abroadEnquiry.setCourse(course.getCourseName());
 //            abroadEnquiry.setAbroadCourse(course);
 
             AbroadCollege college = collegeRepository.findById(collegeId).orElseThrow(() -> new RuntimeException("College not found"));
