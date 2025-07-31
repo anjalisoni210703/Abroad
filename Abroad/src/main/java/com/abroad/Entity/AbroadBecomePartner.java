@@ -42,7 +42,7 @@ public class AbroadBecomePartner {
     private String remark;
     private String designation;
 
-    @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must be 10 digits")
+//    @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must be 10 digits")
     private String mobileNo;
     private String businessContact;
     private String authorityDesignation;
