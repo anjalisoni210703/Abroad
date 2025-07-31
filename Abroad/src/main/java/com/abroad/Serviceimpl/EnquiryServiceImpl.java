@@ -61,7 +61,7 @@
 
         @Override
         public AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
-                                           String role, String email, Long continentId, Long countryId, Long universityId, Long courseId,
+                                           String role, String email, Long continentId, Long countryId, Long universityId,
                                            Long stateId, Long cityId, Long collegeId) {
 
             if (!permissionService.hasPermission(role, email, "POST")) {
@@ -107,9 +107,9 @@
             abroadEnquiry.setUniversity(university.getUniversityName());
             abroadEnquiry.setAbroadUniversity(university);
 
-            AbroadCourse course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-            abroadEnquiry.setCourse(course.getCourseName());
-            abroadEnquiry.setAbroadCourse(course);
+//            AbroadCourse course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+//            abroadEnquiry.setCourse(course.getCourseName());
+//            abroadEnquiry.setAbroadCourse(course);
 
             AbroadCollege college = collegeRepository.findById(collegeId).orElseThrow(() -> new RuntimeException("College not found"));
             abroadEnquiry.setCollage(college.getCollegeName());

@@ -61,9 +61,9 @@ public class AbroadCourse {
         @JsonIgnore
         private AbroadCollege abroadCollege;
 
-        @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
-        @JsonIgnore
-        private List<AbroadEnquiry> abroadEnquiries;
+//        @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
+//        @JsonIgnore
+//        private List<AbroadEnquiry> abroadEnquiries;
 
         @OneToMany(mappedBy = "abroadCourse",cascade = CascadeType.ALL)
         @JsonIgnore

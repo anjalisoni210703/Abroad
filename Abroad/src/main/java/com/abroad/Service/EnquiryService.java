@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface EnquiryService {
     AbroadEnquiry createEnquiry(AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2, String role, String email,
-                                Long continentId, Long countryId, Long universityId, Long courseId,
+                                Long continentId, Long countryId, Long universityId,
                                 Long stateId, Long cityId, Long collegeId);
 
     AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2, String role, String email);

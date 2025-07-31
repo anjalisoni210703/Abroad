@@ -76,10 +76,10 @@ public class AbroadEnquiry {
     private String role;
     private String branchCode;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    @JsonIgnore
-    private AbroadCourse abroadCourse;
+//    @ManyToOne
+//    @JoinColumn(name = "course_id")
+//    @JsonIgnore
+//    private AbroadCourse abroadCourse;
 
     @ManyToOne
     @JoinColumn(name = "stream_id")
