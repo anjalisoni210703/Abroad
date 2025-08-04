@@ -33,7 +33,7 @@ public class AbroadEnquiry {
     private String district;
     private String continent;
     private String country;
-//    private String course;
+    private String course;
     private String courseName;
     private String photoUrl;
     private String stream;
