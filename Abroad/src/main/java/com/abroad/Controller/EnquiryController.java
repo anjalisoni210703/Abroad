@@ -110,6 +110,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) String branchCode,
             @RequestParam(required = false) String applyFor,
+            @RequestParam(required = false) String conductBy,
             @RequestParam String role,
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
@@ -118,7 +119,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         return service.filterEnquiries(
                 continent, country, stream, course, status,
                 branchCode, role, email, fullName,
-                enquiryDateFilter, startDate, endDate, applyFor, page, size
+                enquiryDateFilter, startDate, endDate, applyFor, conductBy,page, size
         );
     }
 }

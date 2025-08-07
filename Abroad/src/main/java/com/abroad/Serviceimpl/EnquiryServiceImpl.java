@@ -247,7 +247,8 @@
                 String continent, String country, String stream, String course, String status,
                 String branchCode, String role, String email, String fullName,
                 String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
-                String applyFor, // NEW PARAM
+                String applyFor,
+                String conductBy,// NEW PARAM
                 int page, int size) {
 
             if (!permissionService.hasPermission(role, email, "POST"))
@@ -266,6 +267,7 @@
                 if (course != null) predicates.add(cb.equal(root.get("course"), course));
                 if (status != null) predicates.add(cb.equal(root.get("status"), status));
                 if (applyFor != null) predicates.add(cb.equal(root.get("applyFor"), applyFor)); // <-- NEW
+                if (conductBy != null) predicates.add(cb.equal(root.get("conductBy"), conductBy)); // <-- NEW
 
                 if (fullName != null && !fullName.trim().isEmpty()) {
                     predicates.add(cb.like(cb.lower(root.get("name")), "%" + fullName.toLowerCase() + "%"));
