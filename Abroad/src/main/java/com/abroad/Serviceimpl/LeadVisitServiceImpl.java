@@ -33,7 +33,7 @@ public class LeadVisitServiceImpl implements LeadVisitService {
         AbroadEnquiry enquiry=enquiryRepository.findById(enquiry_id).get();
 
             AbroadLeadVisit visit=new AbroadLeadVisit();
-
+            enquiry.setStatus(status);
             visit.setEnquiry(enquiry);
             visit.setStatus(status);
             visit.setVisitCount(visitCount);
