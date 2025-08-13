@@ -34,17 +34,15 @@ public class AbroadRegisterFormController {
 
     @GetMapping("/getAllRegisterForms")
     public ResponseEntity<List<AbroadRegisterForm>> getAll(@RequestParam String role,
-                                                           @RequestParam String email,
-                                                           @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getAllRegisterForms(role, email, branchCode));
+                                                           @RequestParam String email) {
+        return ResponseEntity.ok(service.getAllRegisterForms(role, email));
     }
 
     @GetMapping("/getRegisterFormById/{id}")
     public ResponseEntity<AbroadRegisterForm> getById(@PathVariable int id,
                                                       @RequestParam String role,
-                                                      @RequestParam String email,
-                                                      @RequestParam String branchCode) {
-        return ResponseEntity.ok(service.getRegisterFormById(id, role, email, branchCode));
+                                                      @RequestParam String email) {
+        return ResponseEntity.ok(service.getRegisterFormById(id, role, email));
     }
 
     @DeleteMapping("/deleteRegisterForm/{id}")

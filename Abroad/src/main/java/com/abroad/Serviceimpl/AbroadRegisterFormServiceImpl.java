@@ -9,7 +9,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AbroadRegisterFormServiceImpl implements AbroadRegisterFormService {
@@ -35,28 +34,22 @@ public class AbroadRegisterFormServiceImpl implements AbroadRegisterFormService 
     }
 
     @Override
-    public List<AbroadRegisterForm> getAllRegisterForms(String role, String email, String branchCode) {
+    public List<AbroadRegisterForm> getAllRegisterForms(String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view RegisterForms");
         }
 
-        return repository.findAllByBranchCode(branchCode);
+        return repository.findAll();
     }
 
     @Override
-    public AbroadRegisterForm getRegisterFormById(int id, String role, String email, String branchCode) {
+    public AbroadRegisterForm getRegisterFormById(int id, String role, String email) {
         if (!permissionService.hasPermission(role, email, "GET")) {
             throw new AccessDeniedException("No permission to view RegisterForm");
         }
 
-        AbroadRegisterForm form = repository.findById((long) id)
+        return repository.findById((long) id)
                 .orElseThrow(() -> new RuntimeException("RegisterForm not found"));
-
-        if (!form.getBranchCode().equals(branchCode)) {
-            throw new AccessDeniedException("Access denied to this branch data");
-        }
-
-        return form;
     }
 
     @Override
