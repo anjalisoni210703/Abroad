@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface ConsultationBookingService {
-    AbroadConsultation_Booking createBooking(AbroadConsultation_Booking booking, MultipartFile image, String role, String email);
+    AbroadConsultation_Booking createBooking(AbroadConsultation_Booking booking, MultipartFile image);
     List<AbroadConsultation_Booking> getAllBookings(String role, String email);
     AbroadConsultation_Booking getBookingById(Long id, String role, String email);
     AbroadConsultation_Booking updateBooking(Long id, AbroadConsultation_Booking booking, MultipartFile image, String role, String email);

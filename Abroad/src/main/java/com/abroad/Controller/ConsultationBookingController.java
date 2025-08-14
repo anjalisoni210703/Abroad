@@ -21,16 +21,17 @@ public class ConsultationBookingController {
 
     @PostMapping("/createConsultationBooking")
     public ResponseEntity<AbroadConsultation_Booking> createBooking(@RequestPart("booking") String bookingJson,
-                                                                    @RequestParam(value = "image", required = false) MultipartFile image,
-                                                                    @RequestParam String role,
-                                                                    @RequestParam String email) throws JsonProcessingException {
+                                                                    @RequestParam(value = "image", required = false) MultipartFile image
+//                                                                    @RequestParam String role,
+//                                                                    @RequestParam String email
+    ) throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadConsultation_Booking booking = mapper.readValue(bookingJson, AbroadConsultation_Booking.class);
-        return ResponseEntity.ok(service.createBooking(booking, image, role, email));
+        return ResponseEntity.ok(service.createBooking(booking, image));
     }
 
     @PutMapping("/updateConsultationBooking/{id}")

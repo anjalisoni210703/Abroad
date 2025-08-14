@@ -27,17 +27,17 @@ public class AboutUsServiceImpl implements AboutUsService {
     private S3Service s3Service;
 
     @Override
-    public AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create AboutUs");
-        }
+    public AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image) {
+//        if (!permissionService.hasPermission(role, email, "POST")) {
+//            throw new AccessDeniedException("No permission to create AboutUs");
+//        }
+//
+//        String branchCode = permissionService.fetchBranchCode(role, email);
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
-
-        Optional<AbroadAboutUs> existing = repository.findByBranchCode(branchCode);
-        if (existing.isPresent()) {
-            throw new RuntimeException("AboutUs already exists for this branch");
-        }
+//        Optional<AbroadAboutUs> existing = repository.findByBranchCode(branchCode);
+//        if (existing.isPresent()) {
+//            throw new RuntimeException("AboutUs already exists for this branch");
+//        }
 
         try {
             if (image != null && !image.isEmpty()) {
@@ -48,9 +48,9 @@ public class AboutUsServiceImpl implements AboutUsService {
             throw new RuntimeException("Failed to upload image to S3", e);
         }
 
-        abroadAboutUs.setCreatedByEmail(email);
-        abroadAboutUs.setRole(role);
-        abroadAboutUs.setBranchCode(branchCode);
+//        abroadAboutUs.setCreatedByEmail(email);
+//        abroadAboutUs.setRole(role);
+//        abroadAboutUs.setBranchCode(branchCode);
 
         return repository.save(abroadAboutUs);
     }

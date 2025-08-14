@@ -20,15 +20,15 @@ public class AbroadRegisterFormServiceImpl implements AbroadRegisterFormService 
     private PermissionService permissionService;
 
     @Override
-    public AbroadRegisterForm createRegisterForm(AbroadRegisterForm form, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create RegisterForm");
-        }
+    public AbroadRegisterForm createRegisterForm(AbroadRegisterForm form) {
+//        if (!permissionService.hasPermission(role, email, "POST")) {
+//            throw new AccessDeniedException("No permission to create RegisterForm");
+//        }
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
-        form.setCreatedByEmail(email);
-        form.setRole(role);
-        form.setBranchCode(branchCode);
+//        String branchCode = permissionService.fetchBranchCode(role, email);
+//        form.setCreatedByEmail(email);
+//        form.setRole(role);
+//        form.setBranchCode(branchCode);
 
         return repository.save(form);
     }

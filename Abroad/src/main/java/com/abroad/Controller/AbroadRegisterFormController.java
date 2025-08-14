@@ -16,10 +16,11 @@ public class AbroadRegisterFormController {
     private AbroadRegisterFormService service;
 
     @PostMapping("/createRegisterForm")
-    public ResponseEntity<AbroadRegisterForm> createForm(@RequestBody AbroadRegisterForm form,
-                                                         @RequestParam String role,
-                                                         @RequestParam String email) {
-        AbroadRegisterForm created = service.createRegisterForm(form, role, email);
+    public ResponseEntity<AbroadRegisterForm> createForm(@RequestBody AbroadRegisterForm form
+//                                                         @RequestParam String role,
+//                                                         @RequestParam String email)
+    ){
+        AbroadRegisterForm created = service.createRegisterForm(form);
         return ResponseEntity.ok(created);
     }
 

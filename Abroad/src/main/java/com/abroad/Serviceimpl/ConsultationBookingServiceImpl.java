@@ -21,15 +21,15 @@ public class ConsultationBookingServiceImpl  implements ConsultationBookingServi
     private PermissionService permissionService;
 
     @Override
-    public AbroadConsultation_Booking createBooking(AbroadConsultation_Booking booking, MultipartFile image, String role, String email) {
-        if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create booking");
-        }
+    public AbroadConsultation_Booking createBooking(AbroadConsultation_Booking booking, MultipartFile image) {
+//        if (!permissionService.hasPermission(role, email, "POST")) {
+//            throw new AccessDeniedException("No permission to create booking");
+//        }
 
-        String branchCode = permissionService.fetchBranchCode(role, email);
-        booking.setCreatedByEmail(email);
-        booking.setRole(role);
-        booking.setBranchCode(branchCode);
+//        String branchCode = permissionService.fetchBranchCode(role, email);
+//        booking.setCreatedByEmail(email);
+//        booking.setRole(role);
+//        booking.setBranchCode(branchCode);
 
         return repository.save(booking);
     }

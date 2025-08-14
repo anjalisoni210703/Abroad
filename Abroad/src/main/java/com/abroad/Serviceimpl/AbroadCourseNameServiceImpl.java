@@ -37,10 +37,10 @@ public class AbroadCourseNameServiceImpl implements AbroadCourseNameService {
     }
 
     @Override
-    public List<AbroadCourseName> getAllCourseName(String role, String email){
-        if(!permissionService.hasPermission(role,email,"Get")){
-            throw new RuntimeException("AccessDenied");
-        }
+    public List<AbroadCourseName> getAllCourseName(){
+//        if(!permissionService.hasPermission(role,email,"Get")){
+//            throw new RuntimeException("AccessDenied");
+//        }
         return courseNameRepository.findAll();
     }
 

@@ -12,7 +12,7 @@ public interface AbroadCourseNameService {
 
     AbroadCourseName getCourseNameById(Long id, String role, String email);
 
-    List<AbroadCourseName> getAllCourseName(String role, String email);
+    List<AbroadCourseName> getAllCourseName();
 
     AbroadCourseName updateCourseName(Long id, String role, String email, AbroadCourseName ucourseName);
 

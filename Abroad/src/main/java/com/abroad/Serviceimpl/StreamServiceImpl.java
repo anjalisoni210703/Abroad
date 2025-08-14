@@ -62,10 +62,10 @@ public class StreamServiceImpl implements StreamService {
     }
 
     @Override
-    public List<AbroadStream> getAllStreams(String role, String email) {
-        if (!permissionService.hasPermission(role, email, "GET")) {
-            throw new AccessDeniedException("No permission to view Streams");
-        }
+    public List<AbroadStream> getAllStreams() {
+//        if (!permissionService.hasPermission(role, email, "GET")) {
+//            throw new AccessDeniedException("No permission to view Streams");
+//        }
 
         return repository.findAll();
 

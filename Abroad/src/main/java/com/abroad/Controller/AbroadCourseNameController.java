@@ -28,9 +28,8 @@ public class AbroadCourseNameController {
     }
 
     @GetMapping("getAllCourseName")
-    public ResponseEntity<?> getAll(@RequestParam String role,
-                                    @RequestParam String email){
-        return ResponseEntity.ok(courseNameService.getAllCourseName(role, email));
+    public ResponseEntity<?> getAll(){
+        return ResponseEntity.ok(courseNameService.getAllCourseName());
     }
 
     @PutMapping("updateCourseName/{id}")

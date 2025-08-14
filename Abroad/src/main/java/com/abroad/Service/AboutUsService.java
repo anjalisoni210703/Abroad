@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface AboutUsService {
-    AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image, String role, String email);
+    AbroadAboutUs createAboutUs(AbroadAboutUs abroadAboutUs, MultipartFile image );
     List<AbroadAboutUs> getAllAboutUs(String role, String email, String branchCode);
     AbroadAboutUs getAboutUsById(int id, String role, String email, String branchCode);
     AbroadAboutUs updateAboutUs(int id, AbroadAboutUs abroadAboutUs, MultipartFile image, String role, String email);

@@ -22,15 +22,16 @@ public class AboutUsController {
 
     @PostMapping("/createAboutUs")
     public ResponseEntity<AbroadAboutUs> createAboutUs(@RequestPart("aboutUs") String aboutUsJson,
-                                                       @RequestParam("image") MultipartFile image,
-                                                       @RequestParam String role,
-                                                       @RequestParam String email) throws JsonProcessingException {
+                                                       @RequestParam("image") MultipartFile image
+//                                                       @RequestParam String role,
+//                                                       @RequestParam String email
+    ) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadAboutUs abroadAboutUs = mapper.readValue(aboutUsJson, AbroadAboutUs.class);
-        return ResponseEntity.ok(service.createAboutUs(abroadAboutUs, image, role, email));
+        return ResponseEntity.ok(service.createAboutUs(abroadAboutUs, image ));
     }
 
     @PutMapping("/updateAboutUs/{id}")
