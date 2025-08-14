@@ -48,7 +48,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner","/createExamPreparation","/getExamById/{id}","/getAllExam").permitAll()
+                        .requestMatchers("/stafflogin","/userLogin","/permissionForUser","/getBranchCodeByUserEmail","/getAllBlogs","/getBlogByTitle","/createPartner","/createExamPreparation","/getExamById/{id}","/getAllExam","/getAllCourseName","/getAllStreams").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
