@@ -3,7 +3,6 @@ package com.abroad.Controller;
 import com.abroad.Entity.AbroadBlog;
 import com.abroad.Service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,9 +44,8 @@ public class BlogController {
     }
 
     @GetMapping("/getAllBlogs")
-    public ResponseEntity<?> getAllBlogsByBranchCode(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam int size) {
-        return ResponseEntity.ok(service.getAllBlogsByBranchCode(size, page));
+    public ResponseEntity<List<AbroadBlog>> getAllBlogsByBranchCode() {
+        return ResponseEntity.ok(service.getAllBlogsByBranchCode());
     }
 
     @GetMapping("/getBlogById/{id}")
