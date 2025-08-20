@@ -5,10 +5,14 @@ import com.abroad.Repository.BlogRepository;
 import com.abroad.Service.BlogService;
 import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.abroad.Service.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
@@ -51,9 +55,16 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<AbroadBlog> getAllBlogsByBranchCode() {
+    public Map<String,Object> getAllBlogsByBranchCode(int size, int page) {
+        Pageable pageable= PageRequest.of(page,size);
+        Page<AbroadBlog> blogs=repository.findAll(pageable);
 
-        return repository.findAll();
+        Map<String,Object> response=new HashMap<>();
+        response.put("blogs",blogs.getContent());
+        response.put("currentPage",blogs.getNumber());
+        response.put("totalItems",blogs.getTotalElements());
+        response.put("totalPages",blogs.getTotalPages());
+        return response;
     }
 
 
