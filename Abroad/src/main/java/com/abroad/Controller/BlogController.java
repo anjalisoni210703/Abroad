@@ -66,5 +66,11 @@ public class BlogController {
         return ResponseEntity.ok(service.getBlogByTitle(title));
     }
 
+    @GetMapping("/getBlogsPagination")
+    public ResponseEntity<?> getBlogPagination(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam int size){
+        return ResponseEntity.ok(service.getAllBlogsPagination(page, size));
+    }
+
 }
 
