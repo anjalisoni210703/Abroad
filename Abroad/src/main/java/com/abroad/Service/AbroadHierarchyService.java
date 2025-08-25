@@ -7,4 +7,5 @@ import java.util.List;
 public interface AbroadHierarchyService {
     AbroadContinentDTO getHierarchyByContinentId(Long continentId);
     List<AbroadContinentDTO> getAllHierarchies();
+
 }

@@ -27,4 +27,5 @@ public class AbroadHierarchyController {
             return ResponseEntity.ok(allHierarchies);
         }
     }
+
 }
