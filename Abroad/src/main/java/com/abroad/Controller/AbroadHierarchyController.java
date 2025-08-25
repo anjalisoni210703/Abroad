@@ -4,10 +4,9 @@ import com.abroad.DTO.AbroadContinentDTO;
 import com.abroad.Service.AbroadHierarchyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,8 +15,16 @@ public class AbroadHierarchyController {
 
     private final AbroadHierarchyService hierarchyService;
 
-    @GetMapping("/hierarchyContinent/{id}")
-    public ResponseEntity<AbroadContinentDTO> getContinentHierarchy(@PathVariable Long id) {
-        return ResponseEntity.ok(hierarchyService.getHierarchyByContinentId(id));
+    // ✅ Single endpoint handling both cases
+    @GetMapping("/hierarchyContinent")
+    public ResponseEntity<?> getContinentHierarchy(@RequestParam(required = false) Long id) {
+        if (id != null) {
+            // return single continent hierarchy
+            return ResponseEntity.ok(hierarchyService.getHierarchyByContinentId(id));
+        } else {
+            // return all continent hierarchies
+            List<AbroadContinentDTO> allHierarchies = hierarchyService.getAllHierarchies();
+            return ResponseEntity.ok(allHierarchies);
+        }
     }
 }

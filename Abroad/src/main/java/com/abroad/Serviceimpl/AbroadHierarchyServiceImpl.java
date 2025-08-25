@@ -19,15 +19,25 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
     public AbroadContinentDTO getHierarchyByContinentId(Long continentId) {
         AbroadContinent continent = continentRepository.findById(continentId)
                 .orElseThrow(() -> new RuntimeException("Continent not found"));
+        return mapToDTO(continent);
+    }
 
+    @Override
+    public List<AbroadContinentDTO> getAllHierarchies() {
+        List<AbroadContinent> continents = continentRepository.findAll();
+        return continents.stream().map(this::mapToDTO).toList();
+    }
+
+    private AbroadContinentDTO mapToDTO(AbroadContinent continent) {
         List<AbroadCountryDTO> countryDTOs = continent.getAbroadCountries().stream().map(country -> {
             List<AbroadStateDTO> stateDTOs = country.getAbroadStates().stream().map(state -> {
                 List<AbroadCityDTO> cityDTOs = state.getAbroadCities().stream().map(city -> {
                     List<AbroadUniversityDTO> universityDTOs = city.getAbroadUniversities().stream().map(university -> {
                         List<AbroadCollegeDTO> collegeDTOs = university.getAbroadColleges().stream().map(college -> {
-                            List<AbroadCourseDTO> courseDTOs = college.getAbroadCourses().stream().map(course -> {
-                                return new AbroadCourseDTO(course.getId(), course.getCourseName(), course.getTutionFees(), course.getApplicationFees());
-                            }).toList();
+                            List<AbroadCourseDTO> courseDTOs = college.getAbroadCourses().stream().map(course ->
+                                    new AbroadCourseDTO(course.getId(), course.getCourseName(),
+                                            course.getTutionFees(), course.getApplicationFees())
+                            ).toList();
                             return new AbroadCollegeDTO(college.getId(), college.getCollegeName(), courseDTOs);
                         }).toList();
                         return new AbroadUniversityDTO(university.getId(), university.getUniversityName(), collegeDTOs);
