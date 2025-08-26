@@ -83,4 +83,9 @@ public class AbroadRegisterFormServiceImpl implements AbroadRegisterFormService 
 
         repository.deleteById((long) id);
     }
+
+    @Override
+    public AbroadRegisterForm getFormByBarcode(String barcode) {
+        return repository.findByBarcode(barcode).orElse(null);
+    }
 }

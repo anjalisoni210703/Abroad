@@ -9,4 +9,7 @@ public interface AbroadRegisterFormService {
     AbroadRegisterForm getRegisterFormById(int id, String role, String email);
     AbroadRegisterForm updateRegisterForm(int id, AbroadRegisterForm form, String role, String email);
     void deleteRegisterForm(int id, String role, String email);
+
+    AbroadRegisterForm getFormByBarcode(String barcode);
+
 }

@@ -20,6 +20,7 @@ public class AbroadRegisterForm {
     private String courseName;
     private String location;
     private Double amount;
+    private String barcode;
 
     // Add these fields:
     private String branchCode;
