@@ -53,4 +53,15 @@ public class AbroadRegisterFormController {
         service.deleteRegisterForm(id, role, email);
         return ResponseEntity.ok("Register form deleted successfully.");
     }
+    @GetMapping("/scanBarcode/{barcode}")
+    public ResponseEntity<?> scanBarcode(@PathVariable String barcode) {
+        AbroadRegisterForm form = service.getFormByBarcode(barcode);
+
+        if (form != null) {
+            String formLink = "http://localhost:5173/register-form/" + form.getId();
+            return ResponseEntity.ok(formLink);
+        } else {
+            return ResponseEntity.status(404).body("No form found for this barcode");
+        }
+    }
 }
