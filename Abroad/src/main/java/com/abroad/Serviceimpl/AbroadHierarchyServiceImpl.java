@@ -35,8 +35,39 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                     List<AbroadUniversityDTO> universityDTOs = city.getAbroadUniversities().stream().map(university -> {
                         List<AbroadCollegeDTO> collegeDTOs = university.getAbroadColleges().stream().map(college -> {
                             List<AbroadCourseDTO> courseDTOs = college.getAbroadCourses().stream().map(course ->
-                                    new AbroadCourseDTO(course.getId(), course.getCourseName(),
-                                            course.getTutionFees(), course.getApplicationFees())
+                                    new AbroadCourseDTO(
+                                            course.getId(),
+                                            course.getCourseName(),
+                                            course.getTutionFees(),
+                                            course.getApplicationFees(),
+                                            course.getDescription(),
+                                            course.getDate(),
+                                            course.getDuration(),
+                                            course.getInstituteRank(),
+                                            course.getThumbnail(),
+                                            course.getIntake(),
+                                            course.getWebsiteLink(),
+                                            course.getAcademicRequirements(),
+                                            course.getEnglishExamRequirements(),
+                                            course.getExamScore(),
+                                            course.getCity(),
+                                            course.getLocation(),
+                                            course.getAdditionalRequirements(),
+                                            course.getCourseDetials(),
+                                            course.getScholarship(),
+                                            course.getHostel(),
+                                            course.getHostelFees(),
+                                            course.getContractType(),
+                                            course.getExamType(),
+                                            course.getImage(),
+                                            course.getApplicationLink(),
+                                            course.getStreamName(),
+                                            course.getTutionFeesINR(),
+                                            course.getFeesINR(),
+                                            course.getCreatedByEmail(),
+                                            course.getRole()
+//                                            course.getAbroadCollege() != null ? course.getAbroadCollege().getId() : null
+                                    )
                             ).toList();
                             return new AbroadCollegeDTO(college.getId(), college.getCollegeName(), courseDTOs);
                         }).toList();
@@ -51,5 +82,6 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
 
         return new AbroadContinentDTO(continent.getId(), continent.getContinentname(), countryDTOs);
     }
+
 
 }
