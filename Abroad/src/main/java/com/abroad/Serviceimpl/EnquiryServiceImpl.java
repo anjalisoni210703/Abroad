@@ -197,6 +197,7 @@
             existing.setAmountITR(abroadEnquiry.getAmountITR()!=null?abroadEnquiry.getAmountITR():existing.getAmountITR());
             existing.setYearITR(abroadEnquiry.getYearITR()!=null?abroadEnquiry.getYearITR():existing.getYearITR());
             existing.setHasPassport(abroadEnquiry.getHasPassport()!=null?abroadEnquiry.getHasPassport():existing.getHasPassport());
+            existing.setStatus(abroadEnquiry.getStatus()!=null?abroadEnquiry.getStatus():existing.getStatus());
             try {
                 if (image != null && !image.isEmpty()) {
                     if (existing.getPhotoUrl() != null) {
