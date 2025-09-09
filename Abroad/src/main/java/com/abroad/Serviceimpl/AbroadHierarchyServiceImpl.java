@@ -1,12 +1,14 @@
 package com.abroad.Serviceimpl;
 
 import com.abroad.DTO.*;
-import com.abroad.Entity.AbroadContinent;
-import com.abroad.Repository.ContinentRepository;
+import com.abroad.Entity.*;
+import com.abroad.Repository.*;
 import com.abroad.Service.AbroadHierarchyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -14,6 +16,20 @@ import java.util.List;
 public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
 
     private final ContinentRepository continentRepository;
+    @Autowired
+    private  ContinentRepository continentRepo;
+    @Autowired
+    private  CountryRepository countryRepo;
+    @Autowired
+    private  StateRepository stateRepo;
+    @Autowired
+    private  CityRepository cityRepo;
+    @Autowired
+    private  UniversityRepository universityRepo;
+    @Autowired
+    private  CollegeRepository collegeRepo;
+    @Autowired
+    private  CourseRepository courseRepo;
 
     @Override
     public AbroadContinentDTO getHierarchyByContinentId(Long continentId) {
@@ -83,5 +99,39 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
         return new AbroadContinentDTO(continent.getId(), continent.getContinentname(), countryDTOs);
     }
 
+    @Override
+    public Page<AbroadContinent> getAllContinents(Pageable pageable) {
+        return continentRepo.findAll(pageable);
+    }
+
+    @Override
+    public Page<AbroadCountry> getCountriesByContinent(Long continentId, Pageable pageable) {
+        return countryRepo.findByAbroadContinentId(continentId, pageable);
+    }
+
+    @Override
+    public Page<AbroadState> getStatesByCountry(Long countryId, Pageable pageable) {
+        return stateRepo.findByAbroadCountryId(countryId, pageable);
+    }
+
+    @Override
+    public Page<AbroadCity> getCitiesByState(Long stateId, Pageable pageable) {
+        return cityRepo.findByAbroadStateId(stateId, pageable);
+    }
+
+    @Override
+    public Page<AbroadUniversity> getUniversitiesByCity(Long cityId, Pageable pageable) {
+        return universityRepo.findByAbroadCityId(cityId, pageable);
+    }
+
+    @Override
+    public Page<AbroadCollege> getCollegesByUniversity(Long universityId, Pageable pageable) {
+        return collegeRepo.findByAbroadUniversityId(universityId, pageable);
+    }
+
+    @Override
+    public Page<AbroadCourse> getCoursesByCollege(Long collegeId, Pageable pageable) {
+        return courseRepo.findByAbroadCollegeId(collegeId, pageable);
+    }
 
 }

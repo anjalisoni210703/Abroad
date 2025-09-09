@@ -62,7 +62,7 @@ public class StateServiceImpl implements StateService {
         }
 
         if (countryId != null) {
-            return stateRepository.findAllByCountryId(countryId);
+            return stateRepository.findAllByAbroadCountryId(countryId);
         } else {
             return stateRepository.findAll();
         }

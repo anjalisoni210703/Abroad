@@ -1,7 +1,10 @@
 package com.abroad.Repository;
 
 import com.abroad.Entity.AbroadCollege;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +19,7 @@ public interface CollegeRepository  extends JpaRepository<AbroadCollege, Long> {
     List<AbroadCollege> findAllByBranchCodeAndUniversityId( @Param("universityId") Long universityId);
 
     Optional<AbroadCollege> findByCollegeNameIgnoreCase(String collegeName);
+
+    Page<AbroadCollege> findByAbroadUniversityId(Long universityId, Pageable pageable);
 
 }

@@ -62,7 +62,7 @@ public class CityServiceImpl implements CityService {
         }
 
         if (stateId != null) {
-            return cityRepository.findAllByStateId(stateId);
+            return cityRepository.findAllByAbroadStateId(stateId);
         } else {
             return cityRepository.findAll();
         }

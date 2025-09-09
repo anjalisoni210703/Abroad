@@ -18,6 +18,7 @@ public class AbroadUserController {
     @PostMapping("/createUser")
     public ResponseEntity<AbroadUser> createUser(@RequestBody AbroadUser user,
                                                  @RequestParam String email) {
+
         return ResponseEntity.ok(userService.createUser(user, email));
     }
 
