@@ -16,23 +16,24 @@ public interface AbroadHierarchyService {
     // Continent
     Page<AbroadContinent> getAllContinents(Pageable pageable);
 
-    // Country
-    Page<AbroadCountry> getCountriesByContinent(Long continentId, Pageable pageable);
 
-    // State
-    Page<AbroadState> getStatesByCountry(Long countryId, Pageable pageable);
+    // Country by Continent Name
+    Page<AbroadCountry> getCountriesByContinentName(String continentName, Pageable pageable);
 
-    // City
-    Page<AbroadCity> getCitiesByState(Long stateId, Pageable pageable);
+    // State by Country Name
+    Page<AbroadState> getStatesByCountryName(String countryName, Pageable pageable);
 
-    // University
-    Page<AbroadUniversity> getUniversitiesByCity(Long cityId, Pageable pageable);
+    // City by State Name
+    Page<AbroadCity> getCitiesByStateName(String stateName, Pageable pageable);
 
-    // College
-    Page<AbroadCollege> getCollegesByUniversity(Long universityId, Pageable pageable);
+    // University by City Name
+    Page<AbroadUniversity> getUniversitiesByCityName(String cityName, Pageable pageable);
 
-    // Course
-    Page<AbroadCourse> getCoursesByCollege(Long collegeId, Pageable pageable);
+    // College by University Name
+    Page<AbroadCollege> getCollegesByUniversityName(String universityName, Pageable pageable);
+
+    // Course by College Name
+    Page<AbroadCourse> getCoursesByCollegeName(String collegeName, Pageable pageable);
 
     
 

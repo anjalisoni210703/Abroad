@@ -20,4 +20,6 @@ public  interface ContinentRepository extends JpaRepository<AbroadContinent, Lon
     Optional<AbroadContinent> findById(Long id);
 
     Page<AbroadContinent> findAll(Pageable pageable);
+    Optional<AbroadContinent> findByContinentname(String continentName);
+
 }

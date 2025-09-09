@@ -22,7 +22,10 @@ public interface UniversityRepository extends JpaRepository<AbroadUniversity, Lo
 
     Optional<AbroadUniversity> findById(Long id);
 
+
+    Optional<AbroadUniversity> findByUniversityName(String universityName);
     Page<AbroadUniversity> findByAbroadCityId(Long cityId, Pageable pageable);
+
 }
 
 

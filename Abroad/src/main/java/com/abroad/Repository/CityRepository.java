@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -16,6 +17,8 @@ public interface CityRepository extends JpaRepository<AbroadCity, Long> {
     @Query("SELECT c FROM AbroadCity c WHERE c.abroadState.id = :stateId ORDER BY c.id DESC")
  List<AbroadCity> findAllByAbroadStateId(@Param("stateId") Long stateId);
     
+
+    Optional<AbroadCity> findByCity(String cityName);
     Page<AbroadCity> findByAbroadStateId(Long stateId, Pageable pageable);
 
 }

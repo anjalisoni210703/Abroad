@@ -20,6 +20,8 @@ public interface CollegeRepository  extends JpaRepository<AbroadCollege, Long> {
 
     Optional<AbroadCollege> findByCollegeNameIgnoreCase(String collegeName);
 
+
+    Optional<AbroadCollege> findByCollegeName(String collegeName);
     Page<AbroadCollege> findByAbroadUniversityId(Long universityId, Pageable pageable);
 
 }

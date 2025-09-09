@@ -55,26 +55,26 @@ public class AbroadHierarchyController {
 
     @GetMapping("/hierarchy")
     public ResponseEntity<?> getHierarchy(
-            @RequestParam(required = false) Long continentId,
-            @RequestParam(required = false) Long countryId,
-            @RequestParam(required = false) Long stateId,
-            @RequestParam(required = false) Long cityId,
-            @RequestParam(required = false) Long universityId,
-            @RequestParam(required = false) Long collegeId,
+            @RequestParam(required = false) String continentName,
+            @RequestParam(required = false) String countryName,
+            @RequestParam(required = false) String stateName,
+            @RequestParam(required = false) String cityName,
+            @RequestParam(required = false) String universityName,
+            @RequestParam(required = false) String collegeName,
             Pageable pageable) {
 
-        if (collegeId != null) {
-            return ResponseEntity.ok(hierarchyService.getCoursesByCollege(collegeId, pageable));
-        } else if (universityId != null) {
-            return ResponseEntity.ok(hierarchyService.getCollegesByUniversity(universityId, pageable));
-        } else if (cityId != null) {
-            return ResponseEntity.ok(hierarchyService.getUniversitiesByCity(cityId, pageable));
-        } else if (stateId != null) {
-            return ResponseEntity.ok(hierarchyService.getCitiesByState(stateId, pageable));
-        } else if (countryId != null) {
-            return ResponseEntity.ok(hierarchyService.getStatesByCountry(countryId, pageable));
-        } else if (continentId != null) {
-            return ResponseEntity.ok(hierarchyService.getCountriesByContinent(continentId, pageable));
+        if (collegeName != null) {
+            return ResponseEntity.ok(hierarchyService.getCoursesByCollegeName(collegeName, pageable));
+        } else if (universityName != null) {
+            return ResponseEntity.ok(hierarchyService.getCollegesByUniversityName(universityName, pageable));
+        } else if (cityName != null) {
+            return ResponseEntity.ok(hierarchyService.getUniversitiesByCityName(cityName, pageable));
+        } else if (stateName != null) {
+            return ResponseEntity.ok(hierarchyService.getCitiesByStateName(stateName, pageable));
+        } else if (countryName != null) {
+            return ResponseEntity.ok(hierarchyService.getStatesByCountryName(countryName, pageable));
+        } else if (continentName != null) {
+            return ResponseEntity.ok(hierarchyService.getCountriesByContinentName(continentName, pageable));
         } else {
             return ResponseEntity.ok(hierarchyService.getAllContinents(pageable));
         }

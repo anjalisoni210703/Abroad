@@ -5,42 +5,34 @@ import com.abroad.Entity.*;
 import com.abroad.Repository.*;
 import com.abroad.Service.AbroadHierarchyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
 
-    private final ContinentRepository continentRepository;
-    @Autowired
-    private  ContinentRepository continentRepo;
-    @Autowired
-    private  CountryRepository countryRepo;
-    @Autowired
-    private  StateRepository stateRepo;
-    @Autowired
-    private  CityRepository cityRepo;
-    @Autowired
-    private  UniversityRepository universityRepo;
-    @Autowired
-    private  CollegeRepository collegeRepo;
-    @Autowired
-    private  CourseRepository courseRepo;
+    private final ContinentRepository continentRepo;
+    private final CountryRepository countryRepo;
+    private final StateRepository stateRepo;
+    private final CityRepository cityRepo;
+    private final UniversityRepository universityRepo;
+    private final CollegeRepository collegeRepo;
+    private final CourseRepository courseRepo;
 
     @Override
     public AbroadContinentDTO getHierarchyByContinentId(Long continentId) {
-        AbroadContinent continent = continentRepository.findById(continentId)
+        AbroadContinent continent = continentRepo.findById(continentId)
                 .orElseThrow(() -> new RuntimeException("Continent not found"));
         return mapToDTO(continent);
     }
 
     @Override
     public List<AbroadContinentDTO> getAllHierarchies() {
-        List<AbroadContinent> continents = continentRepository.findAll();
+        List<AbroadContinent> continents = continentRepo.findAll();
         return continents.stream().map(this::mapToDTO).toList();
     }
 
@@ -82,7 +74,6 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                                             course.getFeesINR(),
                                             course.getCreatedByEmail(),
                                             course.getRole()
-//                                            course.getAbroadCollege() != null ? course.getAbroadCollege().getId() : null
                                     )
                             ).toList();
                             return new AbroadCollegeDTO(college.getId(), college.getCollegeName(), courseDTOs);
@@ -105,33 +96,44 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
     }
 
     @Override
-    public Page<AbroadCountry> getCountriesByContinent(Long continentId, Pageable pageable) {
-        return countryRepo.findByAbroadContinentId(continentId, pageable);
+    public Page<AbroadCountry> getCountriesByContinentName(String continentName, Pageable pageable) {
+        var continent = continentRepo.findByContinentname(continentName)
+                .orElseThrow(() -> new RuntimeException("Continent not found: " + continentName));
+        return countryRepo.findByAbroadContinentId(continent.getId(), pageable);
     }
 
     @Override
-    public Page<AbroadState> getStatesByCountry(Long countryId, Pageable pageable) {
-        return stateRepo.findByAbroadCountryId(countryId, pageable);
+    public Page<AbroadState> getStatesByCountryName(String countryName, Pageable pageable) {
+        var country = countryRepo.findByCountry(countryName)
+                .orElseThrow(() -> new RuntimeException("Country not found: " + countryName));
+        return stateRepo.findByAbroadCountryId(country.getId(), pageable);
     }
 
     @Override
-    public Page<AbroadCity> getCitiesByState(Long stateId, Pageable pageable) {
-        return cityRepo.findByAbroadStateId(stateId, pageable);
+    public Page<AbroadCity> getCitiesByStateName(String stateName, Pageable pageable) {
+        var state = stateRepo.findByState(stateName)
+                .orElseThrow(() -> new RuntimeException("State not found: " + stateName));
+        return cityRepo.findByAbroadStateId(state.getId(), pageable);
     }
 
     @Override
-    public Page<AbroadUniversity> getUniversitiesByCity(Long cityId, Pageable pageable) {
-        return universityRepo.findByAbroadCityId(cityId, pageable);
+    public Page<AbroadUniversity> getUniversitiesByCityName(String cityName, Pageable pageable) {
+        var city = cityRepo.findByCity(cityName)
+                .orElseThrow(() -> new RuntimeException("City not found: " + cityName));
+        return universityRepo.findByAbroadCityId(city.getId(), pageable);
     }
 
     @Override
-    public Page<AbroadCollege> getCollegesByUniversity(Long universityId, Pageable pageable) {
-        return collegeRepo.findByAbroadUniversityId(universityId, pageable);
+    public Page<AbroadCollege> getCollegesByUniversityName(String universityName, Pageable pageable) {
+        var university = universityRepo.findByUniversityName(universityName)
+                .orElseThrow(() -> new RuntimeException("University not found: " + universityName));
+        return collegeRepo.findByAbroadUniversityId(university.getId(), pageable);
     }
 
     @Override
-    public Page<AbroadCourse> getCoursesByCollege(Long collegeId, Pageable pageable) {
-        return courseRepo.findByAbroadCollegeId(collegeId, pageable);
+    public Page<AbroadCourse> getCoursesByCollegeName(String collegeName, Pageable pageable) {
+        var college = collegeRepo.findByCollegeName(collegeName)
+                .orElseThrow(() -> new RuntimeException("College not found: " + collegeName));
+        return courseRepo.findByAbroadCollegeId(college.getId(), pageable);
     }
-
 }

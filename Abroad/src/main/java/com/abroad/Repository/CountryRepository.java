@@ -1,5 +1,6 @@
 package com.abroad.Repository;
 
+import com.abroad.Entity.AbroadContinent;
 import com.abroad.Entity.AbroadCountry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,12 @@ public interface CountryRepository extends JpaRepository<AbroadCountry, Long> {
 
     Optional<AbroadCountry> findById(Long id);
 
+    //Page<AbroadCountry> findByAbroadContinentId(Long continentId, Pageable pageable);
+    @Query("SELECT c FROM AbroadCountry c WHERE c.abroadContinent.continentname = :continentName")
+    List<AbroadCountry> findByContinentname(@Param("continentName") String continentName);
+    
+    Optional<AbroadCountry> findByCountry(String countryName);
     Page<AbroadCountry> findByAbroadContinentId(Long continentId, Pageable pageable);
+
 
 }
