@@ -68,19 +68,12 @@ public class AbroadEnquiry {
     private String document1;
     private String document2;
 
-
-//    @ElementCollection
-//    private List<String> uploadDocuments;
-
     @Email
     private String createdByEmail;
     private String role;
     private String branchCode;
 
-//    @ManyToOne
-//    @JoinColumn(name = "course_id")
-//    @JsonIgnore
-//    private AbroadCourse abroadCourse;
+
 
     @ManyToOne
     @JoinColumn(name = "stream_id")

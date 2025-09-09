@@ -76,9 +76,10 @@ public class AbroadHierarchyController {
         } else if (continentName != null) {
             return ResponseEntity.ok(hierarchyService.getCountriesByContinentName(continentName, pageable));
         } else {
-            return ResponseEntity.ok(hierarchyService.getAllContinents(pageable));
+            // ✅ No filter → return full nested hierarchy
+            List<AbroadContinentDTO> allHierarchies = hierarchyService.getAllHierarchies();
+            return ResponseEntity.ok(allHierarchies);
         }
     }
-
 
 }

@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -124,6 +127,20 @@ public class StreamServiceImpl implements StreamService {
         }
 
         repository.deleteById(id);
+    }
+
+    @Override
+    public List<Map<String, Object>> getInquiryCountByStreamAsMap() {
+        List<Object[]> results = repository.countInquiriesByStream();
+
+        return results.stream()
+                .map(result -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("streamName", result[0]);
+                    map.put("inquiryCount", result[1]);
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 }
 

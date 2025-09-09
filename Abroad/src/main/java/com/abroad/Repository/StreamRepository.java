@@ -20,4 +20,10 @@ public interface StreamRepository extends JpaRepository<AbroadStream, Long> {
 
     Optional<AbroadStream> findById(Long id);
 
+    // Query to get stream names with their inquiry counts
+    @Query("SELECT s.name, COUNT(e.id) FROM AbroadStream s LEFT JOIN s.abroadEnquiries e GROUP BY s.id, s.name")
+    List<Object[]> countInquiriesByStream();
+
+
+
 }
