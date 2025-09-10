@@ -20,5 +20,5 @@ public interface CityRepository extends JpaRepository<AbroadCity, Long> {
 
     Optional<AbroadCity> findByCity(String cityName);
     Page<AbroadCity> findByAbroadStateId(Long stateId, Pageable pageable);
-
+    List<AbroadCity> findByCityIn(List<String> cityNames);
 }

@@ -55,31 +55,37 @@ public class AbroadHierarchyController {
 
     @GetMapping("/hierarchy")
     public ResponseEntity<?> getHierarchy(
-            @RequestParam(required = false) String continentName,
-            @RequestParam(required = false) String countryName,
-            @RequestParam(required = false) String stateName,
-            @RequestParam(required = false) String cityName,
-            @RequestParam(required = false) String universityName,
-            @RequestParam(required = false) String collegeName,
-            Pageable pageable) {
+            @RequestParam(required = false) List<String> continentName,
+            @RequestParam(required = false) List<String> countryName,
+            @RequestParam(required = false) List<String> stateName,
+            @RequestParam(required = false) List<String> cityName,
+            @RequestParam(required = false) List<String> universityName,
+            @RequestParam(required = false) List<String> collegeName,
+            @RequestParam(required = false) List<String> courseName) {
 
-        if (collegeName != null) {
-            return ResponseEntity.ok(hierarchyService.getCoursesByCollegeName(collegeName, pageable));
-        } else if (universityName != null) {
-            return ResponseEntity.ok(hierarchyService.getCollegesByUniversityName(universityName, pageable));
-        } else if (cityName != null) {
-            return ResponseEntity.ok(hierarchyService.getUniversitiesByCityName(cityName, pageable));
-        } else if (stateName != null) {
-            return ResponseEntity.ok(hierarchyService.getCitiesByStateName(stateName, pageable));
-        } else if (countryName != null) {
-            return ResponseEntity.ok(hierarchyService.getStatesByCountryName(countryName, pageable));
-        } else if (continentName != null) {
-            return ResponseEntity.ok(hierarchyService.getCountriesByContinentName(continentName, pageable));
+        boolean noFilters =
+                (continentName == null || continentName.isEmpty()) &&
+                        (countryName == null || countryName.isEmpty()) &&
+                        (stateName == null || stateName.isEmpty()) &&
+                        (cityName == null || cityName.isEmpty()) &&
+                        (universityName == null || universityName.isEmpty()) &&
+                        (collegeName == null || collegeName.isEmpty()) &&
+                        (courseName == null || courseName.isEmpty());
+
+        if (noFilters) {
+            return ResponseEntity.ok(hierarchyService.getAllHierarchies());
         } else {
-            // ✅ No filter → return full nested hierarchy
-            List<AbroadContinentDTO> allHierarchies = hierarchyService.getAllHierarchies();
-            return ResponseEntity.ok(allHierarchies);
+            return ResponseEntity.ok(
+                    hierarchyService.getFilteredHierarchy(
+                            continentName, countryName, stateName, cityName,
+                            universityName, collegeName, courseName
+                    )
+            );
         }
     }
+
+
+
+
 
 }

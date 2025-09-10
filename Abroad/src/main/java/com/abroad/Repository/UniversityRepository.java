@@ -25,7 +25,7 @@ public interface UniversityRepository extends JpaRepository<AbroadUniversity, Lo
 
     Optional<AbroadUniversity> findByUniversityName(String universityName);
     Page<AbroadUniversity> findByAbroadCityId(Long cityId, Pageable pageable);
-
+    List<AbroadUniversity> findByUniversityNameIn(List<String> universityNames);
 }
 
 

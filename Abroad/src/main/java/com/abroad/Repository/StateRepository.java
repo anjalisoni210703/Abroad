@@ -20,6 +20,6 @@ public interface StateRepository extends JpaRepository<AbroadState, Long> {
     Optional<AbroadState> findByState(String stateName);
     Page<AbroadState> findByAbroadCountryId(Long countryId, Pageable pageable);
 
-
+    List<AbroadState> findByStateIn(List<String> stateNames);
 
 }

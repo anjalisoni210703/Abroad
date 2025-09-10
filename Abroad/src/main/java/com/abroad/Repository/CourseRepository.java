@@ -18,12 +18,8 @@ public interface CourseRepository extends JpaRepository<AbroadCourse, Long> {
     List<AbroadCourse> findAllByBranchCodeAndStreamId(@Param("collegeId") Long streamId);
 
     Optional<AbroadCourse> findByCourseNameIgnoreCase(String courseName);
-
-
-
-
     Optional<AbroadCourse> findById(Long id);
-
     Page<AbroadCourse> findByAbroadCollegeId(Long collegeId, Pageable pageable);
 
+    List<AbroadCourse> findByCourseNameIn(List<String> courseNames);
 }

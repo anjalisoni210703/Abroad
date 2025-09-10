@@ -33,6 +33,7 @@ public interface CountryRepository extends JpaRepository<AbroadCountry, Long> {
     
     Optional<AbroadCountry> findByCountry(String countryName);
     Page<AbroadCountry> findByAbroadContinentId(Long continentId, Pageable pageable);
+    List<AbroadCountry> findByCountryIn(List<String> countryNames);
 
 
 }

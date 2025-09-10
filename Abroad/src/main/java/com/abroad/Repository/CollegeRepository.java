@@ -23,5 +23,6 @@ public interface CollegeRepository  extends JpaRepository<AbroadCollege, Long> {
 
     Optional<AbroadCollege> findByCollegeName(String collegeName);
     Page<AbroadCollege> findByAbroadUniversityId(Long universityId, Pageable pageable);
+    List<AbroadCollege> findByCollegeNameIn(List<String> collegeNames);
 
 }

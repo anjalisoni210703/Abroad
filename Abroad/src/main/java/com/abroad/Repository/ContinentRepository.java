@@ -21,5 +21,6 @@ public  interface ContinentRepository extends JpaRepository<AbroadContinent, Lon
 
     Page<AbroadContinent> findAll(Pageable pageable);
     Optional<AbroadContinent> findByContinentname(String continentName);
+    List<AbroadContinent> findByContinentnameIn(List<String> continentNames);
 
 }
