@@ -1,13 +1,12 @@
+// AbroadHierarchyController.java
 package com.abroad.Controller;
 
 import com.abroad.DTO.AbroadContinentDTO;
-import com.abroad.Service.*;
+import com.abroad.Service.AbroadHierarchyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
@@ -17,44 +16,10 @@ public class AbroadHierarchyController {
 
     private final AbroadHierarchyService hierarchyService;
 
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private CollegeService collegeService;
-
-    @Autowired
-    private UniversityService universityService;
-
-    @Autowired
-    private CityService cityService;
-
-    @Autowired
-    private StateService stateService;
-
-    @Autowired
-    private CountryService countryService;
-
-    @Autowired
-    private ContinentService continentService;
-
-
-
-    // ✅ Single endpoint handling both cases
-    @GetMapping("/hierarchyContinent")
-    public ResponseEntity<?> getContinentHierarchy(@RequestParam(required = false) Long id) {
-        if (id != null) {
-            // return single continent hierarchy
-            return ResponseEntity.ok(hierarchyService.getHierarchyByContinentId(id));
-        } else {
-            // return all continent hierarchies
-            List<AbroadContinentDTO> allHierarchies = hierarchyService.getAllHierarchies();
-            return ResponseEntity.ok(allHierarchies);
-        }
-    }
-
+    // The single, unified API endpoint as per your documentation
     @GetMapping("/hierarchy")
-    public ResponseEntity<?> getHierarchy(
+    public ResponseEntity<List<AbroadContinentDTO>> getHierarchy(
+            @RequestParam(required = false) Long continentId, // Added continentId here
             @RequestParam(required = false) List<String> continentName,
             @RequestParam(required = false) List<String> countryName,
             @RequestParam(required = false) List<String> stateName,
@@ -64,7 +29,8 @@ public class AbroadHierarchyController {
             @RequestParam(required = false) List<String> courseName) {
 
         boolean noFilters =
-                (continentName == null || continentName.isEmpty()) &&
+                (continentId == null) && // Check continentId
+                        (continentName == null || continentName.isEmpty()) &&
                         (countryName == null || countryName.isEmpty()) &&
                         (stateName == null || stateName.isEmpty()) &&
                         (cityName == null || cityName.isEmpty()) &&
@@ -73,19 +39,36 @@ public class AbroadHierarchyController {
                         (courseName == null || courseName.isEmpty());
 
         if (noFilters) {
+            // Case 1: Get All Hierarchies
             return ResponseEntity.ok(hierarchyService.getAllHierarchies());
-        } else {
-            return ResponseEntity.ok(
-                    hierarchyService.getFilteredHierarchy(
-                            continentName, countryName, stateName, cityName,
-                            universityName, collegeName, courseName
-                    )
+        } else if (continentId != null &&
+                (continentName == null || continentName.isEmpty()) &&
+                (countryName == null || countryName.isEmpty()) &&
+                (stateName == null || stateName.isEmpty()) &&
+                (cityName == null || cityName.isEmpty()) &&
+                (universityName == null || universityName.isEmpty()) &&
+                (collegeName == null || collegeName.isEmpty()) &&
+                (courseName == null || courseName.isEmpty())) {
+            // Case 2: Get Specific Continent by ID (no other filters)
+            // Note: getFilteredHierarchy can handle this, but for explicit case,
+            // we can call getHierarchyByContinentId for a single DTO response.
+            // If getFilteredHierarchy returns a list, this needs to return a list of 1.
+            return ResponseEntity.ok(List.of(hierarchyService.getHierarchyByContinentId(continentId)));
+        }
+        else {
+            // Case 3: All other filtered scenarios (Parent-level, Child-level, Multi-level, Multiple values)
+            List<AbroadContinentDTO> filteredHierarchies = hierarchyService.getFilteredHierarchy(
+                    continentId, // Pass continentId to the filtered service method
+                    continentName, countryName, stateName, cityName,
+                    universityName, collegeName, courseName
             );
+            return ResponseEntity.ok(filteredHierarchies);
         }
     }
 
-
-
-
-
+    // Health check endpoint
+    @GetMapping("/hierarchy/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Hierarchy service is running");
+    }
 }

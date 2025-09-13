@@ -12,5 +12,5 @@ import java.util.List;
 public class AbroadUniversityDTO {
     private Long id;
     private String universityName;
-    private List<AbroadCollegeDTO> colleges;
+    private List<AbroadCollegeDTO> abroadColleges;
 }

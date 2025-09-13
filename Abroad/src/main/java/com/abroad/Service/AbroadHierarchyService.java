@@ -13,13 +13,15 @@ public interface AbroadHierarchyService {
 
     AbroadContinentDTO getHierarchyByContinentId(Long continentId);
     List<AbroadContinentDTO> getAllHierarchies();
-    List<AbroadContinentDTO> getFilteredHierarchy( List<String> continentNames,
-                                                   List<String> countryNames,
-                                                   List<String> stateNames,
-                                                   List<String> cityNames,
-                                                   List<String> universityNames,
-                                                   List<String> collegeNames,
-                                                   List<String> courseNames);
+    List<AbroadContinentDTO> getFilteredHierarchy(
+            Long continentId, // Added for specific continent ID filtering
+            List<String> continentNames,
+            List<String> countryNames,
+            List<String> stateNames,
+            List<String> cityNames,
+            List<String> universityNames,
+            List<String> collegeNames,
+            List<String> courseNames);
 //    // Continent
 //    Page<AbroadContinent> getAllContinents(Pageable pageable);
 //    // Country by Continent Name
@@ -35,13 +37,13 @@ public interface AbroadHierarchyService {
 //    // Course by College Name
 //    Page<AbroadCourse> getCoursesByCollegeName(String collegeName, Pageable pageable);
 
-    List<AbroadContinentDTO> getContinentsHierarchy(List<String> continentNames);
-    List<AbroadCountryDTO> getCountriesHierarchy(List<String> countryNames);
-    List<AbroadStateDTO> getStatesHierarchy(List<String> stateNames);
-    List<AbroadCityDTO> getCitiesHierarchy(List<String> cityNames);
-    List<AbroadUniversityDTO> getUniversitiesHierarchy(List<String> universityNames);
-    List<AbroadCollegeDTO> getCollegesHierarchy(List<String> collegeNames);
-    List<AbroadCourseDTO> getCoursesHierarchy(List<String> courseNames);
+//    List<AbroadContinentDTO> getContinentsHierarchy(List<String> continentNames);
+//    List<AbroadCountryDTO> getCountriesHierarchy(List<String> countryNames);
+//    List<AbroadStateDTO> getStatesHierarchy(List<String> stateNames);
+//    List<AbroadCityDTO> getCitiesHierarchy(List<String> cityNames);
+//    List<AbroadUniversityDTO> getUniversitiesHierarchy(List<String> universityNames);
+//    List<AbroadCollegeDTO> getCollegesHierarchy(List<String> collegeNames);
+//    List<AbroadCourseDTO> getCoursesHierarchy(List<String> courseNames);
 
 
 

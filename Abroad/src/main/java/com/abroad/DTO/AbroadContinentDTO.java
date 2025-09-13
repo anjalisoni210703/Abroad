@@ -12,5 +12,5 @@ import java.util.List;
 public class AbroadContinentDTO {
     private Long id;
     private String continentname;
-    private List<AbroadCountryDTO> countries;
+    private List<AbroadCountryDTO> abroadCountries;
 }

@@ -12,5 +12,5 @@ import java.util.List;
 public class AbroadStateDTO {
     private Long id;
     private String state;
-    private List<AbroadCityDTO> cities;
+    private List<AbroadCityDTO> abroadCities;
 }

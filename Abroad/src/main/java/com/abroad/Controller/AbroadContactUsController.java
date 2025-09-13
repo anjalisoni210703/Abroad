@@ -2,7 +2,6 @@ package com.abroad.Controller;
 
 import com.abroad.Entity.AbroadContactUs;
 import com.abroad.Service.AbroadContactUsService;
-import com.amazonaws.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
