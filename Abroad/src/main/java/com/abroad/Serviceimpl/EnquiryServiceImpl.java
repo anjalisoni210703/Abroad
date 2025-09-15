@@ -17,7 +17,10 @@
     import java.io.IOException;
     import java.time.LocalDate;
     import java.util.ArrayList;
+    import java.util.HashMap;
     import java.util.List;
+    import java.util.Map;
+    import java.util.stream.Collectors;
 
     @Service
     public class EnquiryServiceImpl implements com.abroad.Service.EnquiryService {
@@ -121,17 +124,6 @@
 
             return repository.save(abroadEnquiry);
         }
-
-//        private String extractExamName(String filename) {
-//            if (filename == null || filename.isEmpty()) return "UNKNOWN";
-//
-//            // Split by dot, take name before extension
-//            String name = filename.split("\\.")[0];
-//
-//            // Optionally clean underscores/spaces etc.
-//            return name.toUpperCase().replaceAll("[^A-Z]", "");
-//        }
-
 
 
         @Override
@@ -295,6 +287,35 @@
 
             Pageable pageable = PageRequest.of(page, size);
             return repository.findAll(spec, pageable);
+        }
+
+
+        @Override
+        public List<Map<String, Object>> getInquiryCountByCourseAsMap() {
+            List<Object[]> results = repository.countInquiriesByCourseName();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("courseName", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<Map<String, Object>> getInquiryCountByStreamAsMap() {
+            List<Object[]> results = repository.countInquiriesByStream();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("streamName", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         }
 
     }

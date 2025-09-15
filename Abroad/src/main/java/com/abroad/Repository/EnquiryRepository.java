@@ -13,4 +13,13 @@ import java.util.List;
 public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, JpaSpecificationExecutor<AbroadEnquiry> {
     @Query("SELECT e FROM AbroadEnquiry e WHERE e.branchCode = :branchCode ORDER BY e.id DESC")
     List<AbroadEnquiry> findAllByBranchCode(@Param("branchCode") String branchCode);
+
+    // Count inquiries grouped by courseName
+    // Count grouped by courseName
+    @Query("SELECT e.courseName, COUNT(e) FROM AbroadEnquiry e GROUP BY e.courseName")
+    List<Object[]> countInquiriesByCourseName();
+
+    // Count grouped by stream
+    @Query("SELECT e.stream, COUNT(e) FROM AbroadEnquiry e GROUP BY e.stream")
+    List<Object[]> countInquiriesByStream();
 }

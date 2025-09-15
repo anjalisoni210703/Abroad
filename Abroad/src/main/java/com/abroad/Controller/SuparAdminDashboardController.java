@@ -1,6 +1,7 @@
 package com.abroad.Controller;
 
 
+import com.abroad.Service.EnquiryService;
 import com.abroad.Service.StreamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,17 +20,19 @@ import java.util.Map;
 public class SuparAdminDashboardController {
 
     @Autowired
+    private EnquiryService enquiryService;
+
+    @Autowired
     private StreamService streamService;
 
-    @GetMapping("/inquiries-by-stream")
-    public ResponseEntity<?> getInquiriesByStreamCountAsMap() {
-        try {
-            List<Map<String, Object>> inquiryCounts = streamService.getInquiryCountByStreamAsMap();
-            return ResponseEntity.ok(inquiryCounts);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to fetch inquiry counts: " + e.getMessage()));
-        }
+    @GetMapping("/count/by-course")
+    public List<Map<String, Object>> getCountByCourse() {
+        return enquiryService.getInquiryCountByCourseAsMap();
+    }
+
+    @GetMapping("/count/by-stream")
+    public List<Map<String, Object>> getCountByStream() {
+        return enquiryService.getInquiryCountByStreamAsMap();
     }
 
 

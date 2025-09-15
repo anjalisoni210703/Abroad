@@ -30,4 +30,7 @@ public interface EnquiryService {
             String conductBy,
             int page, int size
     );
+
+    List<Map<String, Object>> getInquiryCountByCourseAsMap();
+    List<Map<String, Object>> getInquiryCountByStreamAsMap();
 }
