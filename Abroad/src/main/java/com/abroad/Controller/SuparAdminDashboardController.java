@@ -6,10 +6,7 @@ import com.abroad.Service.StreamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -26,16 +23,14 @@ public class SuparAdminDashboardController {
     private StreamService streamService;
 
     @GetMapping("/count/by-course")
-    public List<Map<String, Object>> getCountByCourse() {
-        return enquiryService.getInquiryCountByCourseAsMap();
+    public List<Map<String, Object>> getCountByCourse(@RequestParam String branchCode) {
+        return enquiryService.getInquiryCountByCourseAsMap(branchCode);
     }
 
     @GetMapping("/count/by-stream")
-    public List<Map<String, Object>> getCountByStream() {
-        return enquiryService.getInquiryCountByStreamAsMap();
+    public List<Map<String, Object>> getCountByStream(@RequestParam String branchCode) {
+        return enquiryService.getInquiryCountByStreamAsMap(branchCode);
     }
-
-
 
 
 }

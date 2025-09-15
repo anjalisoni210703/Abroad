@@ -31,6 +31,6 @@ public interface EnquiryService {
             int page, int size
     );
 
-    List<Map<String, Object>> getInquiryCountByCourseAsMap();
-    List<Map<String, Object>> getInquiryCountByStreamAsMap();
+    List<Map<String, Object>> getInquiryCountByCourseAsMap(String branchCode);
+    List<Map<String, Object>> getInquiryCountByStreamAsMap(String branchCode);
 }

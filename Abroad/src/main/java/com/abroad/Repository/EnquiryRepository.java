@@ -16,10 +16,10 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
 
     // Count inquiries grouped by courseName
     // Count grouped by courseName
-    @Query("SELECT e.courseName, COUNT(e) FROM AbroadEnquiry e GROUP BY e.courseName")
-    List<Object[]> countInquiriesByCourseName();
+    @Query("SELECT e.courseName, COUNT(e) FROM AbroadEnquiry e WHERE e.branchCode = :branchCode GROUP BY e.courseName")
+    List<Object[]> countInquiriesByCourseNameAndBranch(@Param("branchCode") String branchCode);
 
     // Count grouped by stream
-    @Query("SELECT e.stream, COUNT(e) FROM AbroadEnquiry e GROUP BY e.stream")
-    List<Object[]> countInquiriesByStream();
+    @Query("SELECT e.stream, COUNT(e) FROM AbroadEnquiry e WHERE e.branchCode = :branchCode GROUP BY e.stream")
+    List<Object[]> countInquiriesByStreamAndBranch(@Param("branchCode") String branchCode);
 }
