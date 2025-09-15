@@ -292,7 +292,13 @@
 
         @Override
         public List<Map<String, Object>> getInquiryCountByCourseAsMap(String branchCode) {
-            List<Object[]> results = repository.countInquiriesByCourseNameAndBranch(branchCode);
+            List<Object[]> results;
+
+            if (branchCode == null) {
+                results = repository.countInquiriesByCourseName();
+            } else {
+                results = repository.countInquiriesByCourseNameAndBranch(branchCode);
+            }
 
             return results.stream()
                     .map(result -> {
@@ -304,9 +310,16 @@
                     .collect(Collectors.toList());
         }
 
+
         @Override
         public List<Map<String, Object>> getInquiryCountByStreamAsMap(String branchCode) {
-            List<Object[]> results = repository.countInquiriesByStreamAndBranch(branchCode);
+            List<Object[]> results;
+
+            if (branchCode == null || branchCode.isBlank()) {
+                results = repository.countInquiriesByStream();
+            } else {
+                results = repository.countInquiriesByStreamAndBranch(branchCode);
+            }
 
             return results.stream()
                     .map(result -> {
@@ -317,5 +330,6 @@
                     })
                     .collect(Collectors.toList());
         }
+
 
     }

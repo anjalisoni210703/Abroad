@@ -23,12 +23,12 @@ public class SuparAdminDashboardController {
     private StreamService streamService;
 
     @GetMapping("/count/by-course")
-    public List<Map<String, Object>> getCountByCourse(@RequestParam String branchCode) {
+    public List<Map<String, Object>> getCountByCourse(@RequestParam(required = false) String branchCode) {
         return enquiryService.getInquiryCountByCourseAsMap(branchCode);
     }
 
     @GetMapping("/count/by-stream")
-    public List<Map<String, Object>> getCountByStream(@RequestParam String branchCode) {
+    public List<Map<String, Object>> getCountByStream(@RequestParam(required = false) String branchCode) {
         return enquiryService.getInquiryCountByStreamAsMap(branchCode);
     }
 

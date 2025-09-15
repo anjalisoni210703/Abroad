@@ -22,4 +22,11 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
     // Count grouped by stream
     @Query("SELECT e.stream, COUNT(e) FROM AbroadEnquiry e WHERE e.branchCode = :branchCode GROUP BY e.stream")
     List<Object[]> countInquiriesByStreamAndBranch(@Param("branchCode") String branchCode);
+
+    @Query("SELECT e.stream, COUNT(e) FROM AbroadEnquiry e GROUP BY e.stream")
+    List<Object[]> countInquiriesByStream();
+
+
+    @Query("SELECT e.courseName, COUNT(e) FROM AbroadEnquiry e GROUP BY e.courseName")
+    List<Object[]> countInquiriesByCourseName();
 }
