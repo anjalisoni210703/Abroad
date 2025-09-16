@@ -34,4 +34,7 @@ public interface EnquiryService {
     List<Map<String, Object>> getInquiryCountByCourseAsMap(String branchCode);
     List<Map<String, Object>> getInquiryCountByStreamAsMap(String branchCode);
     List<Map<String, Object>> getInquiryCountByConductByAsMap(String branchCode);
+    List<Map<String, Object>> getInquiryCountByStreamForMonth(int month, String branchCode);
+    List<Map<String, Object>> getInquiryCountByCourseForMonth(int month, String branchCode);
+    List<Map<String, Object>> getInquiryCountByConductByForMonth(int month, String branchCode);
 }

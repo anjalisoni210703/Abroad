@@ -72,4 +72,30 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
             "GROUP BY e.conductBy")
     List<Object[]> countInquiriesByConductByFromDate(@Param("fromDate") LocalDate fromDate,
                                                      @Param("branchCode") String branchCode);
+
+    // Count inquiries by stream for a given month
+    @Query("SELECT e.stream, COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE MONTH(e.enquiry_date) = :month " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.stream")
+    List<Object[]> countInquiriesByStreamForMonth(@Param("month") int month,
+                                                  @Param("branchCode") String branchCode);
+
+    @Query("SELECT e.courseName, COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE MONTH(e.enquiry_date) = :month " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.courseName")
+    List<Object[]> countInquiriesByCourseForMonth(@Param("month") int month,
+                                                  @Param("branchCode") String branchCode);
+
+    // Count inquiries by conductBy for a given month
+    @Query("SELECT e.conductBy, COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE MONTH(e.enquiry_date) = :month " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.conductBy")
+    List<Object[]> countInquiriesByConductByForMonth(@Param("month") int month,
+                                                     @Param("branchCode") String branchCode);
 }

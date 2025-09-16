@@ -405,5 +405,46 @@
                     .collect(Collectors.toList());
         }
 
+        @Override
+        public List<Map<String, Object>> getInquiryCountByStreamForMonth(int month, String branchCode) {
+            List<Object[]> results = repository.countInquiriesByStreamForMonth(month, branchCode);
 
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("streamName", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+
+        @Override
+        public List<Map<String, Object>> getInquiryCountByCourseForMonth(int month, String branchCode) {
+            List<Object[]> results = repository.countInquiriesByCourseForMonth(month, branchCode);
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("courseName", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<Map<String, Object>> getInquiryCountByConductByForMonth(int month, String branchCode) {
+            List<Object[]> results = repository.countInquiriesByConductByForMonth(month, branchCode);
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("conductBy", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
     }

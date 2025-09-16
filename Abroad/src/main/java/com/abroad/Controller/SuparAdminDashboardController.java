@@ -22,6 +22,7 @@ public class SuparAdminDashboardController {
     @Autowired
     private StreamService streamService;
 
+    /// BY ALL Count ->>>>>>
     @GetMapping("/count/by-course")
     public List<Map<String, Object>> getCountByCourse(@RequestParam(required = false) String branchCode) {
         return enquiryService.getInquiryCountByCourseAsMap(branchCode);
@@ -39,5 +40,30 @@ public class SuparAdminDashboardController {
         return ResponseEntity.ok(response);
     }
 
+    /// BY MONTH ->>>>>>
+    @GetMapping("/stream/by-month")
+    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByStreamForMonth(
+            @RequestParam int month,
+            @RequestParam(required = false) String branchCode) {
+        List<Map<String, Object>> response = enquiryService.getInquiryCountByStreamForMonth(month, branchCode);
+        return ResponseEntity.ok(response);
+    }
+
+    // Count by course for a specific month
+    @GetMapping("/course/by-month")
+    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByCourseForMonth(
+            @RequestParam int month,
+            @RequestParam(required = false) String branchCode) {
+        List<Map<String, Object>> response = enquiryService.getInquiryCountByCourseForMonth(month, branchCode);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/conduct/by-month")
+    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByConductByForMonth(
+            @RequestParam int month,
+            @RequestParam(required = false) String branchCode) {
+        List<Map<String, Object>> response = enquiryService.getInquiryCountByConductByForMonth(month, branchCode);
+        return ResponseEntity.ok(response);
+    }
 
 }
