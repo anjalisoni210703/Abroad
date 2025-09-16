@@ -331,19 +331,37 @@
 
         @Override
         public List<Map<String, Object>> getInquiryCountByStreamAsMap(String branchCode) {
-            List<Object[]> results;
+            List<Object[]> totalResults = repository.countInquiriesByStream(branchCode);
 
-            if (branchCode == null || branchCode.isBlank()) {
-                results = repository.countInquiriesByStream();
-            } else {
-                results = repository.countInquiriesByStreamAndBranch(branchCode);
-            }
+            LocalDate today = LocalDate.now();
+            LocalDate last7 = today.minusDays(7);
+            LocalDate last30 = today.minusDays(30);
+            LocalDate last365 = today.minusDays(365);
 
-            return results.stream()
+            Map<String, Long> todayMap = repository.countInquiriesByStreamFromDate(today, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            Map<String, Long> last7Map = repository.countInquiriesByStreamFromDate(last7, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            Map<String, Long> last30Map = repository.countInquiriesByStreamFromDate(last30, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            Map<String, Long> last365Map = repository.countInquiriesByStreamFromDate(last365, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            return totalResults.stream()
                     .map(result -> {
+                        String streamName = (String) result[0];
+                        Long totalInquiries = (Long) result[1];
+
                         Map<String, Object> map = new HashMap<>();
-                        map.put("streamName", result[0]);
-                        map.put("inquiryCount", result[1]);
+                        map.put("streamName", streamName);
+                        map.put("totalInquiries", totalInquiries);
+                        map.put("today", todayMap.getOrDefault(streamName, 0L));
+                        map.put("last7Days", last7Map.getOrDefault(streamName, 0L));
+                        map.put("last30Days", last30Map.getOrDefault(streamName, 0L));
+                        map.put("last365Days", last365Map.getOrDefault(streamName, 0L));
                         return map;
                     })
                     .collect(Collectors.toList());

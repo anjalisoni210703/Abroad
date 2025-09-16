@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,5 @@ public interface StreamRepository extends JpaRepository<AbroadStream, Long> {
     // Query to get stream names with their inquiry counts
     @Query("SELECT s.name, COUNT(e.id) FROM AbroadStream s LEFT JOIN s.abroadEnquiries e GROUP BY s.id, s.name")
     List<Object[]> countInquiriesByStream();
-
-
 
 }
