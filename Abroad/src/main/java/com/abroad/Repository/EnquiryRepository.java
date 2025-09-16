@@ -58,4 +58,18 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
             "GROUP BY e.stream")
     List<Object[]> countInquiriesByStreamFromDate(@Param("fromDate") LocalDate fromDate,
                                                   @Param("branchCode") String branchCode);
+
+    // Total inquiries grouped by conductBy
+    @Query("SELECT e.conductBy, COUNT(e) FROM AbroadEnquiry e " +
+            "WHERE (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.conductBy")
+    List<Object[]> countInquiriesByConductBy(@Param("branchCode") String branchCode);
+
+    // Inquiries grouped by conductBy with date filter
+    @Query("SELECT e.conductBy, COUNT(e) FROM AbroadEnquiry e " +
+            "WHERE e.enquiry_date >= :fromDate " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.conductBy")
+    List<Object[]> countInquiriesByConductByFromDate(@Param("fromDate") LocalDate fromDate,
+                                                     @Param("branchCode") String branchCode);
 }

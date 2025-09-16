@@ -32,5 +32,12 @@ public class SuparAdminDashboardController {
         return enquiryService.getInquiryCountByStreamAsMap(branchCode);
     }
 
+    @GetMapping("/by-conduct")
+    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByConductBy(
+            @RequestParam(required = false) String branchCode) {
+        List<Map<String, Object>> response = enquiryService.getInquiryCountByConductByAsMap(branchCode);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

@@ -367,5 +367,43 @@
                     .collect(Collectors.toList());
         }
 
+        @Override
+        public List<Map<String, Object>> getInquiryCountByConductByAsMap(String branchCode) {
+            List<Object[]> totalResults = repository.countInquiriesByConductBy(branchCode);
+
+            LocalDate today = LocalDate.now();
+            LocalDate last7 = today.minusDays(7);
+            LocalDate last30 = today.minusDays(30);
+            LocalDate last365 = today.minusDays(365);
+
+            Map<String, Long> todayMap = repository.countInquiriesByConductByFromDate(today, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            Map<String, Long> last7Map = repository.countInquiriesByConductByFromDate(last7, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            Map<String, Long> last30Map = repository.countInquiriesByConductByFromDate(last30, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            Map<String, Long> last365Map = repository.countInquiriesByConductByFromDate(last365, branchCode).stream()
+                    .collect(Collectors.toMap(r -> (String) r[0], r -> (Long) r[1]));
+
+            return totalResults.stream()
+                    .map(result -> {
+                        String conductBy = (String) result[0];
+                        Long totalInquiries = (Long) result[1];
+
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("conductBy", conductBy);
+                        map.put("totalInquiries", totalInquiries);
+                        map.put("today", todayMap.getOrDefault(conductBy, 0L));
+                        map.put("last7Days", last7Map.getOrDefault(conductBy, 0L));
+                        map.put("last30Days", last30Map.getOrDefault(conductBy, 0L));
+                        map.put("last365Days", last365Map.getOrDefault(conductBy, 0L));
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
 
     }
