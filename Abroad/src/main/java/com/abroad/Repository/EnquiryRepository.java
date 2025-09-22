@@ -98,4 +98,36 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
             "GROUP BY e.conductBy")
     List<Object[]> countInquiriesByConductByForMonth(@Param("month") int month,
                                                      @Param("branchCode") String branchCode);
+
+
+    // Total enquiries
+    @Query("SELECT COUNT(e) FROM AbroadEnquiry e " +
+            "WHERE (:branchCode IS NULL OR e.branchCode = :branchCode)")
+    Long getAllTotalCountEnquiry(@Param("branchCode") String branchCode);
+
+    // Today enquiries
+    @Query("SELECT COUNT(e) FROM AbroadEnquiry e " +
+            "WHERE e.enquiry_date >= :fromDate " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode)")
+    Long getCountFromDate(@Param("fromDate") LocalDate fromDate,
+                          @Param("branchCode") String branchCode);
+
+    @Query("SELECT e.status, COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.status")
+    List<Object[]> getAllStatusWiseCount(@Param("branchCode") String branchCode);
+
+
+    @Query("SELECT e FROM AbroadEnquiry e WHERE " +
+            "(:id IS NULL OR e.id = :id) OR " +
+            "(:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%'))) OR " +
+            "(:email IS NULL OR LOWER(e.email) = LOWER(:email)) OR " +
+            "(:phoneNo IS NULL OR e.phone_no = :phoneNo)")
+    List<AbroadEnquiry> searchEnquiries(@Param("id") Long id,
+                                        @Param("name") String name,
+                                        @Param("email") String email,
+                                        @Param("phoneNo") Long phoneNo);
+
+
 }

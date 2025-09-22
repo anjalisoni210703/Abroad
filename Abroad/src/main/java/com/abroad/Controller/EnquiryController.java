@@ -122,4 +122,15 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
                 enquiryDateFilter, startDate, endDate, applyFor, conductBy,page, size
         );
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AbroadEnquiry>> searchEnquiries(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Long phoneNo) {
+
+        List<AbroadEnquiry> enquiries = service.getAllEnquiryDataByIdOrNameOrEmailOrPhone(id, name, email, phoneNo);
+        return ResponseEntity.ok(enquiries);
+    }
 }

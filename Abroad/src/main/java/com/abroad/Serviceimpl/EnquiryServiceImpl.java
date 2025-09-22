@@ -447,4 +447,38 @@
                     })
                     .collect(Collectors.toList());
         }
+
+
+        @Override
+        public Map<String, Long> getAllEnquiryCounts(String branchCode) {
+            Map<String, Long> counts = new HashMap<>();
+
+            LocalDate today = LocalDate.now();
+            counts.put("total", repository.getAllTotalCountEnquiry(branchCode));
+            counts.put("today", repository.getCountFromDate(today, branchCode));
+            counts.put("last7Days", repository.getCountFromDate(today.minusDays(7), branchCode));
+            counts.put("last30Days", repository.getCountFromDate(today.minusDays(30), branchCode));
+            counts.put("last365Days", repository.getCountFromDate(today.minusDays(365), branchCode));
+
+            return counts;
+        }
+
+        @Override
+        public Map<String, Long> getAllStatusWiseCount(String branchCode) {
+            List<Object[]> results = repository.getAllStatusWiseCount(branchCode);
+
+            Map<String, Long> statusCounts = new HashMap<>();
+            for (Object[] row : results) {
+                String status = (String) row[0];
+                Long count = (Long) row[1];
+                statusCounts.put(status, count);
+            }
+
+            return statusCounts;
+        }
+
+        @Override
+        public List<AbroadEnquiry> getAllEnquiryDataByIdOrNameOrEmailOrPhone(Long id, String name, String email, Long phoneNo) {
+            return repository.searchEnquiries(id, name, email, phoneNo);
+        }
     }

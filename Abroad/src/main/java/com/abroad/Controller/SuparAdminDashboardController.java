@@ -66,4 +66,20 @@ public class SuparAdminDashboardController {
         return ResponseEntity.ok(response);
     }
 
+    /// //
+    @GetMapping("/TotalCount")
+    public ResponseEntity<Map<String, Long>> getAllEnquiryCounts(
+            @RequestParam(required = false) String branchCode) {
+        Map<String, Long> response = enquiryService.getAllEnquiryCounts(branchCode);
+        return ResponseEntity.ok(response);
+    }
+    /// /
+
+    @GetMapping("/status-count")
+    public ResponseEntity<Map<String, Long>> getAllStatusWiseCount(
+            @RequestParam(required = false) String branchCode) {
+        Map<String, Long> response = enquiryService.getAllStatusWiseCount(branchCode);
+        return ResponseEntity.ok(response);
+    }
+
 }
