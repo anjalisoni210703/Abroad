@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface AbroadAdmissionFormService {
-    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email, MultipartFile sopFile,
+    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email, String branchCode,MultipartFile sopFile,
                                                    MultipartFile lorsFile,
                                                    MultipartFile resumeFile,
                                                    MultipartFile testScoresFile,

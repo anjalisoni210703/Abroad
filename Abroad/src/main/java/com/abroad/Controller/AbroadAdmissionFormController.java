@@ -3,6 +3,10 @@ package com.abroad.Controller;
 import com.abroad.DTO.AdmissionFormPersonalAcademicDTO;
 import com.abroad.Entity.AbroadAdmissionForm;
 import com.abroad.Service.AbroadAdmissionFormService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +24,32 @@ public class AbroadAdmissionFormController {
     // ✅ Create
     @PostMapping("/create")
     public ResponseEntity<AbroadAdmissionForm> create(
-            @RequestPart("form") AbroadAdmissionForm form,
-            @RequestPart(value = "sop", required = false) MultipartFile sop,
-            @RequestPart(value = "lors", required = false) MultipartFile lors,
-            @RequestPart(value = "resume", required = false) MultipartFile resume,
-            @RequestPart(value = "testScores", required = false) MultipartFile testScores,
-            @RequestPart(value = "passportCopy", required = false) MultipartFile passportCopy,
-            @RequestPart(value = "studentVisa", required = false) MultipartFile studentVisa,
-            @RequestPart(value = "passportPhotos", required = false) MultipartFile passportPhotos,
+            @RequestPart("form") String formJson,
+            @RequestParam(value = "sop", required = false) MultipartFile sop,
+            @RequestParam(value = "lors", required = false) MultipartFile lors,
+            @RequestParam(value = "resume", required = false) MultipartFile resume,
+            @RequestParam(value = "testScores", required = false) MultipartFile testScores,
+            @RequestParam(value = "passportCopy", required = false) MultipartFile passportCopy,
+            @RequestParam(value = "studentVisa", required = false) MultipartFile studentVisa,
+            @RequestParam(value = "passportPhotos", required = false) MultipartFile passportPhotos,
             @RequestParam String role,
-            @RequestParam String email) {
+            @RequestParam String email,
+            @RequestParam(required = false) String branchCode
+    ) throws JsonProcessingException {
 
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        // Deserialize JSON string into AbroadAdmissionForm object
+        AbroadAdmissionForm form = mapper.readValue(formJson, AbroadAdmissionForm.class);
+
+        // Set extra fields
         form.setRole(role);
         form.setCreatedByEmail(email);
 
         AbroadAdmissionForm createdForm = service.createAdmissionForm(
-                form, role, email,
+                form, role, email,branchCode,
                 sop, lors, resume, testScores,
                 passportCopy, studentVisa, passportPhotos
         );
@@ -44,11 +58,13 @@ public class AbroadAdmissionFormController {
     }
 
 
+
+
     // ✅ Update
     @PutMapping("/update/{id}")
     public ResponseEntity<AbroadAdmissionForm> update(
             @PathVariable Long id,
-            @RequestPart("form") AbroadAdmissionForm form,
+            @RequestPart("form") String formJson,
             @RequestPart(value = "sop", required = false) MultipartFile sopFile,
             @RequestPart(value = "lors", required = false) MultipartFile lorsFile,
             @RequestPart(value = "resume", required = false) MultipartFile resumeFile,
@@ -57,11 +73,21 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "studentVisa", required = false) MultipartFile studentVisaFile,
             @RequestPart(value = "passportPhotos", required = false) MultipartFile passportPhotosFile,
             @RequestParam String role,
-            @RequestParam String email) {
+            @RequestParam String email
+    ) throws JsonProcessingException {
 
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        // Convert JSON string into AbroadAdmissionForm object
+        AbroadAdmissionForm form = mapper.readValue(formJson, AbroadAdmissionForm.class);
+
+        // Set extra fields
         form.setRole(role);
         form.setCreatedByEmail(email);
 
+        // Call service
         AbroadAdmissionForm updatedForm = service.updateAdmissionForm(
                 id, form, role, email,
                 sopFile, lorsFile, resumeFile, testScoresFile,
@@ -70,6 +96,7 @@ public class AbroadAdmissionFormController {
 
         return ResponseEntity.ok(updatedForm);
     }
+
 
     // ✅ Delete
     @DeleteMapping("/delete/{id}")

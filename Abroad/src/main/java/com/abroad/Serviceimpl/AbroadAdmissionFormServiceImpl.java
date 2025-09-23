@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormService {
@@ -29,7 +30,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
     private S3Service s3Service;
 
     @Override
-    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email, MultipartFile sopFile,
+    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email,String branchCode, MultipartFile sopFile,
                                                    MultipartFile lorsFile,
                                                    MultipartFile resumeFile,
                                                    MultipartFile testScoresFile,
@@ -39,8 +40,12 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to create Blog");
         }
-        String branchCode = permissionService.fetchBranchCode(role, email);
-
+        if(role.equals("superadmin")) {
+            form.setBranchCode(branchCode);
+        }else{
+            String newBranchCode = permissionService.fetchBranchCode(role, email);
+            form.setBranchCode(newBranchCode);
+        }
         try {
             if (sopFile != null && !sopFile.isEmpty()) {
                 String sopUrl = s3Service.uploadImage(sopFile);
@@ -80,7 +85,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload file(s)", e);
         }
-        form.setBranchCode(branchCode);
+
         form.setCreatedDateTime(LocalDateTime.now());
 
         return repository.save(form);
