@@ -120,9 +120,9 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
 
 
     @Query("SELECT e FROM AbroadEnquiry e WHERE " +
-            "(:id IS NULL OR e.id = :id) OR " +
-            "(:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%'))) OR " +
-            "(:email IS NULL OR LOWER(e.email) = LOWER(:email)) OR " +
+            "(:id IS NULL OR e.id = :id) AND " +
+            "(:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+            "(:email IS NULL OR LOWER(e.email) = LOWER(:email)) AND " +
             "(:phoneNo IS NULL OR e.phone_no = :phoneNo)")
     List<AbroadEnquiry> searchEnquiries(@Param("id") Long id,
                                         @Param("name") String name,
