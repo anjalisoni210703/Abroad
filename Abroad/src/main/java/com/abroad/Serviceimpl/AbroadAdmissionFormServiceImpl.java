@@ -7,6 +7,7 @@ import com.abroad.Service.AbroadAdmissionFormService;
 import com.abroad.Service.PermissionService;
 import com.abroad.Service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
     private S3Service s3Service;
 
     @Override
-    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email,String branchCode, MultipartFile sopFile,
+    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email, String branchCode, MultipartFile sopFile,
                                                    MultipartFile lorsFile,
                                                    MultipartFile resumeFile,
                                                    MultipartFile testScoresFile,
@@ -38,14 +39,13 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
                                                    MultipartFile studentVisaFile,
                                                    MultipartFile passportPhotosFile) {
         if (!permissionService.hasPermission(role, email, "POST")) {
-            throw new AccessDeniedException("No permission to create Blog");
+            throw new AccessDeniedException("No permission to Create AdmissionForm");
         }
-        if(role.equals("superadmin")) {
-            form.setBranchCode(branchCode);
-        }else{
-            String newBranchCode = permissionService.fetchBranchCode(role, email);
-            form.setBranchCode(newBranchCode);
+        if (!"superadmin".equals(role)) {
+            String code = permissionService.fetchBranchCode(role, email);
+            form.setBranchCode(code);
         }
+
         try {
             if (sopFile != null && !sopFile.isEmpty()) {
                 String sopUrl = s3Service.uploadImage(sopFile);
@@ -88,7 +88,11 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
 
         form.setCreatedDateTime(LocalDateTime.now());
 
-        return repository.save(form);
+        try {
+           return repository.save(form);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Email already exists, please use a different one.");
+        }
     }
 
 
@@ -168,7 +172,11 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
         }
 
         // 5️⃣ Save updated form
+        try{
         return repository.save(existing);
+    } catch (DataIntegrityViolationException e) {
+        throw new RuntimeException("Email already exists, please use a different one.");
+    }
     }
 
 

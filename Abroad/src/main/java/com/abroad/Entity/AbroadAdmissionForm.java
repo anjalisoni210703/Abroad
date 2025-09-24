@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(
+        name = "abroad_admission_form",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"email"})
+)
 public class AbroadAdmissionForm {
 
     @Id
