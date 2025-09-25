@@ -18,9 +18,7 @@ public class AbroadConductBy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String conductBy;
-
     @Email
     private String createdByEmail;
     private String role;

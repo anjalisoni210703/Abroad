@@ -1,5 +1,6 @@
 package com.abroad.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -24,6 +25,7 @@ public class AbroadEnquiry {
     private String name;
     private Long phone_no;
     private String email;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate enquiry_date;
     private String address;
     private String landmark;

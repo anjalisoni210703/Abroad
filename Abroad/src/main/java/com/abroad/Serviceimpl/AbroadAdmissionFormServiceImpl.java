@@ -41,7 +41,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to Create AdmissionForm");
         }
-        if (!"superadmin".equals(role)) {
+        if (!"SUPERADMIN".equalsIgnoreCase(role)) {
             String code = permissionService.fetchBranchCode(role, email);
             form.setBranchCode(code);
         }

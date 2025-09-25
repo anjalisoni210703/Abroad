@@ -15,6 +15,7 @@
     import org.springframework.web.multipart.MultipartFile;
 
     import java.io.IOException;
+    import java.sql.Date;
     import java.time.LocalDate;
     import java.util.ArrayList;
     import java.util.HashMap;
@@ -89,7 +90,9 @@
                 throw new RuntimeException("Failed to upload file(s)", e);
             }
 
-            abroadEnquiry.setEnquiry_date(LocalDate.now());
+            if (abroadEnquiry.getEnquiry_date() == null) {
+                abroadEnquiry.setEnquiry_date(LocalDate.now());
+            }
             abroadEnquiry.setCreatedByEmail(email);
             abroadEnquiry.setRole(role);
             abroadEnquiry.setBranchCode(branchCode);
@@ -159,8 +162,6 @@
             existing.setName(abroadEnquiry.getName() != null ? abroadEnquiry.getName() : existing.getName());
             existing.setPhone_no(abroadEnquiry.getPhone_no() != null ? abroadEnquiry.getPhone_no() : existing.getPhone_no());
             existing.setEmail(abroadEnquiry.getEmail() != null ? abroadEnquiry.getEmail() : existing.getEmail());
-//            existing.setEnquiry_date(abroadEnquiry.getEnquiry_date() != null ? abroadEnquiry.getEnquiry_date() : existing.getEnquiry_date());
-            existing.setEnquiry_date(LocalDate.now());
             existing.setAddress(abroadEnquiry.getAddress() != null ? abroadEnquiry.getAddress() : existing.getAddress());
             existing.setPercentage(abroadEnquiry.getPercentage()!=0 ? abroadEnquiry.getPercentage():existing.getPercentage());
             existing.setState(abroadEnquiry.getState() != null ? abroadEnquiry.getState() : existing.getState());
@@ -168,7 +169,13 @@
             existing.setFathersIncome(abroadEnquiry.getFathersIncome() !=0 ? abroadEnquiry.getFathersIncome():existing.getFathersIncome());
             existing.setFathersOccupation(abroadEnquiry.getFathersOccupation() != null? abroadEnquiry.getFathersOccupation():existing.getFathersOccupation());
             existing.setGender(abroadEnquiry.getGender()!=null ? abroadEnquiry.getGender():existing.getGender());
-            existing.setDob(abroadEnquiry.getDob()!=null ? abroadEnquiry.getDob():existing.getDob());
+            if (abroadEnquiry.getDob() != null) {
+                existing.setDob(abroadEnquiry.getDob());
+            } else if (existing.getDob() == null) {
+                // Optionally, set default DOB (e.g., today or leave null)
+                existing.setDob(Date.valueOf(LocalDate.now()));
+            }
+
             existing.setPassoutCourse(abroadEnquiry.getPassoutCourse() !=null? abroadEnquiry.getPassoutCourse():existing.getPassoutCourse());
             existing.setCity(abroadEnquiry.getCity() !=null ? abroadEnquiry.getCity():existing.getCity());
             existing.setPincode(abroadEnquiry.getPincode() !=null ? abroadEnquiry.getPincode():existing.getPincode());
