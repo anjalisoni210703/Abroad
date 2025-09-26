@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +45,39 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
         return mapContinentToFullDTO(continent);
     }
 
+    // Mapper for Continent entity to DTO (used for full hierarchy)
+    private AbroadContinentDTO mapContinentToFullDTO(AbroadContinent continent) {
+        List<AbroadCountryDTO> countryDTOs = continent.getAbroadCountries().stream()
+                .map(country -> {
+                    List<AbroadStateDTO> stateDTOs = country.getAbroadStates().stream()
+                            .map(state -> {
+                                List<AbroadCityDTO> cityDTOs = state.getAbroadCities().stream()
+                                        .map(city -> {
+                                            List<AbroadUniversityDTO> universityDTOs = city.getAbroadUniversities().stream()
+                                                    .map(university -> {
+                                                        List<AbroadCollegeDTO> collegeDTOs = university.getAbroadColleges().stream()
+                                                                .map(college -> {
+                                                                    List<AbroadCourseDTO> courseDTOs = college.getAbroadCourses().stream()
+                                                                            .map(this::mapCourseToDTO)
+                                                                            .collect(Collectors.toList());
+                                                                    return new AbroadCollegeDTO(college.getId(), college.getCollegeName(), courseDTOs);
+                                                                })
+                                                                .collect(Collectors.toList());
+                                                        return new AbroadUniversityDTO(university.getId(), university.getUniversityName(), collegeDTOs);
+                                                    })
+                                                    .collect(Collectors.toList());
+                                                return new AbroadCityDTO(city.getId(), city.getCity(), universityDTOs);
+                                            })
+                                            .collect(Collectors.toList());
+                                    return new AbroadStateDTO(state.getId(), state.getState(), cityDTOs);
+                                })
+                                .collect(Collectors.toList());
+                        return new AbroadCountryDTO(country.getId(), country.getCountry(), stateDTOs);
+                    })
+                    .collect(Collectors.toList());
+        return new AbroadContinentDTO(continent.getId(), continent.getContinentname(), countryDTOs);
+    }
+
     // ------------------------
     // FILTERED HIERARCHY (Main Logic)
     // ------------------------
@@ -55,8 +90,12 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             List<String> cityNames,
             List<String> universityNames,
             List<String> collegeNames,
-            List<String> courseNames) {
-
+            List<String> courseNames,
+            List<String> streamNames,       // 
+            String scholarship,             // 
+            String feesRange,               // 
+            List<String> examTypes          // 
+    ) {
         // Use Sets for efficient filtering and avoiding duplicates
         Set<AbroadCourse> matchedCourses = new HashSet<>();
         Set<AbroadCollege> matchedColleges = new HashSet<>();
@@ -66,7 +105,7 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
         Set<AbroadCountry> matchedCountries = new HashSet<>();
         Set<AbroadContinent> matchedContinents = new HashSet<>();
 
-        // Flags to indicate if a filter was explicitly provided for each level
+        // Flags
         boolean continentNameFilterProvided = continentNames != null && !continentNames.isEmpty();
         boolean continentIdFilterProvided = continentId != null;
         boolean countryNameFilterProvided = countryNames != null && !countryNames.isEmpty();
@@ -75,18 +114,26 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
         boolean universityNameFilterProvided = universityNames != null && !universityNames.isEmpty();
         boolean collegeNameFilterProvided = collegeNames != null && !collegeNames.isEmpty();
         boolean courseNameFilterProvided = courseNames != null && !courseNames.isEmpty();
+        boolean streamNameFilterProvided = streamNames != null && !streamNames.isEmpty();   // 
+        boolean scholarshipFilterProvided = scholarship != null && !scholarship.isEmpty();  // 
+        boolean feesRangeFilterProvided = feesRange != null && !feesRange.isEmpty();        // 
+        boolean examTypeFilterProvided = examTypes != null && !examTypes.isEmpty();         // 
 
-        boolean anyFilterApplied = continentIdFilterProvided || continentNameFilterProvided ||
-                countryNameFilterProvided || stateNameFilterProvided ||
-                cityNameFilterProvided || universityNameFilterProvided ||
-                collegeNameFilterProvided || courseNameFilterProvided;
+        boolean anyFilterApplied =
+                continentIdFilterProvided || continentNameFilterProvided ||
+                        countryNameFilterProvided || stateNameFilterProvided ||
+                        cityNameFilterProvided || universityNameFilterProvided ||
+                        collegeNameFilterProvided || courseNameFilterProvided ||
+                        streamNameFilterProvided || scholarshipFilterProvided ||
+                        feesRangeFilterProvided || examTypeFilterProvided;
 
-        // If no filter, return all hierarchies
         if (!anyFilterApplied) {
             return getAllHierarchies();
         }
 
-        // Apply direct filters and expand upwards (child to parent)
+        // ----------------
+        // Course filters
+        // ----------------
         if (courseNameFilterProvided) {
             courseRepo.findByCourseNameIn(courseNames).forEach(course -> {
                 matchedCourses.add(course);
@@ -94,6 +141,55 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             });
         }
 
+        if (streamNameFilterProvided) {
+            courseRepo.findByStreamNameIn(streamNames).forEach(course -> {
+                matchedCourses.add(course);
+                if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+            });
+        }
+
+        if (scholarshipFilterProvided) {
+            String normalized = scholarship.trim().equalsIgnoreCase("Yes") ? "Yes" : "No";
+            courseRepo.findByScholarshipIgnoreCase(normalized).forEach(course -> {
+                matchedCourses.add(course);
+                if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+            });
+        }
+
+        if (feesRangeFilterProvided) {
+            try {
+                String[] parts = feesRange.split("-");
+                double min = Double.parseDouble(parts[0].trim());
+                double max = Double.parseDouble(parts[1].trim());
+                courseRepo.findAll().stream()
+                        .filter(c -> c.getTutionFeesINR() != null)
+                        .filter(c -> {
+                            try {
+                                double fee = Double.parseDouble(c.getTutionFeesINR().replaceAll("[^0-9]", ""));
+                                return fee >= min && fee <= max;
+                            } catch (NumberFormatException e) {
+                                return false;
+                            }
+                        })
+                        .forEach(course -> {
+                            matchedCourses.add(course);
+                            if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+                        });
+            } catch (Exception e) {
+                System.out.println("Invalid feesRange format. Use 'min-max'");
+            }
+        }
+
+        if (examTypeFilterProvided) {
+            courseRepo.findByExamTypeIn(examTypes).forEach(course -> {
+                matchedCourses.add(course);
+                if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+            });
+        }
+
+        // ----------------
+        // Higher-level filters (same as your code)
+        // ----------------
         if (collegeNameFilterProvided) {
             collegeRepo.findByCollegeNameIn(collegeNames).forEach(college -> {
                 matchedColleges.add(college);
@@ -137,9 +233,9 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             continentRepo.findById(continentId).ifPresent(matchedContinents::add);
         }
 
-        // --- Propagate Upwards (from collected matches) ---
-        // Courses -> Colleges -> Universities -> Cities -> States -> Countries -> Continents
-        // This ensures parents are included for child-level filters
+        // ----------------
+        // Propagate upwards (same as your code)
+        // ----------------
         if (!matchedCourses.isEmpty()) {
             matchedColleges.addAll(matchedCourses.stream().map(AbroadCourse::getAbroadCollege).collect(Collectors.toSet()));
         }
@@ -159,16 +255,13 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             matchedContinents.addAll(matchedCountries.stream().map(AbroadCountry::getAbroadContinent).collect(Collectors.toSet()));
         }
 
-        // --- Propagate Downwards (to fill in children for parent-level filters) ---
-        // This is crucial for when only a parent (e.g., country) is filtered,
-        // we still need to collect its children to pass to the mapping.
+        // ----------------
+        // Propagate downwards (same as your code)
+        // ----------------
         Set<AbroadContinent> baseContinents = new HashSet<>(matchedContinents);
-
-        if (countryNameFilterProvided || stateNameFilterProvided || cityNameFilterProvided || universityNameFilterProvided || collegeNameFilterProvided || courseNameFilterProvided) {
-            // If any lower-level filter was applied, we only consider the matched countries, states, etc.
-            // and their children. No need to re-add ALL children from parent.
-        } else {
-            // If only continent filters were applied, fetch all children for those continents
+        if (!(countryNameFilterProvided || stateNameFilterProvided || cityNameFilterProvided ||
+                universityNameFilterProvided || collegeNameFilterProvided || courseNameFilterProvided ||
+                streamNameFilterProvided || scholarshipFilterProvided || feesRangeFilterProvided || examTypeFilterProvided)) {
             matchedCountries.addAll(baseContinents.stream().flatMap(c -> c.getAbroadCountries().stream()).collect(Collectors.toSet()));
             matchedStates.addAll(matchedCountries.stream().flatMap(c -> c.getAbroadStates().stream()).collect(Collectors.toSet()));
             matchedCities.addAll(matchedStates.stream().flatMap(s -> s.getAbroadCities().stream()).collect(Collectors.toSet()));
@@ -177,68 +270,29 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             matchedCourses.addAll(matchedColleges.stream().flatMap(col -> col.getAbroadCourses().stream()).collect(Collectors.toSet()));
         }
 
-        // Build DTO tree with strict branch restriction
+        // Build DTO tree
         List<AbroadContinent> continentsToProcess = matchedContinents.stream().toList();
-
         return continentsToProcess.stream()
                 .map(c -> mapFilteredToDTO(
                         c,
-                        continentNameFilterProvided || continentIdFilterProvided, // Was continent explicitly filtered?
+                        continentNameFilterProvided || continentIdFilterProvided,
                         countryNameFilterProvided, matchedCountries,
                         stateNameFilterProvided, matchedStates,
                         cityNameFilterProvided, matchedCities,
                         universityNameFilterProvided, matchedUniversities,
                         collegeNameFilterProvided, matchedColleges,
-                        courseNameFilterProvided, matchedCourses))
-                .filter(java.util.Objects::nonNull) // Remove any continents that ended up empty after filtering children
-                .toList();
+                        courseNameFilterProvided || streamNameFilterProvided ||
+                                scholarshipFilterProvided || feesRangeFilterProvided || examTypeFilterProvided,
+                        matchedCourses,
+                        streamNames != null ? streamNames : List.of(),
+                        scholarship != null ? scholarship : "",
+                        examTypes != null ? examTypes : List.of(),
+                        feesRangeFilterProvided ? parseFeesRanges(feesRange) : List.of()
+                ))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-
-    // ------------------------
-    // MAPPERS for full hierarchy (used by getAllHierarchies, getHierarchyByContinentId)
-    // ------------------------
-    private AbroadContinentDTO mapContinentToFullDTO(AbroadContinent continent) {
-        List<AbroadCountryDTO> countries = continent.getAbroadCountries().stream()
-                .map(this::mapCountryToFullDTO)
-                .toList();
-        return new AbroadContinentDTO(continent.getId(), continent.getContinentname(), countries);
-    }
-
-    private AbroadCountryDTO mapCountryToFullDTO(AbroadCountry country) {
-        List<AbroadStateDTO> states = country.getAbroadStates().stream()
-                .map(this::mapStateToFullDTO)
-                .toList();
-        return new AbroadCountryDTO(country.getId(), country.getCountry(), states);
-    }
-
-    private AbroadStateDTO mapStateToFullDTO(AbroadState state) {
-        List<AbroadCityDTO> cities = state.getAbroadCities().stream()
-                .map(this::mapCityToFullDTO)
-                .toList();
-        return new AbroadStateDTO(state.getId(), state.getState(), cities);
-    }
-
-    private AbroadCityDTO mapCityToFullDTO(AbroadCity city) {
-        List<AbroadUniversityDTO> universities = city.getAbroadUniversities().stream()
-                .map(this::mapUniversityToFullDTO)
-                .toList();
-        return new AbroadCityDTO(city.getId(), city.getCity(), universities);
-    }
-
-    private AbroadUniversityDTO mapUniversityToFullDTO(AbroadUniversity university) {
-        List<AbroadCollegeDTO> colleges = university.getAbroadColleges().stream()
-                .map(this::mapCollegeToFullDTO)
-                .toList();
-        return new AbroadUniversityDTO(university.getId(), university.getUniversityName(), colleges);
-    }
-
-    private AbroadCollegeDTO mapCollegeToFullDTO(AbroadCollege college) {
-        List<AbroadCourseDTO> courses = college.getAbroadCourses().stream()
-                .map(this::mapCourseToDTO)
-                .toList();
-        return new AbroadCollegeDTO(college.getId(), college.getCollegeName(), courses);
-    }
 
 
     // ------------------------
@@ -246,18 +300,19 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
     // ------------------------
     private AbroadContinentDTO mapFilteredToDTO(
             AbroadContinent continent,
-            boolean continentFilterProvided, // Flag if continent filter was initially set
+            boolean continentFilterProvided,
             boolean countryFilterProvided, Set<AbroadCountry> allowedCountries,
             boolean stateFilterProvided, Set<AbroadState> allowedStates,
             boolean cityFilterProvided, Set<AbroadCity> allowedCities,
             boolean universityFilterProvided, Set<AbroadUniversity> allowedUniversities,
             boolean collegeFilterProvided, Set<AbroadCollege> allowedColleges,
-            boolean courseFilterProvided, Set<AbroadCourse> allowedCourses) {
-
-        // Only process countries if the continent itself was directly targeted
-        // OR if no continent filter was specified but this continent contains an allowed country.
+            boolean courseFilterProvided, Set<AbroadCourse> allowedCourses,
+            List<String> streamNames,
+            String scholarship,
+            List<String> examTypes,
+            List<int[]> feesRanges // each int[] is {min, max}
+    ) {
         List<AbroadCountryDTO> countryDTOs = continent.getAbroadCountries().stream()
-                // Check 1: Is this country in the 'allowed' set? (always true if no country filter was provided)
                 .filter(country -> !countryFilterProvided || allowedCountries.contains(country))
                 .map(country -> {
                     List<AbroadStateDTO> stateDTOs = country.getAbroadStates().stream()
@@ -273,11 +328,29 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                                                                 .filter(college -> !collegeFilterProvided || allowedColleges.contains(college))
                                                                 .map(college -> {
                                                                     List<AbroadCourseDTO> courseDTOs = college.getAbroadCourses().stream()
+                                                                            // --- New filtering ---
+                                                                            .filter(course -> {
+                                                                                boolean streamOk = (streamNames == null || streamNames.isEmpty()) ||
+                                                                                        streamNames.contains(course.getStreamName());
+                                                                                boolean scholarshipOk = (scholarship == null || scholarship.isEmpty()) ||
+                                                                                        scholarship.equalsIgnoreCase(course.getScholarship());
+                                                                                boolean examOk = (examTypes == null || examTypes.isEmpty()) ||
+                                                                                        examTypes.contains(course.getExamType());
+                                                                                boolean feesOk = (feesRanges == null || feesRanges.isEmpty()) ||
+                                                                                        feesRanges.stream().anyMatch(r -> {
+                                                                                            try {
+                                                                                                double fee = Double.parseDouble(course.getTutionFeesINR().replaceAll("[^0-9.]", ""));
+                                                                                                return fee >= r[0] && fee <= r[1];
+                                                                                            } catch (NumberFormatException | NullPointerException e) {
+                                                                                                return false;
+                                                                                            }
+                                                                                        });
+                                                                                return streamOk && scholarshipOk && examOk && feesOk;
+                                                                            })
                                                                             .filter(course -> !courseFilterProvided || allowedCourses.contains(course))
                                                                             .map(this::mapCourseToDTO)
                                                                             .toList();
 
-                                                                    // Only return college if it was directly targeted OR it has matching courses
                                                                     return (!collegeFilterProvided && courseDTOs.isEmpty()) ? null :
                                                                             (courseDTOs.isEmpty() && !allowedColleges.contains(college)) ? null :
                                                                                     new AbroadCollegeDTO(college.getId(), college.getCollegeName(), courseDTOs);
@@ -285,7 +358,6 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                                                                 .filter(java.util.Objects::nonNull)
                                                                 .toList();
 
-                                                        // Only return university if it was directly targeted OR it has matching colleges/courses
                                                         return (!universityFilterProvided && collegeDTOs.isEmpty()) ? null :
                                                                 (collegeDTOs.isEmpty() && !allowedUniversities.contains(university)) ? null :
                                                                         new AbroadUniversityDTO(university.getId(), university.getUniversityName(), collegeDTOs);
@@ -293,7 +365,6 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                                                     .filter(java.util.Objects::nonNull)
                                                     .toList();
 
-                                            // Only return city if it was directly targeted OR it has matching universities/colleges/courses
                                             return (!cityFilterProvided && universityDTOs.isEmpty()) ? null :
                                                     (universityDTOs.isEmpty() && !allowedCities.contains(city)) ? null :
                                                             new AbroadCityDTO(city.getId(), city.getCity(), universityDTOs);
@@ -301,7 +372,6 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                                         .filter(java.util.Objects::nonNull)
                                         .toList();
 
-                                // Only return state if it was directly targeted OR it has matching cities/universities/colleges/courses
                                 return (!stateFilterProvided && cityDTOs.isEmpty()) ? null :
                                         (cityDTOs.isEmpty() && !allowedStates.contains(state)) ? null :
                                                 new AbroadStateDTO(state.getId(), state.getState(), cityDTOs);
@@ -309,7 +379,6 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                             .filter(java.util.Objects::nonNull)
                             .toList();
 
-                    // Only return country if it was directly targeted OR it has matching states/cities/universities/colleges/courses
                     return (!countryFilterProvided && stateDTOs.isEmpty()) ? null :
                             (stateDTOs.isEmpty() && !allowedCountries.contains(country)) ? null :
                                     new AbroadCountryDTO(country.getId(), country.getCountry(), stateDTOs);
@@ -317,11 +386,36 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                 .filter(java.util.Objects::nonNull)
                 .toList();
 
-        // Only return continent if it was directly targeted OR it has matching children after all filtering
         return (!continentFilterProvided && countryDTOs.isEmpty()) ? null :
                 new AbroadContinentDTO(continent.getId(), continent.getContinentname(), countryDTOs);
     }
 
+
+
+    // Helper method to parse fee ranges from string format (e.g., "1000-2000,3000-4000")
+    private List<int[]> parseFeesRanges(String feesRange) {
+        if (feesRange == null || feesRange.trim().isEmpty()) {
+            return List.of();
+        }
+        
+        List<int[]> ranges = new ArrayList<>();
+        String[] parts = feesRange.split(",");
+        
+        for (String part : parts) {
+            try {
+                String[] minMax = part.split("-");
+                if (minMax.length == 2) {
+                    int min = Integer.parseInt(minMax[0].trim());
+                    int max = Integer.parseInt(minMax[1].trim());
+                    ranges.add(new int[]{min, max});
+                }
+            } catch (NumberFormatException e) {
+                // Skip invalid range formats
+                continue;
+            }
+        }
+        return ranges;
+    }
 
     // Mapper for Course entity to DTO (used by both full and filtered mappings)
     private AbroadCourseDTO mapCourseToDTO(AbroadCourse course) {

@@ -14,14 +14,19 @@ public interface AbroadHierarchyService {
     AbroadContinentDTO getHierarchyByContinentId(Long continentId);
     List<AbroadContinentDTO> getAllHierarchies();
     List<AbroadContinentDTO> getFilteredHierarchy(
-            Long continentId, // Added for specific continent ID filtering
+            Long continentId,
             List<String> continentNames,
             List<String> countryNames,
             List<String> stateNames,
             List<String> cityNames,
             List<String> universityNames,
             List<String> collegeNames,
-            List<String> courseNames);
+            List<String> courseNames,
+            List<String> streamNames,       // ✅ Added
+            String scholarship,             // ✅ Added
+            String feesRange,               // ✅ Added
+            List<String> examTypes          // ✅ Added
+    );
 //    // Continent
 //    Page<AbroadContinent> getAllContinents(Pageable pageable);
 //    // Country by Continent Name

@@ -22,4 +22,9 @@ public interface CourseRepository extends JpaRepository<AbroadCourse, Long> {
     Page<AbroadCourse> findByAbroadCollegeId(Long collegeId, Pageable pageable);
 
     List<AbroadCourse> findByCourseNameIn(List<String> courseNames);
+    List<AbroadCourse> findByStreamNameIn(List<String> streamNames);
+    @Query("SELECT c FROM AbroadCourse c WHERE LOWER(CAST(c.scholarship AS string)) = LOWER(:scholarship)")
+    List<AbroadCourse> findByScholarshipIgnoreCase(@Param("scholarship") String scholarship);
+    List<AbroadCourse> findByExamTypeIn(List<String> examTypes);
+
 }

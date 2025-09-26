@@ -19,24 +19,33 @@ public class AbroadHierarchyController {
     // The single, unified API endpoint as per your documentation
     @GetMapping("/hierarchy")
     public ResponseEntity<List<AbroadContinentDTO>> getHierarchy(
-            @RequestParam(required = false) Long continentId, // Added continentId here
+            @RequestParam(required = false) Long continentId,
             @RequestParam(required = false) List<String> continentName,
             @RequestParam(required = false) List<String> countryName,
             @RequestParam(required = false) List<String> stateName,
             @RequestParam(required = false) List<String> cityName,
             @RequestParam(required = false) List<String> universityName,
             @RequestParam(required = false) List<String> collegeName,
-            @RequestParam(required = false) List<String> courseName) {
+            @RequestParam(required = false) List<String> courseName,
+            @RequestParam(required = false) List<String> streamName,     // ✅ New
+            @RequestParam(required = false) String scholarship,          // ✅ New ("Yes" or "No")
+            @RequestParam(required = false) String feesRange,            // ✅ New ("0-100000", "100000-1000000")
+            @RequestParam(required = false) List<String> examType        // ✅ New
+    ) {
 
         boolean noFilters =
-                (continentId == null) && // Check continentId
+                (continentId == null) &&
                         (continentName == null || continentName.isEmpty()) &&
                         (countryName == null || countryName.isEmpty()) &&
                         (stateName == null || stateName.isEmpty()) &&
                         (cityName == null || cityName.isEmpty()) &&
                         (universityName == null || universityName.isEmpty()) &&
                         (collegeName == null || collegeName.isEmpty()) &&
-                        (courseName == null || courseName.isEmpty());
+                        (courseName == null || courseName.isEmpty()) &&
+                        (streamName == null || streamName.isEmpty()) &&          // ✅ Added
+                        (scholarship == null || scholarship.isEmpty()) &&        // ✅ Added
+                        (feesRange == null || feesRange.isEmpty()) &&            // ✅ Added
+                        (examType == null || examType.isEmpty());                // ✅ Added
 
         if (noFilters) {
             // Case 1: Get All Hierarchies
@@ -48,20 +57,22 @@ public class AbroadHierarchyController {
                 (cityName == null || cityName.isEmpty()) &&
                 (universityName == null || universityName.isEmpty()) &&
                 (collegeName == null || collegeName.isEmpty()) &&
-                (courseName == null || courseName.isEmpty())) {
-            // Case 2: Get Specific Continent by ID (no other filters)
-            // Note: getFilteredHierarchy can handle this, but for explicit case,
-            // we can call getHierarchyByContinentId for a single DTO response.
-            // If getFilteredHierarchy returns a list, this needs to return a list of 1.
+                (courseName == null || courseName.isEmpty()) &&
+                (streamName == null || streamName.isEmpty()) &&
+                (scholarship == null || scholarship.isEmpty()) &&
+                (feesRange == null || feesRange.isEmpty()) &&
+                (examType == null || examType.isEmpty())) {
+            // Case 2: Only continentId filter
             return ResponseEntity.ok(List.of(hierarchyService.getHierarchyByContinentId(continentId)));
-        }
-        else {
-            // Case 3: All other filtered scenarios (Parent-level, Child-level, Multi-level, Multiple values)
-            List<AbroadContinentDTO> filteredHierarchies = hierarchyService.getFilteredHierarchy(
-                    continentId, // Pass continentId to the filtered service method
-                    continentName, countryName, stateName, cityName,
-                    universityName, collegeName, courseName
-            );
+        } else {
+            // Case 3: All other filtered scenarios
+            List<AbroadContinentDTO> filteredHierarchies =
+                    hierarchyService.getFilteredHierarchy(
+                            continentId,
+                            continentName, countryName, stateName, cityName,
+                            universityName, collegeName, courseName,
+                            streamName, scholarship, feesRange, examType
+                    );
             return ResponseEntity.ok(filteredHierarchies);
         }
     }
