@@ -16,12 +16,14 @@ public interface EnquiryService {
                                 Long stateId, Long cityId, Long collegeId);
 
     List<AbroadEnquiry> getAllEnquiries(String role, String email);
+
     AbroadEnquiry getEnquiryById(Long id, String role, String email);
 
     AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
                                 String role, String email);
 
     void deleteEnquiry(Long id, String role, String email);
+
     Page<AbroadEnquiry> filterEnquiries(
             String continent, String country, String stream, String course, String status,
             String branchCode, String role, String email, String fullName,
@@ -32,12 +34,22 @@ public interface EnquiryService {
     );
 
     List<Map<String, Object>> getInquiryCountByCourseAsMap(String branchCode);
+
     List<Map<String, Object>> getInquiryCountByStreamAsMap(String branchCode);
+
     List<Map<String, Object>> getInquiryCountByConductByAsMap(String branchCode);
+
     List<Map<String, Object>> getInquiryCountByStreamForMonth(int month, String branchCode);
+
     List<Map<String, Object>> getInquiryCountByCourseForMonth(int month, String branchCode);
+
     List<Map<String, Object>> getInquiryCountByConductByForMonth(int month, String branchCode);
+
     Map<String, Long> getAllEnquiryCounts(String branchCode);
+
     Map<String, Long> getAllStatusWiseCount(String branchCode);
+
     List<AbroadEnquiry> getAllEnquiryDataByIdOrNameOrEmailOrPhone(Long id, String name, String email, Long phoneNo);
+
+    Map<String, Object> getDailyInquiryCountsWithTotal(int year, int month);
 }

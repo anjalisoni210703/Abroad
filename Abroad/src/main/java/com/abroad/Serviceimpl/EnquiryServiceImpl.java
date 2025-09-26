@@ -17,10 +17,8 @@
     import java.io.IOException;
     import java.sql.Date;
     import java.time.LocalDate;
-    import java.util.ArrayList;
-    import java.util.HashMap;
-    import java.util.List;
-    import java.util.Map;
+    import java.time.YearMonth;
+    import java.util.*;
     import java.util.stream.Collectors;
 
     @Service
@@ -487,5 +485,36 @@
         @Override
         public List<AbroadEnquiry> getAllEnquiryDataByIdOrNameOrEmailOrPhone(Long id, String name, String email, Long phoneNo) {
             return repository.searchEnquiries(id, name, email, phoneNo);
+        }
+
+        @Override
+        public Map<String, Object> getDailyInquiryCountsWithTotal(int year, int month) {
+            List<Object[]> results = repository.getDailyInquiryCounts(year, month);
+
+            // Put query results into a map
+            Map<LocalDate, Long> dbCounts = results.stream()
+                    .collect(Collectors.toMap(
+                            r -> (LocalDate) r[0],
+                            r -> (Long) r[1]
+                    ));
+
+            Map<String, Long> dailyCounts = new LinkedHashMap<>();
+            LocalDate start = LocalDate.of(year, month, 1);
+            LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+
+            long total = 0;
+            for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+                long count = dbCounts.getOrDefault(date, 0L);
+                dailyCounts.put(date.toString(), count);
+                total += count;
+            }
+
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("year", year);
+            response.put("month", month);
+            response.put("dailyCounts", dailyCounts);
+            response.put("totalCount", total);
+
+            return response;
         }
     }

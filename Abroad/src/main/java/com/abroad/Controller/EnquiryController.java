@@ -133,4 +133,13 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         List<AbroadEnquiry> enquiries = service.getAllEnquiryDataByIdOrNameOrEmailOrPhone(id, name, email, phoneNo);
         return ResponseEntity.ok(enquiries);
     }
+
+
+    /// we need inquiry by Day and Month Yearwise  wise count
+    @GetMapping("/daily-counts")
+    public ResponseEntity<Map<String, Object>> getDailyInquiryCounts(
+            @RequestParam int year,
+            @RequestParam int month) {
+        return ResponseEntity.ok(service.getDailyInquiryCountsWithTotal(year, month));
+    }
 }

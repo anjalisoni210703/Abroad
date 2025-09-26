@@ -130,4 +130,13 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
                                         @Param("phoneNo") Long phoneNo);
 
 
+    @Query("SELECT e.enquiry_date, COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE FUNCTION('YEAR', e.enquiry_date) = :year " +
+            "AND FUNCTION('MONTH', e.enquiry_date) = :month " +
+            "GROUP BY e.enquiry_date " +
+            "ORDER BY e.enquiry_date")
+    List<Object[]> getDailyInquiryCounts(@Param("year") int year, @Param("month") int month);
+
+
 }
