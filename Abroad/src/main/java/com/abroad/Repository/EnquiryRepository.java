@@ -89,6 +89,16 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
             "GROUP BY e.courseName")
     List<Object[]> countInquiriesByCourseForMonth(@Param("month") int month,
                                                   @Param("branchCode") String branchCode);
+    @Query("SELECT e.courseName, COUNT(e), YEAR(e.enquiry_date) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE YEAR(e.enquiry_date) BETWEEN :startYear AND :endYear " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.courseName, YEAR(e.enquiry_date)")
+    List<Object[]> countInquiriesByCourseForYearRange(@Param("startYear") int startYear,
+                                                      @Param("endYear") int endYear,
+                                                      @Param("branchCode") String branchCode);
+
+
 
     // Count inquiries by conductBy for a given month
     @Query("SELECT e.conductBy, COUNT(e) " +
@@ -137,6 +147,32 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
             "GROUP BY e.enquiry_date " +
             "ORDER BY e.enquiry_date")
     List<Object[]> getDailyInquiryCounts(@Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT e.stream, COUNT(e), YEAR(e.enquiry_date) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE YEAR(e.enquiry_date) BETWEEN :startYear AND :endYear " +
+            "AND (:branchCode IS NULL OR e.branchCode = :branchCode) " +
+            "GROUP BY e.stream, YEAR(e.enquiry_date)")
+    List<Object[]> countInquiriesByStreamForYearRange(@Param("startYear") int startYear,
+                                                      @Param("endYear") int endYear,
+                                                      @Param("branchCode") String branchCode);
+
+    // Monthly breakdown for a given year
+    @Query("SELECT FUNCTION('MONTH', e.enquiry_date), COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "WHERE FUNCTION('YEAR', e.enquiry_date) = :year " +
+            "GROUP BY FUNCTION('MONTH', e.enquiry_date) " +
+            "ORDER BY FUNCTION('MONTH', e.enquiry_date)")
+    List<Object[]> getMonthlyInquiryCounts(@Param("year") int year);
+
+    // All years breakdown
+    @Query("SELECT FUNCTION('YEAR', e.enquiry_date), COUNT(e) " +
+            "FROM AbroadEnquiry e " +
+            "GROUP BY FUNCTION('YEAR', e.enquiry_date) " +
+            "ORDER BY FUNCTION('YEAR', e.enquiry_date)")
+    List<Object[]> getYearlyInquiryCounts();
+
+
 
 
 }

@@ -423,6 +423,21 @@
                     })
                     .collect(Collectors.toList());
         }
+        @Override
+        public List<Map<String, Object>> getInquiryCountByStreamForYearRange(int startYear, int endYear, String branchCode) {
+            List<Object[]> results = repository.countInquiriesByStreamForYearRange(startYear, endYear, branchCode);
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("streamName", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        map.put("year", result[2]); // so frontend knows year-wise counts
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
 
 
         @Override
@@ -438,6 +453,21 @@
                     })
                     .collect(Collectors.toList());
         }
+        @Override
+        public List<Map<String, Object>> getInquiryCountByCourseForYearRange(int startYear, int endYear, String branchCode) {
+            List<Object[]> results = repository.countInquiriesByCourseForYearRange(startYear, endYear, branchCode);
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("courseName", result[0]);
+                        map.put("inquiryCount", result[1]);
+                        map.put("year", result[2]); // include year so frontend can distinguish
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
 
         @Override
         public List<Map<String, Object>> getInquiryCountByConductByForMonth(int month, String branchCode) {
@@ -514,6 +544,44 @@
             response.put("month", month);
             response.put("dailyCounts", dailyCounts);
             response.put("totalCount", total);
+
+            return response;
+        }
+        @Override
+        public Map<String, Object> getMonthlyInquiryCountsWithTotal(int year) {
+            List<Object[]> results = repository.getMonthlyInquiryCounts(year);
+
+            Map<Integer, Long> monthlyCounts = results.stream()
+                    .collect(Collectors.toMap(
+                            r -> (Integer) r[0],   // month number
+                            r -> (Long) r[1],
+                            (a, b) -> a,
+                            LinkedHashMap::new
+                    ));
+
+            long total = monthlyCounts.values().stream().mapToLong(Long::longValue).sum();
+
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("year", year);
+            response.put("monthlyCounts", monthlyCounts);
+            response.put("totalCount", total);
+
+            return response;
+        }
+        @Override
+        public Map<String, Object> getYearlyInquiryCounts() {
+            List<Object[]> results = repository.getYearlyInquiryCounts();
+
+            Map<Integer, Long> yearlyCounts = results.stream()
+                    .collect(Collectors.toMap(
+                            r -> (Integer) r[0],   // year
+                            r -> (Long) r[1],
+                            (a, b) -> a,
+                            LinkedHashMap::new
+                    ));
+
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("yearlyCounts", yearlyCounts);
 
             return response;
         }

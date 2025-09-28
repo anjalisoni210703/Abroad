@@ -135,11 +135,27 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     }
 
 
-    /// we need inquiry by Day and Month Yearwise  wise count
-    @GetMapping("/daily-counts")
-    public ResponseEntity<Map<String, Object>> getDailyInquiryCounts(
-            @RequestParam int year,
-            @RequestParam int month) {
-        return ResponseEntity.ok(service.getDailyInquiryCountsWithTotal(year, month));
+    /// we need inquiry by Day and Month Yearwise  wise count *******
+    @GetMapping("/inquiry-counts")
+    public ResponseEntity<Map<String, Object>> getInquiryCounts(
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month) {
+
+        Map<String, Object> response;
+
+        if (year != null && month != null) {
+            // Case 1: Year + Month → Day-wise breakdown
+            response = service.getDailyInquiryCountsWithTotal(year, month);
+        } else if (year != null) {
+            // Case 2: Year only → Month-wise breakdown
+            response = service.getMonthlyInquiryCountsWithTotal(year);
+        } else {
+            // Case 3: Default → All years breakdown
+            response = service.getYearlyInquiryCounts();
+        }
+
+        return ResponseEntity.ok(response);
     }
+
+
 }

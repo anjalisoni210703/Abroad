@@ -40,21 +40,50 @@ public class SuparAdminDashboardController {
         return ResponseEntity.ok(response);
     }
 
-    /// BY MONTH ->>>>>>
+    /// BY MONTH ""->>>>>> ******
     @GetMapping("/stream/by-month")
-    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByStreamForMonth(
-            @RequestParam int month,
+    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByStream(
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer startYear,
+            @RequestParam(required = false) Integer endYear,
             @RequestParam(required = false) String branchCode) {
-        List<Map<String, Object>> response = enquiryService.getInquiryCountByStreamForMonth(month, branchCode);
+
+        List<Map<String, Object>> response;
+
+        if (month != null) {
+            // existing month logic
+            response = enquiryService.getInquiryCountByStreamForMonth(month, branchCode);
+        } else if (startYear != null && endYear != null) {
+            // new year range logic
+            response = enquiryService.getInquiryCountByStreamForYearRange(startYear, endYear, branchCode);
+        } else {
+            throw new IllegalArgumentException("Please provide either month or year range");
+        }
+
         return ResponseEntity.ok(response);
     }
 
-    // Count by course for a specific month
+
+    /// Count by course for a specific month ************
     @GetMapping("/course/by-month")
-    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByCourseForMonth(
-            @RequestParam int month,
+    public ResponseEntity<List<Map<String, Object>>> getInquiryCountByCourse(
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer startYear,
+            @RequestParam(required = false) Integer endYear,
             @RequestParam(required = false) String branchCode) {
-        List<Map<String, Object>> response = enquiryService.getInquiryCountByCourseForMonth(month, branchCode);
+
+        List<Map<String, Object>> response;
+
+        if (month != null) {
+            // month filter
+            response = enquiryService.getInquiryCountByCourseForMonth(month, branchCode);
+        } else if (startYear != null && endYear != null) {
+            // year range filter
+            response = enquiryService.getInquiryCountByCourseForYearRange(startYear, endYear, branchCode);
+        } else {
+            throw new IllegalArgumentException("Please provide either month or year range");
+        }
+
         return ResponseEntity.ok(response);
     }
 
