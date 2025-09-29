@@ -128,6 +128,11 @@ public class AbroadAdmissionFormController {
         return ResponseEntity.ok(service.getAllByBranch(branchCode));
     }
 
+    @GetMapping("/getAllForStaff/{createdByEmail}")
+    public ResponseEntity<List<AbroadAdmissionForm>> getAllByCreatedByEmail(@PathVariable String createdByEmail) {
+        return ResponseEntity.ok(service.getAllByCreatedByEmail(createdByEmail));
+    }
+
     @GetMapping("/PersonalInformation/{id}")
     public ResponseEntity<AdmissionFormPersonalAcademicDTO> getPersonalAcademicInfo(
             @PathVariable Long id) {

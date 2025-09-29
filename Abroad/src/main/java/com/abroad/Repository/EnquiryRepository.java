@@ -172,7 +172,11 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
             "ORDER BY FUNCTION('YEAR', e.enquiry_date)")
     List<Object[]> getYearlyInquiryCounts();
 
+    // Get all enquiries by branch code
+    List<AbroadEnquiry> findByBranchCode(String branchCode);
 
+    // Get all enquiries by createdByEmail
+    List<AbroadEnquiry> findByCreatedByEmail(String createdByEmail);
 
 
 }

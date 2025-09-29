@@ -585,4 +585,22 @@
 
             return response;
         }
+
+        // get all enquiry by for branch
+        @Override
+        public List<AbroadEnquiry> getAllEnquiryByBranchCode(String role, String email, String branchCode) {
+            if (!permissionService.hasPermission(role, email, "GET")) {
+                throw new AccessDeniedException("No permission to view enquiries");
+            }
+            return repository.findByBranchCode(branchCode);
+        }
+
+        // get all enquiry for staff
+        @Override
+        public List<AbroadEnquiry> getAllEnquiryByCreatedByEmail(String role, String email, String createdByEmail) {
+            if (!permissionService.hasPermission(role, email, "GET")) {
+                throw new AccessDeniedException("No permission to view enquiries");
+            }
+            return repository.findByCreatedByEmail(createdByEmail);
+        }
     }

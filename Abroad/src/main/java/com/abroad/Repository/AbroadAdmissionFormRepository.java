@@ -17,4 +17,6 @@ public interface AbroadAdmissionFormRepository extends JpaRepository<AbroadAdmis
             "f.fullName, f.email, f.phone, f.country, f.university, f.course) " +
             "FROM AbroadAdmissionForm f WHERE f.id = :id")
     AdmissionFormPersonalAcademicDTO findPersonalAcademicById(@Param("id") Long id);
+
+    List<AbroadAdmissionForm> findByCreatedByEmail(String createdByEmail);
 }

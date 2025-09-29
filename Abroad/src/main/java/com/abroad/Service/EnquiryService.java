@@ -57,4 +57,8 @@ public interface EnquiryService {
     Map<String, Object> getMonthlyInquiryCountsWithTotal(int year);
     Map<String, Object> getYearlyInquiryCounts();
 
+    List<AbroadEnquiry> getAllEnquiryByBranchCode(String role, String email, String branchCode);
+    List<AbroadEnquiry> getAllEnquiryByCreatedByEmail(String role, String email, String createdByEmail);
+
+
 }

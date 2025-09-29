@@ -207,4 +207,9 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
     public AdmissionFormPersonalAcademicDTO getPersonalAcademicById(Long id) {
         return repository.findPersonalAcademicById(id);
     }
+
+    @Override
+    public List<AbroadAdmissionForm> getAllByCreatedByEmail(String createdByEmail) {
+        return repository.findByCreatedByEmail(createdByEmail);
+    }
 }

@@ -31,4 +31,6 @@ public interface AbroadAdmissionFormService {
     List<AbroadAdmissionForm> getAllAdmissionForms();
     List<AbroadAdmissionForm> getAllByBranch(String branchCode);
     AdmissionFormPersonalAcademicDTO getPersonalAcademicById(Long id);
+
+    List<AbroadAdmissionForm> getAllByCreatedByEmail(String createdByEmail);
 }
