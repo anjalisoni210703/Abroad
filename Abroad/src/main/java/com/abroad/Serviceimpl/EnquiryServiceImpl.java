@@ -548,22 +548,31 @@
             return response;
         }
         @Override
-        public Map<String, Object> getMonthlyInquiryCountsWithTotal(int year) {
-            List<Object[]> results = repository.getMonthlyInquiryCounts(year);
+        public Map<String, Object> getMonthlyInquiryCountsWithTotal(int startYear, int endYear) {
+            List<Object[]> results = repository.getMonthlyInquiryCountsBetweenYears(startYear, endYear);
 
-            Map<Integer, Long> monthlyCounts = results.stream()
-                    .collect(Collectors.toMap(
-                            r -> (Integer) r[0],   // month number
-                            r -> (Long) r[1],
-                            (a, b) -> a,
-                            LinkedHashMap::new
-                    ));
+            // { year -> { month -> count } }
+            Map<Integer, Map<Integer, Long>> yearlyData = new LinkedHashMap<>();
 
-            long total = monthlyCounts.values().stream().mapToLong(Long::longValue).sum();
+            for (Object[] row : results) {
+                int year = (Integer) row[0];
+                int month = (Integer) row[1];
+                long count = (Long) row[2];
+
+                yearlyData
+                        .computeIfAbsent(year, y -> new LinkedHashMap<>())
+                        .put(month, count);
+            }
+
+            long total = yearlyData.values().stream()
+                    .flatMap(m -> m.values().stream())
+                    .mapToLong(Long::longValue)
+                    .sum();
 
             Map<String, Object> response = new LinkedHashMap<>();
-            response.put("year", year);
-            response.put("monthlyCounts", monthlyCounts);
+            response.put("startYear", startYear);
+            response.put("endYear", endYear);
+            response.put("yearlyMonthlyCounts", yearlyData);
             response.put("totalCount", total);
 
             return response;

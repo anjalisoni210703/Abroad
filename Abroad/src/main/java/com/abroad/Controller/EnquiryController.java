@@ -141,6 +141,8 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     @GetMapping("/inquiry-counts")
     public ResponseEntity<Map<String, Object>> getInquiryCounts(
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer startYear,
+            @RequestParam(required = false) Integer endYear,
             @RequestParam(required = false) Integer month) {
 
         Map<String, Object> response;
@@ -148,9 +150,9 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         if (year != null && month != null) {
             // Case 1: Year + Month → Day-wise breakdown
             response = service.getDailyInquiryCountsWithTotal(year, month);
-        } else if (year != null) {
+        } else if (startYear != null) {
             // Case 2: Year only → Month-wise breakdown
-            response = service.getMonthlyInquiryCountsWithTotal(year);
+            response = service.getMonthlyInquiryCountsWithTotal(startYear,endYear);
         } else {
             // Case 3: Default → All years breakdown
             response = service.getYearlyInquiryCounts();

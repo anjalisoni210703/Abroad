@@ -54,7 +54,7 @@ public interface EnquiryService {
     Map<String, Object> getDailyInquiryCountsWithTotal(int year, int month);
     List<Map<String, Object>> getInquiryCountByStreamForYearRange(int startYear, int endYear, String branchCode);
     List<Map<String, Object>> getInquiryCountByCourseForYearRange(int startYear, int endYear, String branchCode);
-    Map<String, Object> getMonthlyInquiryCountsWithTotal(int year);
+    Map<String, Object> getMonthlyInquiryCountsWithTotal(int startYear, int endYear);
     Map<String, Object> getYearlyInquiryCounts();
 
     List<AbroadEnquiry> getAllEnquiryByBranchCode(String role, String email, String branchCode);

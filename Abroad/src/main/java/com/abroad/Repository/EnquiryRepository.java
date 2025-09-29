@@ -158,12 +158,13 @@ public interface EnquiryRepository extends JpaRepository<AbroadEnquiry, Long>, J
                                                       @Param("branchCode") String branchCode);
 
     // Monthly breakdown for a given year
-    @Query("SELECT FUNCTION('MONTH', e.enquiry_date), COUNT(e) " +
+    @Query("SELECT FUNCTION('YEAR', e.enquiry_date), FUNCTION('MONTH', e.enquiry_date), COUNT(e) " +
             "FROM AbroadEnquiry e " +
-            "WHERE FUNCTION('YEAR', e.enquiry_date) = :year " +
-            "GROUP BY FUNCTION('MONTH', e.enquiry_date) " +
-            "ORDER BY FUNCTION('MONTH', e.enquiry_date)")
-    List<Object[]> getMonthlyInquiryCounts(@Param("year") int year);
+            "WHERE FUNCTION('YEAR', e.enquiry_date) BETWEEN :startYear AND :endYear " +
+            "GROUP BY FUNCTION('YEAR', e.enquiry_date), FUNCTION('MONTH', e.enquiry_date) " +
+            "ORDER BY FUNCTION('YEAR', e.enquiry_date), FUNCTION('MONTH', e.enquiry_date)")
+    List<Object[]> getMonthlyInquiryCountsBetweenYears(@Param("startYear") int startYear,
+                                                       @Param("endYear") int endYear);
 
     // All years breakdown
     @Query("SELECT FUNCTION('YEAR', e.enquiry_date), COUNT(e) " +
