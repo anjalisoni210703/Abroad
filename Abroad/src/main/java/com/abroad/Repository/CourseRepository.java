@@ -26,5 +26,13 @@ public interface CourseRepository extends JpaRepository<AbroadCourse, Long> {
     @Query("SELECT c FROM AbroadCourse c WHERE LOWER(CAST(c.scholarship AS string)) = LOWER(:scholarship)")
     List<AbroadCourse> findByScholarshipIgnoreCase(@Param("scholarship") String scholarship);
     List<AbroadCourse> findByExamTypeIn(List<String> examTypes);
+    // ✅ New filters
+    @Query("SELECT c FROM AbroadCourse c WHERE LOWER(c.englishExamRequirements) = LOWER(:englishExamRequirements)")
+    List<AbroadCourse> findByEnglishExamRequirementsIgnoreCase(@Param("englishExamRequirements") String englishExamRequirements);
+
+    @Query("SELECT c FROM AbroadCourse c WHERE c.academicRequirements IN :academicRequirements")
+    List<AbroadCourse> findByAcademicRequirementsIn(@Param("academicRequirements") List<String> academicRequirements);
+
+    List<AbroadCourse> findByIntakeIn(List<String> intake);
 
 }

@@ -94,7 +94,12 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             List<String> streamNames,       // 
             String scholarship,             // 
             String feesRange,               // 
-            List<String> examTypes          // 
+            List<String> examTypes,          //
+            String englishExamRequirements,       // ✅ NEW
+            List<String> academicRequirements,    // ✅ NEW
+            List<String> intake
+
+
     ) {
         // Use Sets for efficient filtering and avoiding duplicates
         Set<AbroadCourse> matchedCourses = new HashSet<>();
@@ -117,7 +122,11 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
         boolean streamNameFilterProvided = streamNames != null && !streamNames.isEmpty();   // 
         boolean scholarshipFilterProvided = scholarship != null && !scholarship.isEmpty();  // 
         boolean feesRangeFilterProvided = feesRange != null && !feesRange.isEmpty();        // 
-        boolean examTypeFilterProvided = examTypes != null && !examTypes.isEmpty();         // 
+        boolean examTypeFilterProvided = examTypes != null && !examTypes.isEmpty();         //
+        boolean englishExamFilterProvided = englishExamRequirements != null && !englishExamRequirements.isEmpty();
+        boolean academicReqFilterProvided = academicRequirements != null && !academicRequirements.isEmpty();
+        boolean intakeFilterProvided = intake != null && !intake.isEmpty();
+
 
         boolean anyFilterApplied =
                 continentIdFilterProvided || continentNameFilterProvided ||
@@ -125,7 +134,9 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                         cityNameFilterProvided || universityNameFilterProvided ||
                         collegeNameFilterProvided || courseNameFilterProvided ||
                         streamNameFilterProvided || scholarshipFilterProvided ||
-                        feesRangeFilterProvided || examTypeFilterProvided;
+                        feesRangeFilterProvided || examTypeFilterProvided ||
+                        englishExamFilterProvided || academicReqFilterProvided ||  // Added
+                        intakeFilterProvided;
 
         if (!anyFilterApplied) {
             return getAllHierarchies();
@@ -186,6 +197,42 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                 if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
             });
         }
+        if (englishExamFilterProvided) {
+            String normalized = englishExamRequirements.trim().equalsIgnoreCase("Yes") ? "Yes" : "No";
+            courseRepo.findAll().stream()
+                    .filter(c -> normalized.equalsIgnoreCase(c.getEnglishExamRequirements()))
+                    .forEach(course -> {
+                        matchedCourses.add(course);
+                        if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+                    });
+        }
+
+        if (academicReqFilterProvided) {
+            courseRepo.findAll().stream()
+                    .filter(c -> c.getAcademicRequirements() != null)
+                    .filter(c -> {
+                        try {
+                            int value = Integer.parseInt(c.getAcademicRequirements().replaceAll("[^0-9]", ""));
+                            return academicRequirements.contains(String.valueOf(value));
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    })
+                    .forEach(course -> {
+                        matchedCourses.add(course);
+                        if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+                    });
+        }
+
+        if (intakeFilterProvided) {
+            courseRepo.findAll().stream()
+                    .filter(c -> intake.contains(c.getIntake()))
+                    .forEach(course -> {
+                        matchedCourses.add(course);
+                        if (course.getAbroadCollege() != null) matchedColleges.add(course.getAbroadCollege());
+                    });
+        }
+
 
         // ----------------
         // Higher-level filters (same as your code)
@@ -287,7 +334,10 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                         streamNames != null ? streamNames : List.of(),
                         scholarship != null ? scholarship : "",
                         examTypes != null ? examTypes : List.of(),
-                        feesRangeFilterProvided ? parseFeesRanges(feesRange) : List.of()
+                        feesRangeFilterProvided ? parseFeesRanges(feesRange) : List.of(),
+                        englishExamRequirements != null ? englishExamRequirements : "", // ✅
+                        academicRequirements != null ? academicRequirements : List.of(), // ✅
+                        intake != null ? intake : List.of()
                 ))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -310,7 +360,10 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
             List<String> streamNames,
             String scholarship,
             List<String> examTypes,
-            List<int[]> feesRanges // each int[] is {min, max}
+            List<int[]> feesRanges,
+             String englishExamRequirements,     // ✅
+            List<String> academicRequirements,  // ✅
+            List<String> intake   // each int[] is {min, max}
     ) {
         List<AbroadCountryDTO> countryDTOs = continent.getAbroadCountries().stream()
                 .filter(country -> !countryFilterProvided || allowedCountries.contains(country))
@@ -345,7 +398,14 @@ public class AbroadHierarchyServiceImpl implements AbroadHierarchyService {
                                                                                                 return false;
                                                                                             }
                                                                                         });
-                                                                                return streamOk && scholarshipOk && examOk && feesOk;
+                                                                                boolean englishExamOk = (englishExamRequirements == null || englishExamRequirements.isEmpty()) ||
+                                                                                        englishExamRequirements.equalsIgnoreCase(course.getEnglishExamRequirements());
+                                                                                boolean academicOk = (academicRequirements == null || academicRequirements.isEmpty()) ||
+                                                                                        academicRequirements.contains(course.getAcademicRequirements());
+                                                                                boolean intakeOk = (intake == null || intake.isEmpty()) ||
+                                                                                        intake.contains(course.getIntake());
+
+                                                                                return streamOk && scholarshipOk && examOk && feesOk && englishExamOk && academicOk && intakeOk;
                                                                             })
                                                                             .filter(course -> !courseFilterProvided || allowedCourses.contains(course))
                                                                             .map(this::mapCourseToDTO)

@@ -51,6 +51,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     return ResponseEntity.ok(created);
 }
 
+
 //    @PutMapping("/updateEnquiry/{id}")
 //    public ResponseEntity<AbroadEnquiry> updateEnquiry(@PathVariable Long id,
 //                                                       @RequestPart("enquiry") String enquiryJson,
@@ -160,7 +161,8 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
 
         return ResponseEntity.ok(response);
     }
-
+    /// ///////
+    ///
     @GetMapping("/getAllEnquiryByBranchCode/{branchCode}")
     public ResponseEntity<List<AbroadEnquiry>> getAllByBranchCode(
             @PathVariable String branchCode,
@@ -176,7 +178,5 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam String email) {
         return ResponseEntity.ok(service.getAllEnquiryByCreatedByEmail(role, email, createdByEmail));
     }
-
-
 
 }

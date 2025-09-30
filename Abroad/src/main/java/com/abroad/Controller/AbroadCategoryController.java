@@ -44,5 +44,9 @@ public class AbroadCategoryController {
                                @RequestParam String role,
                                @RequestParam String email){
         return ResponseEntity.ok(categoryService.deleteCategory(id, role, email));
+
     }
+
+
+
 }

@@ -27,10 +27,13 @@ public class AbroadHierarchyController {
             @RequestParam(required = false) List<String> universityName,
             @RequestParam(required = false) List<String> collegeName,
             @RequestParam(required = false) List<String> courseName,
-            @RequestParam(required = false) List<String> streamName,     // ✅ New
-            @RequestParam(required = false) String scholarship,          // ✅ New ("Yes" or "No")
-            @RequestParam(required = false) String feesRange,            // ✅ New ("0-100000", "100000-1000000")
-            @RequestParam(required = false) List<String> examType        // ✅ New
+            @RequestParam(required = false) List<String> streamName,
+            @RequestParam(required = false) String scholarship,
+            @RequestParam(required = false) String feesRange,
+            @RequestParam(required = false) List<String> examType,
+            @RequestParam(required = false) String englishExamRequirements,  // ✅ New
+            @RequestParam(required = false) List<String> academicRequirements, // ✅ New
+            @RequestParam(required = false) List<String> intake               // ✅ New
     ) {
 
         boolean noFilters =
@@ -42,10 +45,13 @@ public class AbroadHierarchyController {
                         (universityName == null || universityName.isEmpty()) &&
                         (collegeName == null || collegeName.isEmpty()) &&
                         (courseName == null || courseName.isEmpty()) &&
-                        (streamName == null || streamName.isEmpty()) &&          // ✅ Added
-                        (scholarship == null || scholarship.isEmpty()) &&        // ✅ Added
-                        (feesRange == null || feesRange.isEmpty()) &&            // ✅ Added
-                        (examType == null || examType.isEmpty());                // ✅ Added
+                        (streamName == null || streamName.isEmpty()) &&
+                        (scholarship == null || scholarship.isEmpty()) &&
+                        (feesRange == null || feesRange.isEmpty()) &&
+                        (examType == null || examType.isEmpty()) &&
+                        (englishExamRequirements == null || englishExamRequirements.isEmpty()) && // ✅
+                        (academicRequirements == null || academicRequirements.isEmpty()) &&       // ✅
+                        (intake == null || intake.isEmpty());                                     // ✅
 
         if (noFilters) {
             // Case 1: Get All Hierarchies
@@ -61,7 +67,10 @@ public class AbroadHierarchyController {
                 (streamName == null || streamName.isEmpty()) &&
                 (scholarship == null || scholarship.isEmpty()) &&
                 (feesRange == null || feesRange.isEmpty()) &&
-                (examType == null || examType.isEmpty())) {
+                (examType == null || examType.isEmpty()) &&
+                (englishExamRequirements == null || englishExamRequirements.isEmpty()) &&
+                (academicRequirements == null || academicRequirements.isEmpty()) &&
+                (intake == null || intake.isEmpty())) {
             // Case 2: Only continentId filter
             return ResponseEntity.ok(List.of(hierarchyService.getHierarchyByContinentId(continentId)));
         } else {
@@ -71,11 +80,13 @@ public class AbroadHierarchyController {
                             continentId,
                             continentName, countryName, stateName, cityName,
                             universityName, collegeName, courseName,
-                            streamName, scholarship, feesRange, examType
+                            streamName, scholarship, feesRange, examType,
+                            englishExamRequirements, academicRequirements, intake  // ✅ Added
                     );
             return ResponseEntity.ok(filteredHierarchies);
         }
     }
+
 
     // Health check endpoint
     @GetMapping("/hierarchy/health")
