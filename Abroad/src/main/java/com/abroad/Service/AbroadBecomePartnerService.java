@@ -25,4 +25,5 @@ public interface AbroadBecomePartnerService {
     Page<AbroadBecomePartner> filterPartners(String name, String email, String businessEmail, String instituteType,
                                              String contractType, String conductedBy, String status,
                                              String role, String createdByEmail, int page, int size);
+    Map<String, Long> getAllStatusWiseCount();
 }

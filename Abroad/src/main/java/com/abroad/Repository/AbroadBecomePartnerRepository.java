@@ -14,4 +14,12 @@ public interface AbroadBecomePartnerRepository extends JpaRepository<AbroadBecom
 
 //    @Query("SELECT p FROM AbroadBecomePartner p WHERE p.branchCode = :branchCode ORDER BY p.id DESC")
 //    List<AbroadBecomePartner> findAllByBranchCode(@Param("branchCode") String branchCode);
+
+
+
+        @Query("SELECT p.status, COUNT(p) " +
+                "FROM AbroadBecomePartner p " +
+                "GROUP BY p.status")
+        List<Object[]> getAllStatusWiseCount();
+
 }

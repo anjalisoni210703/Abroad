@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "https://wayabroad.in")
@@ -84,6 +85,12 @@ public class AbroadBecomePartnerController {
     ) {
         return service.filterPartners(name, email, businessEmail, instituteType,
                 contractType, conductedBy, status, role, createdByEmail, page, size);
+    }
+
+    @GetMapping("/status-countPartner")
+    public ResponseEntity<Map<String, Long>> getAllStatusWiseCount() {
+        Map<String, Long> response = service.getAllStatusWiseCount();
+        return ResponseEntity.ok(response);
     }
 
 }

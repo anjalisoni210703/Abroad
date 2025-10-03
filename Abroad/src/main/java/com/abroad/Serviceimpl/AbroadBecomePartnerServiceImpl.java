@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerService {
@@ -185,5 +182,34 @@ public class AbroadBecomePartnerServiceImpl implements AbroadBecomePartnerServic
 
         Pageable pageable = PageRequest.of(page, size);
         return repository.findAll(spec, pageable);
+    }
+
+    // Define fixed statuses
+    private static final List<String> ALL_STATUSES = Arrays.asList(
+            "Interested", "Not Interested", "Meeting Scheduled", "Onboard", "Ringing"
+    );
+
+    public Map<String, Long> getAllStatusWiseCount() {
+        List<Object[]> results = repository.getAllStatusWiseCount();
+
+        Map<String, Long> statusCounts = new LinkedHashMap<>();
+
+        // Initialize all statuses with 0
+        for (String status : ALL_STATUSES) {
+            statusCounts.put(status, 0L);
+        }
+
+        // Override with actual DB counts
+        for (Object[] row : results) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            statusCounts.put(status, count);
+        }
+
+        // Calculate total
+        long total = statusCounts.values().stream().mapToLong(Long::longValue).sum();
+        statusCounts.put("TotalPartners", total);
+
+        return statusCounts;
     }
 }
