@@ -178,7 +178,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam String email) {
         return ResponseEntity.ok(service.getAllEnquiryByCreatedByEmail(role, email, createdByEmail));
     }
-
+/// / new api
     @GetMapping("/getAllEnquiries")
     public ResponseEntity<List<AbroadEnquiry>> getEnquiries(
             @RequestParam String role,
