@@ -78,7 +78,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
     }
 
     //for super admin
-    @GetMapping("/getAllEnquiries")
+    @GetMapping("/getAllEnquiriess")
     public ResponseEntity<List<AbroadEnquiry>> getAllEnquiries(@RequestParam String role,
                                                                @RequestParam String email) {
         return ResponseEntity.ok(service.getAllEnquiries(role, email));
@@ -177,6 +177,16 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam String role,
             @RequestParam String email) {
         return ResponseEntity.ok(service.getAllEnquiryByCreatedByEmail(role, email, createdByEmail));
+    }
+
+    @GetMapping("/getAllEnquiries")
+    public ResponseEntity<List<AbroadEnquiry>> getEnquiries(
+            @RequestParam String role,
+            @RequestParam String email,
+            @RequestParam(required = false) String branchCode) {
+
+        List<AbroadEnquiry> enquiries = service.getEnquiries(role, email, branchCode);
+        return ResponseEntity.ok(enquiries);
     }
 
 }

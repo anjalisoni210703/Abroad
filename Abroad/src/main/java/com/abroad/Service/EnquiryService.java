@@ -60,5 +60,6 @@ public interface EnquiryService {
     List<AbroadEnquiry> getAllEnquiryByBranchCode(String role, String email, String branchCode);
     List<AbroadEnquiry> getAllEnquiryByCreatedByEmail(String role, String email, String createdByEmail);
 
+    List<AbroadEnquiry> getEnquiries(String role, String email,String branchCode);
 
 }

@@ -132,9 +132,11 @@
             if (!permissionService.hasPermission(role, email, "GET")) {
                 throw new AccessDeniedException("No permission to view Enquiries");
             }
-
-            String branchCode = permissionService.fetchBranchCode(role, email);
-            return repository.findAllByBranchCode(branchCode);
+            List<AbroadEnquiry> enquiries = repository.findAll();
+            if (enquiries.isEmpty()) {
+                throw new NoSuchElementException("No enquiries found in the system");
+            }
+            return enquiries;
         }
 
         @Override
@@ -601,7 +603,11 @@
             if (!permissionService.hasPermission(role, email, "GET")) {
                 throw new AccessDeniedException("No permission to view enquiries");
             }
-            return repository.findByBranchCode(branchCode);
+            List<AbroadEnquiry> enquiries = repository.findByBranchCode(branchCode);
+            if (enquiries == null || enquiries.isEmpty()) {
+                throw new NoSuchElementException("No enquiries found for branch code: " + branchCode);
+            }
+            return enquiries;
         }
 
         // get all enquiry for staff
@@ -610,6 +616,49 @@
             if (!permissionService.hasPermission(role, email, "GET")) {
                 throw new AccessDeniedException("No permission to view enquiries");
             }
-            return repository.findByCreatedByEmail(createdByEmail);
+            List<AbroadEnquiry> enquiries = repository.findByCreatedByEmail(createdByEmail);
+            if (enquiries == null || enquiries.isEmpty()) {
+                throw new NoSuchElementException("No enquiries found for email: " + createdByEmail);
+            }
+            return enquiries;
         }
+
+        @Override
+        public List<AbroadEnquiry> getEnquiries(String role, String email,String branchCode) {
+            if (!permissionService.hasPermission(role, email, "GET")) {
+                throw new AccessDeniedException("No permission to view enquiries");
+            }
+
+            List<AbroadEnquiry> enquiries;
+
+            switch (role.toUpperCase()) {
+                case "SUPERADMIN":
+                    enquiries = repository.findAll();
+                    break;
+
+                case "BRANCH":
+                    if (branchCode == null || branchCode.isEmpty()) {
+                        throw new IllegalArgumentException("Branch code is required for BRANCH role");
+                    }
+                    enquiries = repository.findByBranchCode(branchCode);
+                    break;
+
+                case "STAFF":
+                    if ( email == null || email.isEmpty()) {
+                        throw new IllegalArgumentException("Email is required for STAFF role");
+                    }
+                    enquiries = repository.findByCreatedByEmail(email);
+                    break;
+
+                default:
+                    throw new AccessDeniedException("Invalid role: " + role);
+            }
+
+            if (enquiries == null || enquiries.isEmpty()) {
+                throw new NoSuchElementException("No enquiries found");
+            }
+
+            return enquiries;
+        }
+
     }
