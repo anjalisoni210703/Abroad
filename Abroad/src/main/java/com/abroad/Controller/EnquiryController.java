@@ -34,7 +34,6 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
                                                    @RequestParam Long continentId,
                                                    @RequestParam Long countryId,
                                                    @RequestParam Long universityId,
-//                                                   @RequestParam Long courseId,
                                                    @RequestParam Long stateId,
                                                    @RequestParam Long cityId,
                                                    @RequestParam Long collegeId) throws JsonProcessingException {
@@ -99,7 +98,6 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         service.deleteEnquiry(id, role, email);
         return ResponseEntity.ok("Enquiry deleted successfully");
     }
-
     @PostMapping("/filter")
     public Page<AbroadEnquiry> filterEnquiries(
             @RequestParam(required = false) String continent,
@@ -109,8 +107,8 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String fullName,
             @RequestParam(required = false) String enquiryDateFilter,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) String startDate,   // 👈 Changed to String
+            @RequestParam(required = false) String endDate,     // 👈 Changed to String
             @RequestParam(required = false) String branchCode,
             @RequestParam(required = false) String applyFor,
             @RequestParam(required = false) String conductBy,
@@ -119,12 +117,29 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+
+        LocalDate start = null;
+        LocalDate end = null;
+
+        // ✅ Safe Date Parsing
+        try {
+            if (startDate != null && !startDate.isEmpty()) {
+                start = LocalDate.parse(startDate);
+            }
+            if (endDate != null && !endDate.isEmpty()) {
+                end = LocalDate.parse(endDate);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd");
+        }
+
         return service.filterEnquiries(
                 continent, country, stream, course, status,
                 branchCode, role, email, fullName,
-                enquiryDateFilter, startDate, endDate, applyFor, conductBy,page, size
+                enquiryDateFilter, start, end, applyFor, conductBy, page, size
         );
     }
+
 
     @GetMapping("/search")
     public ResponseEntity<List<AbroadEnquiry>> searchEnquiries(
