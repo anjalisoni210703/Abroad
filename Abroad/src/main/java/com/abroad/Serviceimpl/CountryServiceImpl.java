@@ -124,4 +124,9 @@ public class CountryServiceImpl implements CountryService {
 
         countryRepository.delete(country);
     }
+
+    @Override
+    public List<String> searchCountryNames(String name) {
+        return countryRepository.findCountryNamesByPartialMatch(name);
+    }
 }

@@ -34,6 +34,9 @@ public interface CountryRepository extends JpaRepository<AbroadCountry, Long> {
     Optional<AbroadCountry> findByCountry(String countryName);
     Page<AbroadCountry> findByAbroadContinentId(Long continentId, Pageable pageable);
     List<AbroadCountry> findByCountryIn(List<String> countryNames);
+    // Return only country names (case-insensitive, partial match)
+    @Query("SELECT c.country FROM AbroadCountry c WHERE LOWER(c.country) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<String> findCountryNamesByPartialMatch(String name);
 
 
 }

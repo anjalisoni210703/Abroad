@@ -11,4 +11,5 @@ public interface StateService {
     AbroadState getStateById(Long id, String role, String email);
     AbroadState updateState(Long id, AbroadState state, MultipartFile image, Long countryId, String role, String email);
     void deleteState(Long id, String role, String email);
+    List<String> searchStateNames(String name);
 }

@@ -12,4 +12,5 @@ public interface UniversityService {
     AbroadUniversity getUniversityById(Long id, String role, String email);
     AbroadUniversity updateUniversity(Long id, AbroadUniversity abroadUniversity, MultipartFile image, String role, String email);
     void deleteUniversity(Long id, String role, String email);
+    List<String> searchUniversityNames(String name);
 }

@@ -12,4 +12,5 @@ public interface CollegeService {
     AbroadCollege getCollegeById(Long id, String role, String email);
     AbroadCollege updateCollege(Long id, AbroadCollege abroadCollege, MultipartFile image, String role, String email);
     void deleteCollege(Long id, String role, String email);
+    public List<String> searchCollegeNames(String name);
 }

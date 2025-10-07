@@ -12,5 +12,7 @@ public interface CountryService {
     AbroadCountry getCountryById(Long id, String role, String email);
     AbroadCountry updateCountry(Long id, AbroadCountry country, MultipartFile image, Long continentId, String role, String email);
     void deleteCountry(Long id, String role, String email);
+     List<String> searchCountryNames(String name);
+
 
 }

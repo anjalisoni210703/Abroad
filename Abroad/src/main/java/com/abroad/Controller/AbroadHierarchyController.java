@@ -2,8 +2,9 @@
 package com.abroad.Controller;
 
 import com.abroad.DTO.AbroadContinentDTO;
-import com.abroad.Service.AbroadHierarchyService;
+import com.abroad.Service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,22 @@ import java.util.List;
 public class AbroadHierarchyController {
 
     private final AbroadHierarchyService hierarchyService;
+
+    @Autowired
+    private UniversityService universityService;
+
+    @Autowired
+    private StateService stateService;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private CollegeService collegeService;
+
+    @Autowired
+    private CountryService countryService;
+
 
     // The single, unified API endpoint as per your documentation
     @GetMapping("/hierarchy")
@@ -86,7 +103,38 @@ public class AbroadHierarchyController {
             return ResponseEntity.ok(filteredHierarchies);
         }
     }
+/// /->
 
+    @GetMapping("/searchUniversities")
+    public ResponseEntity<List<String>> searchUniversities(@RequestParam String name) {
+        List<String> results = universityService.searchUniversityNames(name);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/searchStates")
+    public ResponseEntity<List<String>> searchStates(@RequestParam String name) {
+        List<String> results = stateService.searchStateNames(name);
+        return ResponseEntity.ok(results);
+    }
+
+    // ✅ Search API returning only matching city names
+    @GetMapping("/searchCities")
+    public ResponseEntity<List<String>> searchCities(@RequestParam String name) {
+        List<String> results = cityService.searchCityNames(name);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/searchColleges")
+    public ResponseEntity<List<String>> searchColleges(@RequestParam String name) {
+        List<String> results = collegeService.searchCollegeNames(name);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/searchCountries")
+    public ResponseEntity<List<String>> searchCountries(@RequestParam String name) {
+        List<String> results = countryService.searchCountryNames(name);
+        return ResponseEntity.ok(results);
+    }
 
     // Health check endpoint
     @GetMapping("/hierarchy/health")

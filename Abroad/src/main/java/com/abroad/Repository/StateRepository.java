@@ -22,4 +22,7 @@ public interface StateRepository extends JpaRepository<AbroadState, Long> {
 
     List<AbroadState> findByStateIn(List<String> stateNames);
 
+    @Query("SELECT s.state FROM AbroadState s WHERE LOWER(s.state) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<String> findStateNamesByPartialMatch(String name);
+
 }

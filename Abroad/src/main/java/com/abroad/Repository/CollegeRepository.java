@@ -25,4 +25,7 @@ public interface CollegeRepository  extends JpaRepository<AbroadCollege, Long> {
     Page<AbroadCollege> findByAbroadUniversityId(Long universityId, Pageable pageable);
     List<AbroadCollege> findByCollegeNameIn(List<String> collegeNames);
 
+    @Query("SELECT c.collegeName FROM AbroadCollege c WHERE LOWER(c.collegeName) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<String> findCollegeNamesByPartialMatch(String name);
+
 }

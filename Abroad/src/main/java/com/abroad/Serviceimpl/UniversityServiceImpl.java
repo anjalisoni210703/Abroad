@@ -121,4 +121,9 @@ public class UniversityServiceImpl implements UniversityService {
 
         repository.deleteById(id);
     }
+
+    @Override
+    public List<String> searchUniversityNames(String name) {
+        return repository.findUniversityNamesByPartialMatch(name);
+    }
 }

@@ -121,4 +121,10 @@ public class CityServiceImpl implements CityService {
 
         cityRepository.delete(city);
     }
+
+
+    @Override
+    public List<String> searchCityNames(String name) {
+        return cityRepository.findCityNamesByPartialMatch(name);
+    }
 }

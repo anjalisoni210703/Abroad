@@ -107,4 +107,10 @@ public class CollegeServiceImpl implements CollegeService {
 
         repository.deleteById(id);
     }
+
+
+    @Override
+    public List<String> searchCollegeNames(String name) {
+        return repository.findCollegeNamesByPartialMatch(name);
+    }
 }

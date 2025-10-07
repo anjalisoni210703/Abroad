@@ -11,4 +11,5 @@ public interface CityService {
     AbroadCity getCityById(Long id, String role, String email);
     AbroadCity updateCity(Long id, AbroadCity city, MultipartFile image, Long stateId, String role, String email);
     void deleteCity(Long id, String role, String email);
+    List<String> searchCityNames(String name);
 }

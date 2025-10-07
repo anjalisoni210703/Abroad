@@ -121,4 +121,9 @@ public class StateServiceImpl implements StateService {
 
         stateRepository.delete(state);
     }
+
+    @Override
+    public List<String> searchStateNames(String name) {
+        return stateRepository.findStateNamesByPartialMatch(name);
+    }
 }
