@@ -143,5 +143,10 @@ public class StreamServiceImpl implements StreamService {
                 .collect(Collectors.toList());
 
     }
+
+    @Override
+    public List<String> searchStreamNames(String name) {
+        return repository.findStreamNamesByPartialMatch(name);
+    }
 }
 

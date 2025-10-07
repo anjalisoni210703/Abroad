@@ -13,4 +13,5 @@ public interface StreamService {
     AbroadStream updateStream(Long id, AbroadStream abroadStream, MultipartFile image, String role, String email);
     void deleteStream(Long id, String role, String email);
     List<Map<String, Object>> getInquiryCountByStreamAsMap();
+    List<String> searchStreamNames(String name);
 }

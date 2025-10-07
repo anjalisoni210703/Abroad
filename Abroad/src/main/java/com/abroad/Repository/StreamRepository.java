@@ -25,4 +25,6 @@ public interface StreamRepository extends JpaRepository<AbroadStream, Long> {
     @Query("SELECT s.name, COUNT(e.id) FROM AbroadStream s LEFT JOIN s.abroadEnquiries e GROUP BY s.id, s.name")
     List<Object[]> countInquiriesByStream();
 
+    @Query("SELECT s.name FROM AbroadStream s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<String> findStreamNamesByPartialMatch(String name);
 }
