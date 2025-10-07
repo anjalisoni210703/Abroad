@@ -32,6 +32,10 @@ public class AbroadHierarchyController {
     @Autowired
     private CountryService countryService;
 
+    @Autowired
+    private StreamService streamService;
+
+
 
     // The single, unified API endpoint as per your documentation
     @GetMapping("/hierarchy")
@@ -133,6 +137,12 @@ public class AbroadHierarchyController {
     @GetMapping("/searchCountries")
     public ResponseEntity<List<String>> searchCountries(@RequestParam String name) {
         List<String> results = countryService.searchCountryNames(name);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/searchStreams")
+    public ResponseEntity<List<String>> searchStreams(@RequestParam String name) {
+        List<String> results = streamService.searchStreamNames(name);
         return ResponseEntity.ok(results);
     }
 
