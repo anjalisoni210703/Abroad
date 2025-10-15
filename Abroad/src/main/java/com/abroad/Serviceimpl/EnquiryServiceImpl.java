@@ -292,7 +292,7 @@
                 if (continent != null && !continent.isEmpty()) predicates.add(cb.equal(root.get("continent"), continent));
                 if (country != null && !country.isEmpty()) predicates.add(cb.equal(root.get("country"), country));
                 if (stream != null && !stream.isEmpty()) predicates.add(cb.equal(root.get("stream"), stream));
-                if (course != null && !course.isEmpty()) predicates.add(cb.equal(root.get("course"), course));
+                if (course != null && !course.isEmpty()) predicates.add(cb.equal(root.get("courseName"), course));
                 if (status != null && !status.isEmpty()) predicates.add(cb.equal(root.get("status"), status));
                 if (applyFor != null && !applyFor.isEmpty()) predicates.add(cb.equal(root.get("applyFor"), applyFor));
                 if (conductBy != null && !conductBy.isEmpty()) predicates.add(cb.equal(root.get("conductBy"), conductBy));
