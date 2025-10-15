@@ -114,6 +114,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam(required = false) String branchCode,
             @RequestParam(required = false) String applyFor,
             @RequestParam(required = false) String conductBy,
+            @RequestParam(required = false) String staffName,
             @RequestParam String role,
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
@@ -132,7 +133,7 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
 
         Page<AbroadEnquiry> enquiryPage = service.filterEnquiries(
                 continent, country, stream, course, status,
-                branchCode, role, email, fullName,
+                branchCode, role, email, fullName,staffName,
                 enquiryDateFilter, start, end, applyFor, conductBy, page, size
         );
 

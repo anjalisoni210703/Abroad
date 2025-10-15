@@ -244,7 +244,7 @@
         @Override
         public Page<AbroadEnquiry> filterEnquiries(
                 String continent, String country, String stream, String course, String status,
-                String branchCode, String role, String email, String fullName,
+                String branchCode, String role, String email, String fullName, String staffName,
                 String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
                 String applyFor, String conductBy, int page, int size) {
 
@@ -296,6 +296,7 @@
                 if (status != null && !status.isEmpty()) predicates.add(cb.equal(root.get("status"), status));
                 if (applyFor != null && !applyFor.isEmpty()) predicates.add(cb.equal(root.get("applyFor"), applyFor));
                 if (conductBy != null && !conductBy.isEmpty()) predicates.add(cb.equal(root.get("conductBy"), conductBy));
+                if (staffName != null && !staffName.isEmpty()) predicates.add(cb.equal(root.get("StaffName"), staffName));
                 if (fullName != null && !fullName.trim().isEmpty())
                     predicates.add(cb.like(cb.lower(root.get("name")), "%" + fullName.toLowerCase() + "%"));
 

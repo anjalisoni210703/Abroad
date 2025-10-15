@@ -26,7 +26,7 @@ public interface EnquiryService {
 
     Page<AbroadEnquiry> filterEnquiries(
             String continent, String country, String stream, String course, String status,
-            String branchCode, String role, String email, String fullName,
+            String branchCode, String role, String email, String fullName,String staffName,
             String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
             String applyFor,
             String conductBy,
