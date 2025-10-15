@@ -95,6 +95,7 @@
             abroadEnquiry.setRole(role);
             abroadEnquiry.setBranchCode(branchCode);
 
+
             AbroadContinent continent = continentRepository.findById(continentId).orElseThrow(() -> new RuntimeException("Continent not found"));
             abroadEnquiry.setAbroadContinent(continent);
             abroadEnquiry.setContinent(continent.getContinentname());
@@ -107,9 +108,7 @@
             abroadEnquiry.setUniversity(university.getUniversityName());
             abroadEnquiry.setAbroadUniversity(university);
 
-//            AbroadCourse course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-//            abroadEnquiry.setCourse(course.getCourseName());
-//            abroadEnquiry.setAbroadCourse(course);
+
 
             AbroadCollege college = collegeRepository.findById(collegeId).orElseThrow(() -> new RuntimeException("College not found"));
             abroadEnquiry.setCollage(college.getCollegeName());
@@ -247,99 +246,67 @@
                 String continent, String country, String stream, String course, String status,
                 String branchCode, String role, String email, String fullName,
                 String enquiryDateFilter, LocalDate startDate, LocalDate endDate,
-                String applyFor, String conductBy,
-                int page, int size) {
+                String applyFor, String conductBy, int page, int size) {
 
             // ✅ Step 1: Permission validation
             if (!permissionService.hasPermission(role, email, "POST")) {
                 throw new AccessDeniedException("No permission to filter enquiries");
             }
 
-            // ✅ Step 2: Role-based enforcement
+            // ✅ Step 2: Role-based restrictions
             String tempBranchCode = null;
             String tempEmail = null;
 
             switch (role.toUpperCase()) {
                 case "SUPERADMIN":
                     break;
-
                 case "BRANCH":
                     if (branchCode == null || branchCode.isEmpty())
-                        throw new IllegalArgumentException("Branch code is required for BRANCH role");
+                        throw new IllegalArgumentException("Branch code required for BRANCH role");
                     tempBranchCode = branchCode;
                     break;
-
                 case "STAFF":
                     if (email == null || email.isEmpty())
-                        throw new IllegalArgumentException("Email is required for STAFF role");
+                        throw new IllegalArgumentException("Email required for STAFF role");
                     tempEmail = email;
                     break;
-
                 default:
                     throw new AccessDeniedException("Invalid role: " + role);
             }
 
-            // ✅ Step 3: Make them final so they can be safely used inside lambda
             final String effectiveBranchCode = tempBranchCode;
             final String effectiveEmail = tempEmail;
             final String userRole = role.toUpperCase();
 
-            // ✅ Step 4: Build specification
+            // ✅ Step 3: Specification builder
             Specification<AbroadEnquiry> spec = (root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
-                // --- ROLE-BASED DATA ACCESS ---
+                // Role-based filters
                 switch (userRole) {
-                    case "SUPERADMIN":
-                        // No restriction
-                        break;
-
-                    case "BRANCH":
-                        predicates.add(cb.equal(root.get("branchCode"), effectiveBranchCode));
-                        break;
-
-                    case "STAFF":
-                        predicates.add(cb.equal(root.get("createdByEmail"), effectiveEmail));
-                        break;
+                    case "BRANCH" -> predicates.add(cb.equal(root.get("branchCode"), effectiveBranchCode));
+                    case "STAFF" -> predicates.add(cb.equal(root.get("createdByEmail"), effectiveEmail));
                 }
 
-                // --- ADDITIONAL FILTERS ---
-                if (continent != null && !continent.isEmpty())
-                    predicates.add(cb.equal(root.get("continent"), continent));
-
-                if (country != null && !country.isEmpty())
-                    predicates.add(cb.equal(root.get("country"), country));
-
-                if (stream != null && !stream.isEmpty())
-                    predicates.add(cb.equal(root.get("stream"), stream));
-
-                if (course != null && !course.isEmpty())
-                    predicates.add(cb.equal(root.get("course"), course));
-
-                if (status != null && !status.isEmpty())
-                    predicates.add(cb.equal(root.get("status"), status));
-
-                if (applyFor != null && !applyFor.isEmpty())
-                    predicates.add(cb.equal(root.get("applyFor"), applyFor));
-
-                if (conductBy != null && !conductBy.isEmpty())
-                    predicates.add(cb.equal(root.get("conductBy"), conductBy));
-
+                // Additional filters
+                if (continent != null && !continent.isEmpty()) predicates.add(cb.equal(root.get("continent"), continent));
+                if (country != null && !country.isEmpty()) predicates.add(cb.equal(root.get("country"), country));
+                if (stream != null && !stream.isEmpty()) predicates.add(cb.equal(root.get("stream"), stream));
+                if (course != null && !course.isEmpty()) predicates.add(cb.equal(root.get("course"), course));
+                if (status != null && !status.isEmpty()) predicates.add(cb.equal(root.get("status"), status));
+                if (applyFor != null && !applyFor.isEmpty()) predicates.add(cb.equal(root.get("applyFor"), applyFor));
+                if (conductBy != null && !conductBy.isEmpty()) predicates.add(cb.equal(root.get("conductBy"), conductBy));
                 if (fullName != null && !fullName.trim().isEmpty())
                     predicates.add(cb.like(cb.lower(root.get("name")), "%" + fullName.toLowerCase() + "%"));
 
-                // --- DATE FILTERS ---
+                // Date filters
                 if (enquiryDateFilter != null) {
                     LocalDate today = LocalDate.now();
                     switch (enquiryDateFilter.toLowerCase()) {
-                        case "today" ->
-                                predicates.add(cb.equal(root.get("enquiry_date"), today));
-                        case "last7days" ->
-                                predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(6), today));
-                        case "last30days" ->
-                                predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(29), today));
-                        case "last365days" ->
-                                predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(364), today));
+                        case "today" -> predicates.add(cb.equal(root.get("enquiry_date"), today));
+                        case "last7days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(6), today));
+                        case "last30days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(29), today));
+                        case "last365days" -> predicates.add(cb.between(root.get("enquiry_date"), today.minusDays(364), today));
                         case "custom" -> {
                             if (startDate != null && endDate != null)
                                 predicates.add(cb.between(root.get("enquiry_date"), startDate, endDate));
@@ -351,16 +318,15 @@
                 return cb.and(predicates.toArray(new Predicate[0]));
             };
 
-            // ✅ Step 5: Pagination + Query Execution
-            Pageable pageable = PageRequest.of(page, size);
-            Page<AbroadEnquiry> enquiries = repository.findAll(spec, pageable);
+            // ✅ Step 4: Pagination safety
+            int safePage = Math.max(page, 0);
+            int safeSize = Math.max(size, 1);
+            Pageable pageable = PageRequest.of(safePage, safeSize);
 
-            if (enquiries.isEmpty()) {
-                throw new NoSuchElementException("No enquiries found for given filters");
-            }
-
-            return enquiries;
+            // ✅ Step 5: Execute
+            return repository.findAll(spec, pageable);
         }
+
 
 
 

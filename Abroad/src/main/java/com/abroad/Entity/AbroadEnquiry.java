@@ -66,6 +66,7 @@ public class AbroadEnquiry {
     private String yearITR;
     private String amountITR;
     private String  hasPassport;
+    private String StaffName;
 
     private String document1;
     private String document2;
@@ -74,6 +75,7 @@ public class AbroadEnquiry {
     private String createdByEmail;
     private String role;
     private String branchCode;
+
 
 
 
@@ -115,4 +117,7 @@ public class AbroadEnquiry {
     @OneToMany(mappedBy = "enquiry",cascade = CascadeType.ALL,fetch =FetchType.LAZY )
     @JsonIgnore
     private List<AbroadLeadVisit> leadVisits;
+
+
+
 }

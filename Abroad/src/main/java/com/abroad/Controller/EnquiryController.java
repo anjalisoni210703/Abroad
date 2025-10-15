@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,8 +99,9 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         service.deleteEnquiry(id, role, email);
         return ResponseEntity.ok("Enquiry deleted successfully");
     }
+
     @PostMapping("/filter")
-    public Page<AbroadEnquiry> filterEnquiries(
+    public ResponseEntity<Map<String, Object>> filterEnquiries(
             @RequestParam(required = false) String continent,
             @RequestParam(required = false) String country,
             @RequestParam(required = false) String stream,
@@ -107,8 +109,8 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String fullName,
             @RequestParam(required = false) String enquiryDateFilter,
-            @RequestParam(required = false) String startDate,   // 👈 Changed to String
-            @RequestParam(required = false) String endDate,     // 👈 Changed to String
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String branchCode,
             @RequestParam(required = false) String applyFor,
             @RequestParam(required = false) String conductBy,
@@ -121,24 +123,31 @@ public ResponseEntity<AbroadEnquiry> createEnquiry(@RequestPart("enquiry") Strin
         LocalDate start = null;
         LocalDate end = null;
 
-        // ✅ Safe Date Parsing
         try {
-            if (startDate != null && !startDate.isEmpty()) {
-                start = LocalDate.parse(startDate);
-            }
-            if (endDate != null && !endDate.isEmpty()) {
-                end = LocalDate.parse(endDate);
-            }
+            if (startDate != null && !startDate.isEmpty()) start = LocalDate.parse(startDate);
+            if (endDate != null && !endDate.isEmpty()) end = LocalDate.parse(endDate);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid date format. Please use yyyy-MM-dd");
         }
 
-        return service.filterEnquiries(
+        Page<AbroadEnquiry> enquiryPage = service.filterEnquiries(
                 continent, country, stream, course, status,
                 branchCode, role, email, fullName,
                 enquiryDateFilter, start, end, applyFor, conductBy, page, size
         );
+
+        // ✅ Wrap response for frontend
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", enquiryPage.getContent());
+        response.put("currentPage", enquiryPage.getNumber());
+        response.put("totalItems", enquiryPage.getTotalElements());
+        response.put("totalPages", enquiryPage.getTotalPages());
+        response.put("pageSize", enquiryPage.getSize());
+        response.put("isLastPage", enquiryPage.isLast());
+
+        return ResponseEntity.ok(response);
     }
+
 
 
     @GetMapping("/search")
