@@ -31,55 +31,88 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
     private S3Service s3Service;
 
     @Override
-    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form, String role, String email, String branchCode, MultipartFile sopFile,
+    public AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form,
+                                                   String role,
+                                                   String email,
+                                                   String branchCode,
+                                                   MultipartFile sopFile,
                                                    MultipartFile lorsFile,
                                                    MultipartFile resumeFile,
                                                    MultipartFile testScoresFile,
                                                    MultipartFile passportCopyFile,
                                                    MultipartFile studentVisaFile,
-                                                   MultipartFile passportPhotosFile) {
+                                                   MultipartFile passportPhotosFile,
+                                                   MultipartFile moiCertificateFile,
+                                                   MultipartFile workExpFile,
+                                                   MultipartFile sscMarksheetFile,
+                                                   MultipartFile hscMarksheetFile,
+                                                   MultipartFile bachelorsMarksheetFile,
+                                                   MultipartFile transcriptsFile,
+                                                   MultipartFile bonafideCertificateFile,
+                                                   MultipartFile parentsIDProofFile,
+                                                   MultipartFile bankStatementFile) {
         if (!permissionService.hasPermission(role, email, "POST")) {
             throw new AccessDeniedException("No permission to Create AdmissionForm");
         }
+
         if (!"SUPERADMIN".equalsIgnoreCase(role)) {
             String code = permissionService.fetchBranchCode(role, email);
             form.setBranchCode(code);
+        } else if (branchCode != null && !branchCode.isEmpty()) {
+            form.setBranchCode(branchCode);
         }
 
         try {
+            // core documents
             if (sopFile != null && !sopFile.isEmpty()) {
-                String sopUrl = s3Service.uploadImage(sopFile);
-                form.setSop(sopUrl);
+                form.setSop(s3Service.uploadImage(sopFile));
             }
-
             if (lorsFile != null && !lorsFile.isEmpty()) {
-                String lorsUrl = s3Service.uploadImage(lorsFile);
-                form.setLors(lorsUrl);
+                form.setLors(s3Service.uploadImage(lorsFile));
             }
-
             if (resumeFile != null && !resumeFile.isEmpty()) {
-                String resumeUrl = s3Service.uploadImage(resumeFile);
-                form.setResume(resumeUrl);
+                form.setResume(s3Service.uploadImage(resumeFile));
             }
-
             if (testScoresFile != null && !testScoresFile.isEmpty()) {
-                String testScoresUrl = s3Service.uploadImage(testScoresFile);
-                form.setTestScores(testScoresUrl);
+                form.setTestScores(s3Service.uploadImage(testScoresFile));
             }
-
             if (passportCopyFile != null && !passportCopyFile.isEmpty()) {
-                String passportCopyUrl = s3Service.uploadImage(passportCopyFile);
-                form.setPassportCopy(passportCopyUrl);
+                form.setPassportCopy(s3Service.uploadImage(passportCopyFile));
             }
-
             if (studentVisaFile != null && !studentVisaFile.isEmpty()) {
-                String studentVisaUrl = s3Service.uploadImage(studentVisaFile);
-                form.setStudentVisa(studentVisaUrl);
+                form.setStudentVisa(s3Service.uploadImage(studentVisaFile));
+            }
+            if (passportPhotosFile != null && !passportPhotosFile.isEmpty()) {
+                form.setPassportPhotos(s3Service.uploadImage(passportPhotosFile));
             }
 
-            if (passportPhotosFile != null && !passportPhotosFile.isEmpty()) {
-                String photosUrl = s3Service.uploadImage(passportPhotosFile);
-                form.setPassportPhotos(photosUrl);
+            // newly added documents
+            if (moiCertificateFile != null && !moiCertificateFile.isEmpty()) {
+                form.setMOICertificate(s3Service.uploadImage(moiCertificateFile));
+            }
+            if (workExpFile != null && !workExpFile.isEmpty()) {
+                form.setWorkOrInternshipExperienceCertificate(s3Service.uploadImage(workExpFile));
+            }
+            if (sscMarksheetFile != null && !sscMarksheetFile.isEmpty()) {
+                form.setSSCMarksheet(s3Service.uploadImage(sscMarksheetFile));
+            }
+            if (hscMarksheetFile != null && !hscMarksheetFile.isEmpty()) {
+                form.setHSCMarksheet(s3Service.uploadImage(hscMarksheetFile));
+            }
+            if (bachelorsMarksheetFile != null && !bachelorsMarksheetFile.isEmpty()) {
+                form.setBachelorsMarksheet(s3Service.uploadImage(bachelorsMarksheetFile));
+            }
+            if (transcriptsFile != null && !transcriptsFile.isEmpty()) {
+                form.setTranscripts(s3Service.uploadImage(transcriptsFile)); // note field name in entity
+            }
+            if (bonafideCertificateFile != null && !bonafideCertificateFile.isEmpty()) {
+                form.setBonafideCertificate(s3Service.uploadImage(bonafideCertificateFile));
+            }
+            if (parentsIDProofFile != null && !parentsIDProofFile.isEmpty()) {
+                form.setParentsIDProof(s3Service.uploadImage(parentsIDProofFile));
+            }
+            if (bankStatementFile != null && !bankStatementFile.isEmpty()) {
+                form.setBankStatement(s3Service.uploadImage(bankStatementFile));
             }
 
         } catch (IOException e) {
@@ -89,11 +122,12 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
         form.setCreatedDateTime(LocalDateTime.now());
 
         try {
-           return repository.save(form);
+            return repository.save(form);
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("Email already exists, please use a different one.");
         }
     }
+
 
 
 
@@ -109,75 +143,134 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile testScoresFile,
             MultipartFile passportCopyFile,
             MultipartFile studentVisaFile,
-            MultipartFile passportPhotosFile) {
+            MultipartFile passportPhotosFile,
+            MultipartFile moiCertificateFile,
+            MultipartFile workExpFile,
+            MultipartFile sscMarksheetFile,
+            MultipartFile hscMarksheetFile,
+            MultipartFile bachelorsMarksheetFile,
+            MultipartFile transcriptsFile,
+            MultipartFile bonafideCertificateFile,
+            MultipartFile parentsIDProofFile,
+            MultipartFile bankStatementFile) {
 
-        // 1️⃣ Permission check
         if (!permissionService.hasPermission(role, email, "PUT")) {
             throw new AccessDeniedException("No permission to update Admission Form");
         }
 
-        // 2️⃣ Fetch existing form
         AbroadAdmissionForm existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Admission form not found with id " + id));
 
-        // 3️⃣ Update fields (you can selectively update only required fields)
-        existing.setFullName(form.getFullName());
-        existing.setEmail(form.getEmail());
-        existing.setPhone(form.getPhone());
-        existing.setAlternatePhone(form.getAlternatePhone());
-        existing.setCountry(form.getCountry());
-        existing.setUniversity(form.getUniversity());
-        existing.setCourse(form.getCourse());
-        existing.setStream(form.getStream());
-        existing.setPassoutYear(form.getPassoutYear());
-        existing.setStatus(form.getStatus());
-        existing.setIntake(form.getIntake());
-        existing.setNotes(form.getNotes());
-        existing.setRole(role);             // update role
-        existing.setCreatedByEmail(email);  // update email if needed
-        existing.setBranchCode(form.getBranchCode());
+        // ---------- Update simple fields ----------
+        existing.setFullName(form.getFullName() != null ? form.getFullName() : existing.getFullName());
+        existing.setEmail(form.getEmail() != null ? form.getEmail() : existing.getEmail());
+        existing.setPhone(form.getPhone() != null ? form.getPhone() : existing.getPhone());
+        existing.setAlternatePhone(form.getAlternatePhone() != null ? form.getAlternatePhone() : existing.getAlternatePhone());
+        existing.setCountry(form.getCountry() != null ? form.getCountry() : existing.getCountry());
+        existing.setUniversity(form.getUniversity() != null ? form.getUniversity() : existing.getUniversity());
+        existing.setCourse(form.getCourse() != null ? form.getCourse() : existing.getCourse());
+        existing.setStream(form.getStream() != null ? form.getStream() : existing.getStream());
+        existing.setPassoutYear(form.getPassoutYear() != null ? form.getPassoutYear() : existing.getPassoutYear());
+        existing.setStatus(form.getStatus() != null ? form.getStatus() : existing.getStatus());
+        existing.setIntake(form.getIntake() != null ? form.getIntake() : existing.getIntake());
+        existing.setNotes(form.getNotes() != null ? form.getNotes() : existing.getNotes());
 
-        // 4️⃣ Upload documents to S3 if provided
+        // Role + createdByEmail update (as you had)
+        existing.setRole(role);
+        existing.setCreatedByEmail(email);
+
+        // Branch code behavior: only allow SUPERADMIN to set branchCode; otherwise keep permissionService value
+        if (!"SUPERADMIN".equalsIgnoreCase(role)) {
+            String code = permissionService.fetchBranchCode(role, email);
+            existing.setBranchCode(code);
+        } else {
+            if (form.getBranchCode() != null) {
+                existing.setBranchCode(form.getBranchCode());
+            }
+        }
+
+        // ---------- Upload new documents and delete old ones if replaced ----------
         try {
             if (sopFile != null && !sopFile.isEmpty()) {
-                String sopUrl = s3Service.uploadImage(sopFile);
-                existing.setSop(sopUrl);
+                if (existing.getSop() != null) s3Service.deleteImage(existing.getSop());
+                existing.setSop(s3Service.uploadImage(sopFile));
             }
             if (lorsFile != null && !lorsFile.isEmpty()) {
-                String lorsUrl = s3Service.uploadImage(lorsFile);
-                existing.setLors(lorsUrl);
+                if (existing.getLors() != null) s3Service.deleteImage(existing.getLors());
+                existing.setLors(s3Service.uploadImage(lorsFile));
             }
             if (resumeFile != null && !resumeFile.isEmpty()) {
-                String resumeUrl = s3Service.uploadImage(resumeFile);
-                existing.setResume(resumeUrl);
+                if (existing.getResume() != null) s3Service.deleteImage(existing.getResume());
+                existing.setResume(s3Service.uploadImage(resumeFile));
             }
             if (testScoresFile != null && !testScoresFile.isEmpty()) {
-                String testScoresUrl = s3Service.uploadImage(testScoresFile);
-                existing.setTestScores(testScoresUrl);
+                if (existing.getTestScores() != null) s3Service.deleteImage(existing.getTestScores());
+                existing.setTestScores(s3Service.uploadImage(testScoresFile));
             }
             if (passportCopyFile != null && !passportCopyFile.isEmpty()) {
-                String passportCopyUrl = s3Service.uploadImage(passportCopyFile);
-                existing.setPassportCopy(passportCopyUrl);
+                if (existing.getPassportCopy() != null) s3Service.deleteImage(existing.getPassportCopy());
+                existing.setPassportCopy(s3Service.uploadImage(passportCopyFile));
             }
             if (studentVisaFile != null && !studentVisaFile.isEmpty()) {
-                String studentVisaUrl = s3Service.uploadImage(studentVisaFile);
-                existing.setStudentVisa(studentVisaUrl);
+                if (existing.getStudentVisa() != null) s3Service.deleteImage(existing.getStudentVisa());
+                existing.setStudentVisa(s3Service.uploadImage(studentVisaFile));
             }
             if (passportPhotosFile != null && !passportPhotosFile.isEmpty()) {
-                String photosUrl = s3Service.uploadImage(passportPhotosFile);
-                existing.setPassportPhotos(photosUrl);
+                if (existing.getPassportPhotos() != null) s3Service.deleteImage(existing.getPassportPhotos());
+                existing.setPassportPhotos(s3Service.uploadImage(passportPhotosFile));
             }
+
+            // newly added docs
+            if (moiCertificateFile != null && !moiCertificateFile.isEmpty()) {
+                if (existing.getMOICertificate() != null) s3Service.deleteImage(existing.getMOICertificate());
+                existing.setMOICertificate(s3Service.uploadImage(moiCertificateFile));
+            }
+            if (workExpFile != null && !workExpFile.isEmpty()) {
+                if (existing.getWorkOrInternshipExperienceCertificate() != null)
+                    s3Service.deleteImage(existing.getWorkOrInternshipExperienceCertificate());
+                existing.setWorkOrInternshipExperienceCertificate(s3Service.uploadImage(workExpFile));
+            }
+            if (sscMarksheetFile != null && !sscMarksheetFile.isEmpty()) {
+                if (existing.getSSCMarksheet() != null) s3Service.deleteImage(existing.getSSCMarksheet());
+                existing.setSSCMarksheet(s3Service.uploadImage(sscMarksheetFile));
+            }
+            if (hscMarksheetFile != null && !hscMarksheetFile.isEmpty()) {
+                if (existing.getHSCMarksheet() != null) s3Service.deleteImage(existing.getHSCMarksheet());
+                existing.setHSCMarksheet(s3Service.uploadImage(hscMarksheetFile));
+            }
+            if (bachelorsMarksheetFile != null && !bachelorsMarksheetFile.isEmpty()) {
+                if (existing.getBachelorsMarksheet() != null) s3Service.deleteImage(existing.getBachelorsMarksheet());
+                existing.setBachelorsMarksheet(s3Service.uploadImage(bachelorsMarksheetFile));
+            }
+            if (transcriptsFile != null && !transcriptsFile.isEmpty()) {
+                if (existing.getTranscripts() != null) s3Service.deleteImage(existing.getTranscripts());
+                existing.setTranscripts(s3Service.uploadImage(transcriptsFile));
+            }
+            if (bonafideCertificateFile != null && !bonafideCertificateFile.isEmpty()) {
+                if (existing.getBonafideCertificate() != null) s3Service.deleteImage(existing.getBonafideCertificate());
+                existing.setBonafideCertificate(s3Service.uploadImage(bonafideCertificateFile));
+            }
+            if (parentsIDProofFile != null && !parentsIDProofFile.isEmpty()) {
+                if (existing.getParentsIDProof() != null) s3Service.deleteImage(existing.getParentsIDProof());
+                existing.setParentsIDProof(s3Service.uploadImage(parentsIDProofFile));
+            }
+            if (bankStatementFile != null && !bankStatementFile.isEmpty()) {
+                if (existing.getBankStatement() != null) s3Service.deleteImage(existing.getBankStatement());
+                existing.setBankStatement(s3Service.uploadImage(bankStatementFile));
+            }
+
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload document(s) to S3", e);
         }
 
-        // 5️⃣ Save updated form
-        try{
-        return repository.save(existing);
-    } catch (DataIntegrityViolationException e) {
-        throw new RuntimeException("Email already exists, please use a different one.");
+        // ---------- Save ----------
+        try {
+            return repository.save(existing);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Email already exists, please use a different one.");
+        }
     }
-    }
+
 
 
     @Override

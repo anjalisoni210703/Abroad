@@ -46,6 +46,15 @@ public class AbroadAdmissionForm {
     private String passportCopy;
     private String studentVisa;
     private String passportPhotos;
+    private String MOICertificate;
+    private String workOrInternshipExperienceCertificate;
+    private String SSCMarksheet;
+    private String HSCMarksheet;
+    private String bachelorsMarksheet;
+    private String Transcripts;
+    private String bonafideCertificate;
+    private String parentsIDProof;
+    private String BankStatement;
 
     // Common fields
     @Email
