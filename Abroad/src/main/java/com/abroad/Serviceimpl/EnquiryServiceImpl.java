@@ -149,7 +149,8 @@
         }
 
         @Override
-        public AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image, MultipartFile document1, MultipartFile document2,
+        public AbroadEnquiry updateEnquiry(Long id, AbroadEnquiry abroadEnquiry, MultipartFile image,
+                                           MultipartFile document1, MultipartFile document2,
                                            String role, String email) {
 
             if (!permissionService.hasPermission(role, email, "PUT")) {
@@ -158,44 +159,71 @@
 
             AbroadEnquiry existing = repository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Enquiry not found"));
+
+            // --- Strings & simple fields ---
             existing.setName(abroadEnquiry.getName() != null ? abroadEnquiry.getName() : existing.getName());
             existing.setPhone_no(abroadEnquiry.getPhone_no() != null ? abroadEnquiry.getPhone_no() : existing.getPhone_no());
             existing.setEmail(abroadEnquiry.getEmail() != null ? abroadEnquiry.getEmail() : existing.getEmail());
+            existing.setEnquiry_date(abroadEnquiry.getEnquiry_date() != null ? abroadEnquiry.getEnquiry_date() : existing.getEnquiry_date());
             existing.setAddress(abroadEnquiry.getAddress() != null ? abroadEnquiry.getAddress() : existing.getAddress());
-            existing.setPercentage(abroadEnquiry.getPercentage()!=0 ? abroadEnquiry.getPercentage():existing.getPercentage());
+            existing.setLandmark(abroadEnquiry.getLandmark() != null ? abroadEnquiry.getLandmark() : existing.getLandmark());
+            existing.setCity(abroadEnquiry.getCity() != null ? abroadEnquiry.getCity() : existing.getCity()); // string field
             existing.setState(abroadEnquiry.getState() != null ? abroadEnquiry.getState() : existing.getState());
-            existing.setPassoutYear(abroadEnquiry.getPassoutYear() !=null ? abroadEnquiry.getPassoutYear() : existing.getPassoutYear());
-            existing.setFathersIncome(abroadEnquiry.getFathersIncome() !=0 ? abroadEnquiry.getFathersIncome():existing.getFathersIncome());
-            existing.setFathersOccupation(abroadEnquiry.getFathersOccupation() != null? abroadEnquiry.getFathersOccupation():existing.getFathersOccupation());
-            existing.setGender(abroadEnquiry.getGender()!=null ? abroadEnquiry.getGender():existing.getGender());
+            existing.setPincode(abroadEnquiry.getPincode() != null ? abroadEnquiry.getPincode() : existing.getPincode());
+            existing.setDistrict(abroadEnquiry.getDistrict() != null ? abroadEnquiry.getDistrict() : existing.getDistrict());
+            existing.setContinent(abroadEnquiry.getContinent() != null ? abroadEnquiry.getContinent() : existing.getContinent());
+            existing.setCountry(abroadEnquiry.getCountry() != null ? abroadEnquiry.getCountry() : existing.getCountry());
+            existing.setCourse(abroadEnquiry.getCourse() != null ? abroadEnquiry.getCourse() : existing.getCourse());
+            existing.setCourseName(abroadEnquiry.getCourseName() != null ? abroadEnquiry.getCourseName() : existing.getCourseName());
+            existing.setPhotoUrl(abroadEnquiry.getPhotoUrl() != null ? abroadEnquiry.getPhotoUrl() : existing.getPhotoUrl());
+            existing.setStream(abroadEnquiry.getStream() != null ? abroadEnquiry.getStream() : existing.getStream());
+            existing.setUniversity(abroadEnquiry.getUniversity() != null ? abroadEnquiry.getUniversity() : existing.getUniversity());
+            existing.setCollage(abroadEnquiry.getCollage() != null ? abroadEnquiry.getCollage() : existing.getCollage());
+
+            // --- primitives (double) --- check != 0.0 because type is primitive
+            if (abroadEnquiry.getPercentage() != 0.0) {
+                existing.setPercentage(abroadEnquiry.getPercentage());
+            }
+            existing.setStatus(abroadEnquiry.getStatus() != null ? abroadEnquiry.getStatus() : existing.getStatus());
+            existing.setPassoutYear(abroadEnquiry.getPassoutYear() != null ? abroadEnquiry.getPassoutYear() : existing.getPassoutYear());
+            existing.setPassoutCourse(abroadEnquiry.getPassoutCourse() != null ? abroadEnquiry.getPassoutCourse() : existing.getPassoutCourse());
+            existing.setFatherNumber(abroadEnquiry.getFatherNumber() != null ? abroadEnquiry.getFatherNumber() : existing.getFatherNumber());
+            if (abroadEnquiry.getFathersIncome() != 0.0) {
+                existing.setFathersIncome(abroadEnquiry.getFathersIncome());
+            }
+            existing.setFathersOccupation(abroadEnquiry.getFathersOccupation() != null ? abroadEnquiry.getFathersOccupation() : existing.getFathersOccupation());
+            existing.setGender(abroadEnquiry.getGender() != null ? abroadEnquiry.getGender() : existing.getGender());
+
             if (abroadEnquiry.getDob() != null) {
                 existing.setDob(abroadEnquiry.getDob());
             } else if (existing.getDob() == null) {
-                // Optionally, set default DOB (e.g., today or leave null)
                 existing.setDob(Date.valueOf(LocalDate.now()));
             }
 
-            existing.setPassoutCourse(abroadEnquiry.getPassoutCourse() !=null? abroadEnquiry.getPassoutCourse():existing.getPassoutCourse());
-            existing.setCity(abroadEnquiry.getCity() !=null ? abroadEnquiry.getCity():existing.getCity());
-            existing.setPincode(abroadEnquiry.getPincode() !=null ? abroadEnquiry.getPincode():existing.getPincode());
-            existing.setPassportNo(abroadEnquiry.getPassportNo() !=null ? abroadEnquiry.getPassportNo():existing.getPassportNo());
-            existing.setApplyFor(abroadEnquiry.getApplyFor() !=null ? abroadEnquiry.getApplyFor(): existing.getApplyFor());
-            existing.setSource(abroadEnquiry.getSource() !=null ? abroadEnquiry.getSource():existing.getSource());
-            existing.setFatherNumber(abroadEnquiry.getFatherNumber()!=null?abroadEnquiry.getFatherNumber():existing.getFatherNumber());
-            existing.setLoanRequirement(abroadEnquiry.getLoanRequirement()!=null?abroadEnquiry.getLoanRequirement():existing.getLoanRequirement());
-            existing.setAmount(abroadEnquiry.getAmount()!=null?abroadEnquiry.getAmount():existing.getAmount());
-            existing.setRemark(abroadEnquiry.getRemark()!=null?abroadEnquiry.getRemark():existing.getRemark());
-            existing.setYear(abroadEnquiry.getYear()!=null?abroadEnquiry.getYear():existing.getYear());
-            existing.setConductBy(abroadEnquiry.getConductBy()!=null?abroadEnquiry.getConductBy():existing.getConductBy());
-            existing.setGap(abroadEnquiry.getGap()!=null?abroadEnquiry.getGap():existing.getGap());
-            existing.setGapYear(abroadEnquiry.getGapYear()!=null?abroadEnquiry.getGapYear():existing.getGapYear());
-            existing.setEntranceExam(abroadEnquiry.getEntranceExam()!=null?abroadEnquiry.getEntranceExam():existing.getEntranceExam());
-            existing.setScore(abroadEnquiry.getScore()!=null?abroadEnquiry.getScore():existing.getScore());
-            existing.setFatherITR(abroadEnquiry.getFatherITR()!=null?abroadEnquiry.getFatherITR():existing.getFatherITR());
-            existing.setAmountITR(abroadEnquiry.getAmountITR()!=null?abroadEnquiry.getAmountITR():existing.getAmountITR());
-            existing.setYearITR(abroadEnquiry.getYearITR()!=null?abroadEnquiry.getYearITR():existing.getYearITR());
-            existing.setHasPassport(abroadEnquiry.getHasPassport()!=null?abroadEnquiry.getHasPassport():existing.getHasPassport());
-            existing.setStatus(abroadEnquiry.getStatus()!=null?abroadEnquiry.getStatus():existing.getStatus());
+            existing.setApplyFor(abroadEnquiry.getApplyFor() != null ? abroadEnquiry.getApplyFor() : existing.getApplyFor());
+            existing.setPassportNo(abroadEnquiry.getPassportNo() != null ? abroadEnquiry.getPassportNo() : existing.getPassportNo());
+            existing.setSource(abroadEnquiry.getSource() != null ? abroadEnquiry.getSource() : existing.getSource());
+            existing.setLoanRequirement(abroadEnquiry.getLoanRequirement() != null ? abroadEnquiry.getLoanRequirement() : existing.getLoanRequirement());
+            existing.setYear(abroadEnquiry.getYear() != null ? abroadEnquiry.getYear() : existing.getYear());
+            existing.setAmount(abroadEnquiry.getAmount() != null ? abroadEnquiry.getAmount() : existing.getAmount());
+            existing.setRemark(abroadEnquiry.getRemark() != null ? abroadEnquiry.getRemark() : existing.getRemark());
+            existing.setConductBy(abroadEnquiry.getConductBy() != null ? abroadEnquiry.getConductBy() : existing.getConductBy());
+            existing.setGap(abroadEnquiry.getGap() != null ? abroadEnquiry.getGap() : existing.getGap());
+            existing.setGapYear(abroadEnquiry.getGapYear() != null ? abroadEnquiry.getGapYear() : existing.getGapYear());
+            existing.setEntranceExam(abroadEnquiry.getEntranceExam() != null ? abroadEnquiry.getEntranceExam() : existing.getEntranceExam());
+            existing.setScore(abroadEnquiry.getScore() != null ? abroadEnquiry.getScore() : existing.getScore());
+            existing.setFatherITR(abroadEnquiry.getFatherITR() != null ? abroadEnquiry.getFatherITR() : existing.getFatherITR());
+            existing.setYearITR(abroadEnquiry.getYearITR() != null ? abroadEnquiry.getYearITR() : existing.getYearITR());
+            existing.setAmountITR(abroadEnquiry.getAmountITR() != null ? abroadEnquiry.getAmountITR() : existing.getAmountITR());
+            existing.setHasPassport(abroadEnquiry.getHasPassport() != null ? abroadEnquiry.getHasPassport() : existing.getHasPassport());
+            existing.setStaffName(abroadEnquiry.getStaffName() != null ? abroadEnquiry.getStaffName() : existing.getStaffName());
+            existing.setDocument1(abroadEnquiry.getDocument1() != null ? abroadEnquiry.getDocument1() : existing.getDocument1());
+            existing.setDocument2(abroadEnquiry.getDocument2() != null ? abroadEnquiry.getDocument2() : existing.getDocument2());
+            existing.setCreatedByEmail(abroadEnquiry.getCreatedByEmail() != null ? abroadEnquiry.getCreatedByEmail() : existing.getCreatedByEmail());
+            existing.setRole(abroadEnquiry.getRole() != null ? abroadEnquiry.getRole() : existing.getRole());
+            existing.setBranchCode(abroadEnquiry.getBranchCode() != null ? abroadEnquiry.getBranchCode() : existing.getBranchCode());
+
+            // --- S3 upload logic (unchanged) ---
             try {
                 if (image != null && !image.isEmpty()) {
                     if (existing.getPhotoUrl() != null) {
@@ -222,8 +250,10 @@
                 throw new RuntimeException("Failed to upload/update documents", e);
             }
 
-                return repository.save(existing);
+            return repository.save(existing);
         }
+
+
 
         @Override
         public void deleteEnquiry(Long id, String role, String email) {
