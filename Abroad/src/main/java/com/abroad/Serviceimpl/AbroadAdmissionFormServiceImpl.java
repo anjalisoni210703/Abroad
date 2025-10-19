@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormService {
@@ -305,4 +305,58 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
     public List<AbroadAdmissionForm> getAllByCreatedByEmail(String createdByEmail) {
         return repository.findByCreatedByEmail(createdByEmail);
     }
+
+    @Override
+    public Map<String, Object> getOverview() {
+        Map<String, Object> response = new LinkedHashMap<>();
+
+        // ✅ Total count
+        long total = repository.count();
+
+        // ✅ Status-wise counts
+        List<Object[]> rows = repository.findStatusCounts();
+        Map<String, Long> statusCounts = new LinkedHashMap<>();
+
+        // ensure all statuses appear, even if zero
+        List<String> expectedStatuses = Arrays.asList(
+                "Applied",
+                "In Review",
+                "Accepted",
+                "Rejected",
+                "Visa Processing",
+                "Visa Approved",
+                "Visa Rejected"
+        );
+        for (String s : expectedStatuses) statusCounts.put(s, 0L);
+
+        for (Object[] row : rows) {
+            String status = row[0] == null ? "Unknown" : row[0].toString();
+            Long count = (Long) row[1];
+            statusCounts.put(status, statusCounts.getOrDefault(status, 0L) + count);
+        }
+
+        // ✅ Date-wise counts
+        Map<String, Long> dateCounts = new LinkedHashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime todayStart = LocalDate.now().atStartOfDay();
+        dateCounts.put("Todays", repository.countByCreatedDateTimeBetween(todayStart, now));
+
+        LocalDateTime last7Start = LocalDate.now().minusDays(6).atStartOfDay();
+        dateCounts.put("last7days", repository.countByCreatedDateTimeBetween(last7Start, now));
+
+        LocalDateTime last30Start = LocalDate.now().minusDays(29).atStartOfDay();
+        dateCounts.put("last30days", repository.countByCreatedDateTimeBetween(last30Start, now));
+
+        LocalDateTime last365Start = LocalDate.now().minusDays(364).atStartOfDay();
+        dateCounts.put("last365days", repository.countByCreatedDateTimeBetween(last365Start, now));
+
+        // ✅ Final JSON response
+        response.put("total", total);
+        response.put("statusCounts", statusCounts);
+        response.put("dateCounts", dateCounts);
+        return response;
+    }
+
+
 }

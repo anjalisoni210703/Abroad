@@ -5,6 +5,7 @@ import com.abroad.Entity.AbroadAdmissionForm;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AbroadAdmissionFormService {
     AbroadAdmissionForm createAdmissionForm(AbroadAdmissionForm form,
@@ -55,4 +56,5 @@ public interface AbroadAdmissionFormService {
     AdmissionFormPersonalAcademicDTO getPersonalAcademicById(Long id);
 
     List<AbroadAdmissionForm> getAllByCreatedByEmail(String createdByEmail);
+    Map<String, Object> getOverview();
 }

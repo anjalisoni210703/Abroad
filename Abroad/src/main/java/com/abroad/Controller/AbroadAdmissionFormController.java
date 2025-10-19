@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admissionForms")
@@ -189,4 +191,11 @@ public class AbroadAdmissionFormController {
         AdmissionFormPersonalAcademicDTO dto = service.getPersonalAcademicById(id);
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/statusCount")
+    public ResponseEntity<Map<String, Object>> getOverview() {
+        Map<String, Object> response = service.getOverview();
+        return ResponseEntity.ok(response);
+    }
+
 }

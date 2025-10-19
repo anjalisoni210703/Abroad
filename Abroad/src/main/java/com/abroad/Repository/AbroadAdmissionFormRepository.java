@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,10 @@ public interface AbroadAdmissionFormRepository extends JpaRepository<AbroadAdmis
     AdmissionFormPersonalAcademicDTO findPersonalAcademicById(@Param("id") Long id);
 
     List<AbroadAdmissionForm> findByCreatedByEmail(String createdByEmail);
+
+
+    @Query("SELECT a.status, COUNT(a) FROM AbroadAdmissionForm a GROUP BY a.status")
+    List<Object[]> findStatusCounts();
+
+    long countByCreatedDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }
