@@ -15,7 +15,7 @@ public interface AbroadRegisterFormRepository extends JpaRepository<AbroadRegist
     List<AbroadRegisterForm> findAllByBranchCode(String branchCode);
     Optional<AbroadRegisterForm> findByBarcode(String barcode);
 
-    @Query("SELECT a.status, COUNT(a) FROM AbroadAdmissionForm a GROUP BY a.status")
-    List<Object[]> findStatusCounts();
-    long countByCreatedDateTimeBetween(LocalDateTime start, LocalDateTime end);
+//    @Query("SELECT a.status, COUNT(a) FROM AbroadAdmissionForm a GROUP BY a.status")
+//    List<Object[]> findStatusCounts();
+//    long countByCreatedDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }
