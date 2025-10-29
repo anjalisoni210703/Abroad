@@ -24,29 +24,44 @@ public class AbroadAdmissionFormController {
     @Autowired
     private AbroadAdmissionFormService service;
 
-    // ✅ Create
+
+    // ✅ Create Admission Form
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AbroadAdmissionForm> create(
             @RequestPart("form") String formJson,
+
+            // Existing document fields
             @RequestPart(value = "sop", required = false) MultipartFile sop,
+            @RequestPart(value = "sop2", required = false) MultipartFile sop2,
             @RequestPart(value = "lors", required = false) MultipartFile lors,
             @RequestPart(value = "resume", required = false) MultipartFile resume,
             @RequestPart(value = "testScores", required = false) MultipartFile testScores,
             @RequestPart(value = "passportCopy", required = false) MultipartFile passportCopy,
+            @RequestPart(value = "passportInHandPhoto", required = false) MultipartFile passportInHandPhoto,
             @RequestPart(value = "studentVisa", required = false) MultipartFile studentVisa,
             @RequestPart(value = "passportPhotos", required = false) MultipartFile passportPhotos,
             @RequestPart(value = "moiCertificate", required = false) MultipartFile moiCertificate,
-            @RequestPart(value = "workExp", required = false) MultipartFile workExp,
-            @RequestPart(value = "sscMarksheet", required = false) MultipartFile sscMarksheet,
-            @RequestPart(value = "hscMarksheet", required = false) MultipartFile hscMarksheet,
-            @RequestPart(value = "bachelorsMarksheet", required = false) MultipartFile bachelorsMarksheet,
+            @RequestPart(value = "moiWithSealAndSign", required = false) MultipartFile moiWithSealAndSign,
+            @RequestPart(value = "workOrInternshipExperienceCertificate", required = false) MultipartFile workOrInternshipExperienceCertificate,
+            @RequestPart(value = "tenthDigitalMarksheet", required = false) MultipartFile tenthDigitalMarksheet,
+            @RequestPart(value = "twelfthDigitalMarksheet", required = false) MultipartFile twelfthDigitalMarksheet,
+            @RequestPart(value = "degreeMarkList", required = false) MultipartFile degreeMarkList,
             @RequestPart(value = "transcripts", required = false) MultipartFile transcripts,
             @RequestPart(value = "bonafideCertificate", required = false) MultipartFile bonafideCertificate,
+            @RequestPart(value = "fatherPanCard", required = false) MultipartFile fatherPanCard,
+            @RequestPart(value = "fatherITR1", required = false) MultipartFile fatherITR1,
+            @RequestPart(value = "fatherITR2", required = false) MultipartFile fatherITR2,
+            @RequestPart(value = "fatherITR3", required = false) MultipartFile fatherITR3,
+            @RequestPart(value = "fatherBankStatement", required = false) MultipartFile fatherBankStatement,
+            @RequestPart(value = "bankBalanceCertificate", required = false) MultipartFile bankBalanceCertificate,
             @RequestPart(value = "parentsIDProof", required = false) MultipartFile parentsIDProof,
             @RequestPart(value = "bankStatement", required = false) MultipartFile bankStatement,
+
+            // Common fields
             @RequestParam String role,
             @RequestParam String email,
-            @RequestParam(required = false) String branchCode) throws JsonProcessingException {
+            @RequestParam(required = false) String branchCode
+    ) throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -54,7 +69,7 @@ public class AbroadAdmissionFormController {
 
         AbroadAdmissionForm form = mapper.readValue(formJson, AbroadAdmissionForm.class);
 
-        // ensure these fields are set (createdBy, role) — service also checks permissions and branch handling
+        // Set metadata fields
         form.setCreatedByEmail(email);
         form.setRole(role);
 
@@ -64,19 +79,28 @@ public class AbroadAdmissionFormController {
                 email,
                 branchCode,
                 sop,
+                sop2,
                 lors,
                 resume,
                 testScores,
                 passportCopy,
+                passportInHandPhoto,
                 studentVisa,
                 passportPhotos,
                 moiCertificate,
-                workExp,
-                sscMarksheet,
-                hscMarksheet,
-                bachelorsMarksheet,
+                moiWithSealAndSign,
+                workOrInternshipExperienceCertificate,
+                tenthDigitalMarksheet,
+                twelfthDigitalMarksheet,
+                degreeMarkList,
                 transcripts,
                 bonafideCertificate,
+                fatherPanCard,
+                fatherITR1,
+                fatherITR2,
+                fatherITR3,
+                fatherBankStatement,
+                bankBalanceCertificate,
                 parentsIDProof,
                 bankStatement
         );
@@ -88,26 +112,36 @@ public class AbroadAdmissionFormController {
 
 
 
+
     @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AbroadAdmissionForm> update(
             @PathVariable Long id,
             @RequestPart("form") String formJson,
-            @RequestPart(value = "sop", required = false) MultipartFile sopFile,
-            @RequestPart(value = "lors", required = false) MultipartFile lorsFile,
-            @RequestPart(value = "resume", required = false) MultipartFile resumeFile,
-            @RequestPart(value = "testScores", required = false) MultipartFile testScoresFile,
-            @RequestPart(value = "passportCopy", required = false) MultipartFile passportCopyFile,
-            @RequestPart(value = "studentVisa", required = false) MultipartFile studentVisaFile,
-            @RequestPart(value = "passportPhotos", required = false) MultipartFile passportPhotosFile,
-            @RequestPart(value = "moiCertificate", required = false) MultipartFile moiCertificateFile,
-            @RequestPart(value = "workExp", required = false) MultipartFile workExpFile,
-            @RequestPart(value = "sscMarksheet", required = false) MultipartFile sscMarksheetFile,
-            @RequestPart(value = "hscMarksheet", required = false) MultipartFile hscMarksheetFile,
-            @RequestPart(value = "bachelorsMarksheet", required = false) MultipartFile bachelorsMarksheetFile,
-            @RequestPart(value = "transcripts", required = false) MultipartFile transcriptsFile,
-            @RequestPart(value = "bonafideCertificate", required = false) MultipartFile bonafideCertificateFile,
-            @RequestPart(value = "parentsIDProof", required = false) MultipartFile parentsIDProofFile,
-            @RequestPart(value = "bankStatement", required = false) MultipartFile bankStatementFile,
+            @RequestPart(value = "sop", required = false) MultipartFile sop,
+            @RequestPart(value = "sop2", required = false) MultipartFile sop2,
+            @RequestPart(value = "lors", required = false) MultipartFile lors,
+            @RequestPart(value = "resume", required = false) MultipartFile resume,
+            @RequestPart(value = "testScores", required = false) MultipartFile testScores,
+            @RequestPart(value = "passportCopy", required = false) MultipartFile passportCopy,
+            @RequestPart(value = "passportInHandPhoto", required = false) MultipartFile passportInHandPhoto,
+            @RequestPart(value = "studentVisa", required = false) MultipartFile studentVisa,
+            @RequestPart(value = "passportPhotos", required = false) MultipartFile passportPhotos,
+            @RequestPart(value = "moiCertificate", required = false) MultipartFile moiCertificate,
+            @RequestPart(value = "moiWithSealAndSign", required = false) MultipartFile moiWithSealAndSign,
+            @RequestPart(value = "workOrInternshipExperienceCertificate", required = false) MultipartFile workOrInternshipExperienceCertificate,
+            @RequestPart(value = "tenthDigitalMarksheet", required = false) MultipartFile tenthDigitalMarksheet,
+            @RequestPart(value = "twelfthDigitalMarksheet", required = false) MultipartFile twelfthDigitalMarksheet,
+            @RequestPart(value = "degreeMarkList", required = false) MultipartFile degreeMarkList,
+            @RequestPart(value = "transcripts", required = false) MultipartFile transcripts,
+            @RequestPart(value = "bonafideCertificate", required = false) MultipartFile bonafideCertificate,
+            @RequestPart(value = "fatherPanCard", required = false) MultipartFile fatherPanCard,
+            @RequestPart(value = "fatherITR1", required = false) MultipartFile fatherITR1,
+            @RequestPart(value = "fatherITR2", required = false) MultipartFile fatherITR2,
+            @RequestPart(value = "fatherITR3", required = false) MultipartFile fatherITR3,
+            @RequestPart(value = "fatherBankStatement", required = false) MultipartFile fatherBankStatement,
+            @RequestPart(value = "bankBalanceCertificate", required = false) MultipartFile bankBalanceCertificate,
+            @RequestPart(value = "parentsIDProof", required = false) MultipartFile parentsIDProof,
+            @RequestPart(value = "bankStatement", required = false) MultipartFile bankStatement,
             @RequestParam String role,
             @RequestParam String email
     ) throws JsonProcessingException {
@@ -117,7 +151,6 @@ public class AbroadAdmissionFormController {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         AbroadAdmissionForm form = mapper.readValue(formJson, AbroadAdmissionForm.class);
-
         form.setRole(role);
         form.setCreatedByEmail(email);
 
@@ -126,22 +159,31 @@ public class AbroadAdmissionFormController {
                 form,
                 role,
                 email,
-                sopFile,
-                lorsFile,
-                resumeFile,
-                testScoresFile,
-                passportCopyFile,
-                studentVisaFile,
-                passportPhotosFile,
-                moiCertificateFile,
-                workExpFile,
-                sscMarksheetFile,
-                hscMarksheetFile,
-                bachelorsMarksheetFile,
-                transcriptsFile,
-                bonafideCertificateFile,
-                parentsIDProofFile,
-                bankStatementFile
+                sop,
+                sop2,
+                lors,
+                resume,
+                testScores,
+                passportCopy,
+                passportInHandPhoto,
+                studentVisa,
+                passportPhotos,
+                moiCertificate,
+                moiWithSealAndSign,
+                workOrInternshipExperienceCertificate,
+                tenthDigitalMarksheet,
+                twelfthDigitalMarksheet,
+                degreeMarkList,
+                transcripts,
+                bonafideCertificate,
+                fatherPanCard,
+                fatherITR1,
+                fatherITR2,
+                fatherITR3,
+                fatherBankStatement,
+                bankBalanceCertificate,
+                parentsIDProof,
+                bankStatement
         );
 
         return ResponseEntity.ok(updatedForm);

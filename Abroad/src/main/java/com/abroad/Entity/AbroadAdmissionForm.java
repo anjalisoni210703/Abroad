@@ -39,22 +39,31 @@ public class AbroadAdmissionForm {
     private String notes;
 
     // Documents
-    private String sop;          // Statement of Purpose
-    private String lors;         // Letters of Recommendation
-    private String resume;       // CV
-    private String testScores;   // Standardized Test Scores
+    private String sop;                                 // Statement of Purpose
+    private String sop2;                                // Additional SOP
+    private String fatherITR1;
+    private String fatherITR2;
+    private String fatherITR3;
+    private String lors;                                // Letters of Recommendation
+    private String resume;                              // CV
+    private String testScores;                          // Standardized Test Scores
     private String passportCopy;
+    private String passportInHandPhoto;                 // Photo with Passport in Hand
     private String studentVisa;
     private String passportPhotos;
-    private String MOICertificate;
+    private String moiCertificate;                      // Renamed to follow Java naming convention
+    private String moiWithSealAndSign;                  // MOI with Principal’s Seal/Sign
     private String workOrInternshipExperienceCertificate;
-    private String SSCMarksheet;
-    private String HSCMarksheet;
-    private String bachelorsMarksheet;
-    private String Transcripts;
+    private String tenthDigitalMarksheet;               // 10th Digital Marksheet
+    private String twelfthDigitalMarksheet;             // 12th Digital Marksheet
+    private String degreeMarkList;                      // Degree Marklist
+    private String transcripts;                         // Fixed naming convention (was "Transcripts")
     private String bonafideCertificate;
+    private String fatherPanCard;
     private String parentsIDProof;
-    private String BankStatement;
+    private String bankStatement;                       // Fixed case (was "BankStatement")
+    private String fatherBankStatement;
+    private String bankBalanceCertificate;              // BBC
 
     // Common fields
     @Email
