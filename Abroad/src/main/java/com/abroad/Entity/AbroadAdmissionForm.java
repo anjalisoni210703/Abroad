@@ -44,7 +44,8 @@ public class AbroadAdmissionForm {
     private String fatherITR1;
     private String fatherITR2;
     private String fatherITR3;
-    private String lors;                                // Letters of Recommendation
+    private String lors;
+    private String lorsTranscript2;
     private String resume;                              // CV
     private String testScores;                          // Standardized Test Scores
     private String passportCopy;
@@ -56,11 +57,13 @@ public class AbroadAdmissionForm {
     private String workOrInternshipExperienceCertificate;
     private String tenthDigitalMarksheet;               // 10th Digital Marksheet
     private String twelfthDigitalMarksheet;             // 12th Digital Marksheet
-    private String degreeMarkList;                      // Degree Marklist
+    private String degreeMarkList;
+    private String diplomaMarkList;
     private String transcripts;                         // Fixed naming convention (was "Transcripts")
     private String bonafideCertificate;
     private String fatherPanCard;
-    private String parentsIDProof;
+    private String fatherIDProof;
+    private String motherIDProof;
     private String bankStatement;                       // Fixed case (was "BankStatement")
     private String fatherBankStatement;
     private String bankBalanceCertificate;              // BBC

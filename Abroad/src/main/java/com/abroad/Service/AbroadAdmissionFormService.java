@@ -16,6 +16,7 @@ public interface AbroadAdmissionFormService {
             MultipartFile sop,
             MultipartFile sop2,
             MultipartFile lors,
+            MultipartFile lorsTranscript2,
             MultipartFile resume,
             MultipartFile testScores,
             MultipartFile passportCopy,
@@ -28,6 +29,7 @@ public interface AbroadAdmissionFormService {
             MultipartFile tenthDigitalMarksheet,
             MultipartFile twelfthDigitalMarksheet,
             MultipartFile degreeMarkList,
+            MultipartFile diplomaMarkList,
             MultipartFile transcripts,
             MultipartFile bonafideCertificate,
             MultipartFile fatherPanCard,
@@ -36,7 +38,8 @@ public interface AbroadAdmissionFormService {
             MultipartFile fatherITR3,
             MultipartFile fatherBankStatement,
             MultipartFile bankBalanceCertificate,
-            MultipartFile parentsIDProof,
+            MultipartFile fatherIDProof,
+            MultipartFile motherIDProof,
             MultipartFile bankStatement
     );
 
@@ -48,6 +51,7 @@ public interface AbroadAdmissionFormService {
             MultipartFile sop,
             MultipartFile sop2,
             MultipartFile lors,
+            MultipartFile lorsTranscript2,
             MultipartFile resume,
             MultipartFile testScores,
             MultipartFile passportCopy,
@@ -60,6 +64,7 @@ public interface AbroadAdmissionFormService {
             MultipartFile tenthDigitalMarksheet,
             MultipartFile twelfthDigitalMarksheet,
             MultipartFile degreeMarkList,
+            MultipartFile diplomaMarkList,
             MultipartFile transcripts,
             MultipartFile bonafideCertificate,
             MultipartFile fatherPanCard,
@@ -68,7 +73,8 @@ public interface AbroadAdmissionFormService {
             MultipartFile fatherITR3,
             MultipartFile fatherBankStatement,
             MultipartFile bankBalanceCertificate,
-            MultipartFile parentsIDProof,
+            MultipartFile fatherIDProof,
+            MultipartFile motherIDProof,
             MultipartFile bankStatement
     );
     void deleteAdmissionForm(Long id,String role,String email);

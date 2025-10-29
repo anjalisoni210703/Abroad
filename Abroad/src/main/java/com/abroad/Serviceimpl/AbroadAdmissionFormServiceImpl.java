@@ -41,6 +41,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile sop,
             MultipartFile sop2,
             MultipartFile lors,
+            MultipartFile lorsTranscript2,
             MultipartFile resume,
             MultipartFile testScores,
             MultipartFile passportCopy,
@@ -53,6 +54,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile tenthDigitalMarksheet,
             MultipartFile twelfthDigitalMarksheet,
             MultipartFile degreeMarkList,
+            MultipartFile diplomaMarkList,
             MultipartFile transcripts,
             MultipartFile bonafideCertificate,
             MultipartFile fatherPanCard,
@@ -61,7 +63,8 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile fatherITR3,
             MultipartFile fatherBankStatement,
             MultipartFile bankBalanceCertificate,
-            MultipartFile parentsIDProof,
+            MultipartFile fatherIDProof,
+            MultipartFile motherIDProof,
             MultipartFile bankStatement
     ) {
         // ✅ Permission check
@@ -79,6 +82,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             if (sop != null && !sop.isEmpty()) form.setSop(s3Service.uploadImage(sop));
             if (sop2 != null && !sop2.isEmpty()) form.setSop2(s3Service.uploadImage(sop2));
             if (lors != null && !lors.isEmpty()) form.setLors(s3Service.uploadImage(lors));
+            if (lorsTranscript2 != null && !lorsTranscript2.isEmpty()) form.setLorsTranscript2(s3Service.uploadImage(lorsTranscript2));
             if (resume != null && !resume.isEmpty()) form.setResume(s3Service.uploadImage(resume));
             if (testScores != null && !testScores.isEmpty()) form.setTestScores(s3Service.uploadImage(testScores));
             if (passportCopy != null && !passportCopy.isEmpty()) form.setPassportCopy(s3Service.uploadImage(passportCopy));
@@ -97,6 +101,8 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
                 form.setTwelfthDigitalMarksheet(s3Service.uploadImage(twelfthDigitalMarksheet));
             if (degreeMarkList != null && !degreeMarkList.isEmpty())
                 form.setDegreeMarkList(s3Service.uploadImage(degreeMarkList));
+            if (diplomaMarkList != null && !diplomaMarkList.isEmpty())
+                form.setDiplomaMarkList(s3Service.uploadImage(diplomaMarkList));
             if (transcripts != null && !transcripts.isEmpty())
                 form.setTranscripts(s3Service.uploadImage(transcripts));
             if (bonafideCertificate != null && !bonafideCertificate.isEmpty())
@@ -109,7 +115,8 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             if (fatherITR3 != null && !fatherITR3.isEmpty()) form.setFatherITR3(s3Service.uploadImage(fatherITR3));
             if (fatherBankStatement != null && !fatherBankStatement.isEmpty()) form.setFatherBankStatement(s3Service.uploadImage(fatherBankStatement));
             if (bankBalanceCertificate != null && !bankBalanceCertificate.isEmpty()) form.setBankBalanceCertificate(s3Service.uploadImage(bankBalanceCertificate));
-            if (parentsIDProof != null && !parentsIDProof.isEmpty()) form.setParentsIDProof(s3Service.uploadImage(parentsIDProof));
+            if (fatherIDProof != null && !fatherIDProof.isEmpty()) form.setFatherIDProof(s3Service.uploadImage(fatherIDProof));
+            if (motherIDProof != null && !motherIDProof.isEmpty()) form.setMotherIDProof(s3Service.uploadImage(motherIDProof));
             if (bankStatement != null && !bankStatement.isEmpty()) form.setBankStatement(s3Service.uploadImage(bankStatement));
 
         } catch (IOException e) {
@@ -139,6 +146,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile sop,
             MultipartFile sop2,
             MultipartFile lors,
+            MultipartFile lorsTranscript2,
             MultipartFile resume,
             MultipartFile testScores,
             MultipartFile passportCopy,
@@ -151,6 +159,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile tenthDigitalMarksheet,
             MultipartFile twelfthDigitalMarksheet,
             MultipartFile degreeMarkList,
+            MultipartFile diplomaMarkList,
             MultipartFile transcripts,
             MultipartFile bonafideCertificate,
             MultipartFile fatherPanCard,
@@ -159,7 +168,8 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             MultipartFile fatherITR3,
             MultipartFile fatherBankStatement,
             MultipartFile bankBalanceCertificate,
-            MultipartFile parentsIDProof,
+            MultipartFile fatherIDProof,
+            MultipartFile motherIDProof,
             MultipartFile bankStatement
     ) {
 
@@ -199,6 +209,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             if (sop != null && !sop.isEmpty()) replaceFile(existing::getSop, existing::setSop, sop);
             if (sop2 != null && !sop2.isEmpty()) replaceFile(existing::getSop2, existing::setSop2, sop2);
             if (lors != null && !lors.isEmpty()) replaceFile(existing::getLors, existing::setLors, lors);
+            if (lorsTranscript2 != null && !lorsTranscript2.isEmpty()) replaceFile(existing::getLorsTranscript2, existing::setLorsTranscript2, lorsTranscript2);
             if (resume != null && !resume.isEmpty()) replaceFile(existing::getResume, existing::setResume, resume);
             if (testScores != null && !testScores.isEmpty()) replaceFile(existing::getTestScores, existing::setTestScores, testScores);
             if (passportCopy != null && !passportCopy.isEmpty()) replaceFile(existing::getPassportCopy, existing::setPassportCopy, passportCopy);
@@ -211,6 +222,7 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             if (tenthDigitalMarksheet != null && !tenthDigitalMarksheet.isEmpty()) replaceFile(existing::getTenthDigitalMarksheet, existing::setTenthDigitalMarksheet, tenthDigitalMarksheet);
             if (twelfthDigitalMarksheet != null && !twelfthDigitalMarksheet.isEmpty()) replaceFile(existing::getTwelfthDigitalMarksheet, existing::setTwelfthDigitalMarksheet, twelfthDigitalMarksheet);
             if (degreeMarkList != null && !degreeMarkList.isEmpty()) replaceFile(existing::getDegreeMarkList, existing::setDegreeMarkList, degreeMarkList);
+            if (diplomaMarkList != null && !diplomaMarkList.isEmpty()) replaceFile(existing::getDiplomaMarkList, existing::setDiplomaMarkList, diplomaMarkList);
             if (transcripts != null && !transcripts.isEmpty()) replaceFile(existing::getTranscripts, existing::setTranscripts, transcripts);
             if (bonafideCertificate != null && !bonafideCertificate.isEmpty()) replaceFile(existing::getBonafideCertificate, existing::setBonafideCertificate, bonafideCertificate);
             if (fatherPanCard != null && !fatherPanCard.isEmpty()) replaceFile(existing::getFatherPanCard, existing::setFatherPanCard, fatherPanCard);
@@ -219,7 +231,8 @@ public class AbroadAdmissionFormServiceImpl implements AbroadAdmissionFormServic
             if (fatherITR3 != null && !fatherITR3.isEmpty()) replaceFile(existing::getFatherITR3, existing::setFatherITR3, fatherITR3);
             if (fatherBankStatement != null && !fatherBankStatement.isEmpty()) replaceFile(existing::getFatherBankStatement, existing::setFatherBankStatement, fatherBankStatement);
             if (bankBalanceCertificate != null && !bankBalanceCertificate.isEmpty()) replaceFile(existing::getBankBalanceCertificate, existing::setBankBalanceCertificate, bankBalanceCertificate);
-            if (parentsIDProof != null && !parentsIDProof.isEmpty()) replaceFile(existing::getParentsIDProof, existing::setParentsIDProof, parentsIDProof);
+            if (fatherIDProof != null && !fatherIDProof.isEmpty()) replaceFile(existing::getFatherIDProof, existing::setFatherIDProof, fatherIDProof);
+            if (motherIDProof != null && !motherIDProof.isEmpty()) replaceFile(existing::getMotherIDProof, existing::setMotherIDProof, motherIDProof);
             if (bankStatement != null && !bankStatement.isEmpty()) replaceFile(existing::getBankStatement, existing::setBankStatement, bankStatement);
 
         } catch (IOException e) {

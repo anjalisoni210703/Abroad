@@ -34,6 +34,7 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "sop", required = false) MultipartFile sop,
             @RequestPart(value = "sop2", required = false) MultipartFile sop2,
             @RequestPart(value = "lors", required = false) MultipartFile lors,
+            @RequestPart(value = "lorsTranscript2", required = false) MultipartFile lorsTranscript2,
             @RequestPart(value = "resume", required = false) MultipartFile resume,
             @RequestPart(value = "testScores", required = false) MultipartFile testScores,
             @RequestPart(value = "passportCopy", required = false) MultipartFile passportCopy,
@@ -46,6 +47,7 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "tenthDigitalMarksheet", required = false) MultipartFile tenthDigitalMarksheet,
             @RequestPart(value = "twelfthDigitalMarksheet", required = false) MultipartFile twelfthDigitalMarksheet,
             @RequestPart(value = "degreeMarkList", required = false) MultipartFile degreeMarkList,
+            @RequestPart(value = "diplomaMarkList", required = false) MultipartFile diplomaMarkList,
             @RequestPart(value = "transcripts", required = false) MultipartFile transcripts,
             @RequestPart(value = "bonafideCertificate", required = false) MultipartFile bonafideCertificate,
             @RequestPart(value = "fatherPanCard", required = false) MultipartFile fatherPanCard,
@@ -54,7 +56,8 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "fatherITR3", required = false) MultipartFile fatherITR3,
             @RequestPart(value = "fatherBankStatement", required = false) MultipartFile fatherBankStatement,
             @RequestPart(value = "bankBalanceCertificate", required = false) MultipartFile bankBalanceCertificate,
-            @RequestPart(value = "parentsIDProof", required = false) MultipartFile parentsIDProof,
+            @RequestPart(value = "fatherIDProof", required = false) MultipartFile fatherIDProof,
+            @RequestPart(value = "motherIDProof", required = false) MultipartFile motherIDProof,
             @RequestPart(value = "bankStatement", required = false) MultipartFile bankStatement,
 
             // Common fields
@@ -81,6 +84,7 @@ public class AbroadAdmissionFormController {
                 sop,
                 sop2,
                 lors,
+                lorsTranscript2,
                 resume,
                 testScores,
                 passportCopy,
@@ -93,6 +97,7 @@ public class AbroadAdmissionFormController {
                 tenthDigitalMarksheet,
                 twelfthDigitalMarksheet,
                 degreeMarkList,
+                diplomaMarkList,
                 transcripts,
                 bonafideCertificate,
                 fatherPanCard,
@@ -101,7 +106,8 @@ public class AbroadAdmissionFormController {
                 fatherITR3,
                 fatherBankStatement,
                 bankBalanceCertificate,
-                parentsIDProof,
+               fatherIDProof,
+                motherIDProof,
                 bankStatement
         );
 
@@ -120,6 +126,7 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "sop", required = false) MultipartFile sop,
             @RequestPart(value = "sop2", required = false) MultipartFile sop2,
             @RequestPart(value = "lors", required = false) MultipartFile lors,
+            @RequestPart(value = "lorsTranscript2", required = false) MultipartFile lorsTranscript2,
             @RequestPart(value = "resume", required = false) MultipartFile resume,
             @RequestPart(value = "testScores", required = false) MultipartFile testScores,
             @RequestPart(value = "passportCopy", required = false) MultipartFile passportCopy,
@@ -132,6 +139,7 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "tenthDigitalMarksheet", required = false) MultipartFile tenthDigitalMarksheet,
             @RequestPart(value = "twelfthDigitalMarksheet", required = false) MultipartFile twelfthDigitalMarksheet,
             @RequestPart(value = "degreeMarkList", required = false) MultipartFile degreeMarkList,
+            @RequestPart(value = "diplomaMarkList", required = false) MultipartFile diplomaMarkList,
             @RequestPart(value = "transcripts", required = false) MultipartFile transcripts,
             @RequestPart(value = "bonafideCertificate", required = false) MultipartFile bonafideCertificate,
             @RequestPart(value = "fatherPanCard", required = false) MultipartFile fatherPanCard,
@@ -140,7 +148,8 @@ public class AbroadAdmissionFormController {
             @RequestPart(value = "fatherITR3", required = false) MultipartFile fatherITR3,
             @RequestPart(value = "fatherBankStatement", required = false) MultipartFile fatherBankStatement,
             @RequestPart(value = "bankBalanceCertificate", required = false) MultipartFile bankBalanceCertificate,
-            @RequestPart(value = "parentsIDProof", required = false) MultipartFile parentsIDProof,
+            @RequestPart(value = "fatherIDProof", required = false) MultipartFile fatherIDProof,
+            @RequestPart(value = "motherIDProof", required = false) MultipartFile motherIDProof,
             @RequestPart(value = "bankStatement", required = false) MultipartFile bankStatement,
             @RequestParam String role,
             @RequestParam String email
@@ -161,6 +170,7 @@ public class AbroadAdmissionFormController {
                 email,
                 sop,
                 sop2,
+                lorsTranscript2,
                 lors,
                 resume,
                 testScores,
@@ -174,6 +184,7 @@ public class AbroadAdmissionFormController {
                 tenthDigitalMarksheet,
                 twelfthDigitalMarksheet,
                 degreeMarkList,
+                diplomaMarkList,
                 transcripts,
                 bonafideCertificate,
                 fatherPanCard,
@@ -182,7 +193,8 @@ public class AbroadAdmissionFormController {
                 fatherITR3,
                 fatherBankStatement,
                 bankBalanceCertificate,
-                parentsIDProof,
+                fatherIDProof,
+                motherIDProof,
                 bankStatement
         );
 
