@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,6 +38,28 @@ public class AbroadAdmissionForm {
     private String status;
     private String intake;
     private String notes;
+    private String gender;
+    private LocalDate dob;
+    private LocalDate enquiryDate;
+    private String passportAvailable;
+    private String passedCourse;
+    private String percentage;
+    private String gapInEducation;
+    private String applyFor;
+    private String continent;
+    private String state;
+    private String city;
+    private String college;
+    private String houseNumber;
+    private String streetName;
+    private String landmark;
+    private String pincode;
+    private String fatherOccupation;
+    private String fatherIncome;
+    private String fatherPhone;
+    private String assignedStaffName;
+    private String assignedStaffEmail;
+
 
     // Documents
     private String sop;                                 // Statement of Purpose
